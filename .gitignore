@@ -1,9 +1,8 @@
-node_modules/
-.next/
-dist/
+node_modules
+dist
+.next
+.turbo
 .env
 .env.local
-.turbo/
 *.log
-.worktrees
-.superpowers/
+coverage
