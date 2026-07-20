@@ -40,6 +40,7 @@ jobs:
       - run: pnpm db:generate
       - run: pnpm --filter @trainflow/db migrate:deploy
       - run: pnpm --filter @trainflow/shared-types build
+      - run: pnpm lint
       - run: pnpm --filter @trainflow/api test
       - run: pnpm --filter @trainflow/api test:e2e
       - run: pnpm --filter @trainflow/api build
