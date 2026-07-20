@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Param,
   Post,
   UseGuards,
@@ -37,6 +38,7 @@ export class ClientsController {
   }
 
   @Post("invite")
+  @HttpCode(201)
   async invite(@CurrentUser() user: AuthUser, @Body() body: unknown) {
     const parsed = inviteClientSchema.safeParse(body);
     if (!parsed.success) {
