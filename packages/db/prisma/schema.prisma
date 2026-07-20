@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ClientStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+}
+
+model Trainer {
+  id          String   @id @default(uuid())
+  clerkUserId String   @unique
+  name        String
+  email       String   @unique
+  createdAt   DateTime @default(now())
+  clients     Client[]
+}
+
+model Client {
+  id          String       @id @default(uuid())
+  trainerId   String
+  trainer     Trainer      @relation(fields: [trainerId], references: [id])
+  clerkUserId String?      @unique
+  name        String
+  email       String
+  status      ClientStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  inviteToken InviteToken?
+
+  @@index([trainerId])
+}
+
+model InviteToken {
+  id        String    @id @default(uuid())
+  clientId  String    @unique
+  client    Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+}
