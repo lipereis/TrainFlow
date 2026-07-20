@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: trainflow
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trainflow
+      CLERK_SECRET_KEY: sk_test_ci_dummy
+      CLERK_WEBHOOK_SECRET: whsec_ci_dummy
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ci_dummy
+      CLERK_PUBLISHABLE_KEY: pk_test_ci_dummy
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm db:generate
+      - run: pnpm --filter @trainflow/db migrate:deploy
+      - run: pnpm --filter @trainflow/shared-types build
+      - run: pnpm --filter @trainflow/api test
+      - run: pnpm --filter @trainflow/api test:e2e
+      - run: pnpm --filter @trainflow/api build
