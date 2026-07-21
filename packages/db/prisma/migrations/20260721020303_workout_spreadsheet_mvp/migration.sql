@@ -23,9 +23,12 @@ ADD COLUMN     "injuries" TEXT,
 ADD COLUMN     "observations" TEXT,
 ADD COLUMN     "phone" TEXT,
 ADD COLUMN     "restrictions" TEXT,
-ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL,
 ADD COLUMN     "weeklyAvailability" TEXT,
 ADD COLUMN     "weightKg" DOUBLE PRECISION;
+
+ALTER TABLE "Client" ADD COLUMN "updatedAt" TIMESTAMP(3);
+UPDATE "Client" SET "updatedAt" = COALESCE("createdAt", CURRENT_TIMESTAMP) WHERE "updatedAt" IS NULL;
+ALTER TABLE "Client" ALTER COLUMN "updatedAt" SET NOT NULL;
 
 -- CreateTable
 CREATE TABLE "Exercise" (
