@@ -10,6 +10,7 @@ import type {
   UpdateClientInput,
   ClientDto,
 } from "@trainflow/shared-types";
+import type { Prisma } from "@trainflow/db";
 import { PrismaService } from "../prisma/prisma.service";
 
 export type ClerkInviter = {
@@ -139,7 +140,7 @@ export class ClientsService {
     const token = this.newToken();
     const expiresAt = new Date(Date.now() + INVITE_TTL_MS);
 
-    const client = await this.prisma.$transaction(async (tx) => {
+    const client = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const created = await tx.client.create({
         data: {
           trainerId,
@@ -252,7 +253,7 @@ export class ClientsService {
       },
       orderBy: { createdAt: "desc" },
     });
-    return rows.map((r) => this.toDto(r as ClientRow));
+    return rows.map((r: ClientRow) => this.toDto(r));
   }
 
   async get(trainerId: string, clientId: string): Promise<ClientDto> {
