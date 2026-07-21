@@ -13,17 +13,17 @@ const btnPrimary =
 const btnSecondary =
   "inline-flex items-center justify-center rounded border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-900";
 
-/** Landing / header auth controls — Sign in, Sign up, or UserButton when signed in. */
+/** Landing auth controls — prefer redirect pages over modal to avoid handshake loops. */
 export function AuthControls() {
   return (
     <div className="flex flex-wrap items-center gap-3">
       <SignedOut>
-        <SignInButton mode="modal">
+        <SignInButton mode="redirect" forceRedirectUrl="/post-auth">
           <button type="button" className={btnPrimary}>
             Sign in
           </button>
         </SignInButton>
-        <SignUpButton mode="modal">
+        <SignUpButton mode="redirect" forceRedirectUrl="/post-auth">
           <button type="button" className={btnSecondary}>
             Sign up as trainer
           </button>
