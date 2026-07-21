@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ClientDto } from "@trainflow/shared-types";
+import { DeleteClientButton } from "@/components/delete-client-button";
 import { apiFetch } from "@/lib/api";
 
 export default async function ClientsPage({
@@ -89,6 +90,11 @@ export default async function ClientsPage({
               >
                 Edit
               </Link>
+              <DeleteClientButton
+                clientId={c.id}
+                clientName={c.name}
+                variant="link"
+              />
             </div>
           </li>
         ))}
