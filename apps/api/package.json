@@ -17,9 +17,11 @@
     "@nestjs/platform-express": "^10.4.15",
     "@trainflow/db": "workspace:*",
     "@trainflow/shared-types": "workspace:*",
+    "@trainflow/workout-math": "workspace:^",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "svix": "^1.42.0"
+    "svix": "^1.42.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.4.9",
