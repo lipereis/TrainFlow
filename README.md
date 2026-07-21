@@ -25,33 +25,33 @@ AI-powered operating system for personal trainers.
    Set **both** `DATABASE_URL` and `DIRECT_URL` (same value locally; pooler + direct on Supabase).
 2. `pnpm install`
 3. `pnpm db:generate && pnpm db:migrate` (or `pnpm db:migrate:deploy`)
-4. Point Clerk webhooks:
-   - `user.created` → `POST {API}/trainers/signup-webhook` (trainers)
-   - `user.created` → `POST {API}/invites/accept` (clients with `publicMetadata.role=CLIENT`)
+4. Point Clerk webhooks at the Next.js app:
+   - `user.created` → `POST {APP}/api/webhooks/clerk/trainer` (trainers)
+   - `user.created` → `POST {APP}/api/webhooks/clerk/invite` (clients with `publicMetadata.role=CLIENT`)
 5. Customize Clerk session token to include `public_metadata` as `metadata`
-6. `pnpm dev`
+6. `pnpm --filter @trainflow/web dev` (or `pnpm dev`)
 
-> **Note:** Prisma may write `packages/db/.env`. Keep `DATABASE_URL` / `DIRECT_URL` in sync with the root `.env`, or e2e helpers may prefer the package file over a stale root value.
+> **Note:** Prisma may write `packages/db/.env`. Keep `DATABASE_URL` / `DIRECT_URL` in sync with root `.env` and `apps/web/.env.local`.
 
-Web: http://localhost:3000  
-API: http://localhost:3001 · Health: http://localhost:3001/health
+App + API (Route Handlers): http://localhost:3000 · Health: http://localhost:3000/api/health
 
 ## Production deploy
 
-See **[docs/deploy.md](docs/deploy.md)** for the exact Railway + Vercel + Clerk + Supabase production matrix (env vars, webhooks, session claims, build settings).
+See **[docs/deploy.md](docs/deploy.md)** for the Vercel + Clerk + Supabase matrix (env vars, webhooks, session claims, build settings). **No Railway.**
 
 | Layer | Host |
 |-------|------|
-| Web | Vercel (`apps/web`) |
-| API | Railway (root `Dockerfile`) |
+| Frontend + backend | Vercel (`apps/web` Root Directory) |
 | DB | Supabase PostgreSQL |
-| Auth | Clerk production app |
+| Auth | Clerk |
+
+Legacy Nest (`apps/api`) stays in the repo until retired; production uses Next.js `/api/*` only.
 
 ## Scripts
 
-- `pnpm dev` — web + api
+- `pnpm dev` — turbo (web; api package still present for local comparison)
 - `pnpm test` — unit tests (turbo: includes `@trainflow/api` + `@trainflow/workout-math`)
-- `pnpm --filter @trainflow/api test:e2e` — invite + workout export e2e (needs Postgres)
+- `pnpm --filter @trainflow/api test:e2e` — legacy Nest e2e (needs Postgres)
 - `pnpm db:seed` — seed exercises + sample workout templates
 - `pnpm db:migrate:deploy` — apply migrations (CI / production)
 
@@ -72,11 +72,11 @@ Seed loads the global exercise library (`packages/db/prisma/data/exercises.json`
 ### Dev
 
 ```bash
-pnpm dev
+pnpm --filter @trainflow/web dev
 ```
 
-- Web: http://localhost:3000  
-- API: http://localhost:3001 (no `/api` prefix; set `NEXT_PUBLIC_API_URL` accordingly)
+- App: http://localhost:3000  
+- API: same origin under `/api/*` (e.g. `/api/clients`, `/api/workouts/:id/export.xlsx`)
 
 ### Tests
 
@@ -90,8 +90,8 @@ pnpm --filter @trainflow/web exec tsc --noEmit
 
 ### Export notes
 
-- Excel: `GET /workouts/:id/export.xlsx` (ExcelJS; summary + per-day sheets)
-- PDF: `GET /workouts/:id/export.pdf` (PDFKit)
+- Excel: `GET /api/workouts/:id/export.xlsx` (ExcelJS; summary + per-day sheets)
+- PDF: `GET /api/workouts/:id/export.pdf` (PDFKit)
 - Trainer ownership enforced; UI downloads via authenticated blob fetch (`apps/web/src/lib/api-download.ts`)
 - Missing weight → volume shown as unavailable (never treated as 0)
 

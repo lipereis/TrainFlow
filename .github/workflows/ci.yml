@@ -27,8 +27,8 @@ jobs:
       CLERK_WEBHOOK_SECRET: whsec_ci_dummy
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ci_dummy
       CLERK_PUBLISHABLE_KEY: pk_test_ci_dummy
-      NEXT_PUBLIC_API_URL: http://localhost:3001
-      WEB_ORIGIN: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      CLERK_INVITE_WEBHOOK_SECRET: whsec_ci_invite_dummy
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

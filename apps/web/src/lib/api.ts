@@ -1,16 +1,30 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import { cookies } from "next/headers";
+import { appOrigin } from "@/server/http";
 
-const base = () => process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+/** Absolute origin for RSC → Route Handler fetch (relative URLs fail on the server). */
+function apiBase(): string {
+  return appOrigin();
+}
+
+function cookieHeader(): string {
+  return cookies()
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
+}
 
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const { getToken } = await auth();
   const token = await getToken();
-  const res = await fetch(`${base()}${path}`, {
+  const cookie = cookieHeader();
+  const res = await fetch(`${apiBase()}/api${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
+      ...(cookie ? { Cookie: cookie } : {}),
       ...(init?.headers ?? {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },

@@ -1,2 +1,9 @@
 .clerk/
 *.tsbuildinfo
+
+# Vercel env import (secrets) — never commit
+.env.vercel
+.env*.local
+
+.vercel
+.env*

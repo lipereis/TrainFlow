@@ -1,11 +1,10 @@
-const base = () => process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-
+/** Browser same-origin API calls under `/api`. */
 export async function browserApiFetch<T>(
   path: string,
   token: string | null,
   init?: RequestInit,
 ): Promise<T> {
-  const res = await fetch(`${base()}${path}`, {
+  const res = await fetch(`/api${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",

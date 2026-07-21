@@ -1,5 +1,3 @@
-const base = () => process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-
 /**
  * Client-side authenticated blob download for workout exports.
  * Pass `getToken` from Clerk `useAuth()`.
@@ -10,14 +8,11 @@ export async function downloadWorkoutExport(
   getToken: () => Promise<string | null>,
 ): Promise<void> {
   const token = await getToken();
-  const res = await fetch(
-    `${base()}/workouts/${workoutId}/export.${format}`,
-    {
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+  const res = await fetch(`/api/workouts/${workoutId}/export.${format}`, {
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-  );
+  });
 
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as {

@@ -11,12 +11,18 @@ const isPublic = createRouteMatcher([
   "/sign-up(.*)",
   "/dev/clear-clerk(.*)",
   "/post-auth",
+  "/api/health",
+  "/api/webhooks(.*)",
 ]);
 
+/** API auth is enforced in Route Handlers (`requireTrainerId`) so clients get JSON 401. */
+const isApi = createRouteMatcher(["/api(.*)"]);
+
 export default clerkMiddleware(async (auth, req) => {
-  if (!isPublic(req)) {
-    await auth.protect();
+  if (isPublic(req) || isApi(req)) {
+    return;
   }
+  await auth.protect();
 });
 
 export const config = {
