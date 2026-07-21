@@ -9,7 +9,12 @@ const LABELS: Record<AutosaveStatus, string> = {
   error: "Error saving",
 };
 
-export function AutosaveBadge({ status }: { status: AutosaveStatus }) {
+type Props = {
+  status: AutosaveStatus;
+  onRetry?: () => void;
+};
+
+export function AutosaveBadge({ status, onRetry }: Props) {
   if (status === "idle") return null;
   const color =
     status === "error"
@@ -18,8 +23,17 @@ export function AutosaveBadge({ status }: { status: AutosaveStatus }) {
         ? "text-amber-700"
         : "text-emerald-700";
   return (
-    <span className={`text-xs font-medium ${color}`} aria-live="polite">
+    <span className={`inline-flex items-center gap-2 text-xs font-medium ${color}`} aria-live="polite">
       {LABELS[status]}
+      {status === "error" && onRetry ? (
+        <button
+          type="button"
+          className="rounded border border-red-300 px-1.5 py-0.5 text-[11px] font-medium text-red-700 hover:bg-red-50"
+          onClick={onRetry}
+        >
+          Retry
+        </button>
+      ) : null}
     </span>
   );
 }

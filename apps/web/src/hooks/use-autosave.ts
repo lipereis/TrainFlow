@@ -50,18 +50,27 @@ export function useAutosave<T>({
       clearTimeout(timerRef.current);
       timerRef.current = null;
     }
-    const payloads = [...pendingRef.current.values()];
+    const entries = [...pendingRef.current.entries()];
     pendingRef.current.clear();
-    if (payloads.length === 0) return;
+    if (entries.length === 0) return;
 
     const seq = ++seqRef.current;
     setStatus("saving");
     try {
-      for (const payload of payloads) {
+      for (const [, payload] of entries) {
         await saveRef.current(payload);
       }
       if (seq === seqRef.current) setStatus("saved");
     } catch {
+      // Re-queue failed payloads; merge with anything scheduled during the attempt.
+      for (const [key, payload] of entries) {
+        const existing = pendingRef.current.get(key);
+        if (existing && mergeRef.current) {
+          pendingRef.current.set(key, mergeRef.current(payload, existing));
+        } else if (!existing) {
+          pendingRef.current.set(key, payload);
+        }
+      }
       if (seq === seqRef.current) setStatus("error");
     }
   }, []);
@@ -83,5 +92,9 @@ export function useAutosave<T>({
     [delayMs, flush],
   );
 
-  return { status, schedule, flush };
+  const retry = useCallback(() => {
+    void flush();
+  }, [flush]);
+
+  return { status, schedule, flush, retry };
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import type { ClientDto, ExerciseDto } from "@trainflow/shared-types";
 import { browserApiFetch } from "@/lib/browser-api";
@@ -36,7 +36,13 @@ type ExercisePatch = {
   body: Record<string, unknown>;
 };
 
-type SavePayload = ProgramPatch | DayPatch | ExercisePatch;
+type ClientPatch = {
+  kind: "client";
+  clientId: string;
+  body: Record<string, unknown>;
+};
+
+type SavePayload = ProgramPatch | DayPatch | ExercisePatch | ClientPatch;
 
 function defaultExercisePayload(exercise: ExerciseDto) {
   return {
@@ -60,12 +66,20 @@ type Props = {
 
 export function WorkoutSpreadsheet({ workoutId }: Props) {
   const { getToken } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   const [program, setProgram] = useState<WorkoutProgramDto | null>(null);
   const [clientName, setClientName] = useState("Client");
+  const [clientObservations, setClientObservations] = useState("");
+  const [clientId, setClientId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const trainerName =
+    user?.fullName?.trim() ||
+    user?.primaryEmailAddress?.emailAddress ||
+    "Trainer";
 
   const load = useCallback(async () => {
     const token = await getToken();
@@ -74,14 +88,17 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
       token,
     );
     setProgram(data);
+    setClientId(data.clientId);
     try {
       const client = await browserApiFetch<ClientDto>(
         `/clients/${data.clientId}`,
         token,
       );
       setClientName(client.name);
+      setClientObservations(client.observations ?? "");
     } catch {
       setClientName("Client");
+      setClientObservations("");
     }
   }, [getToken, workoutId]);
 
@@ -119,6 +136,11 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
           token,
           { method: "PATCH", body: JSON.stringify(payload.body) },
         );
+      } else if (payload.kind === "client") {
+        await browserApiFetch(`/clients/${payload.clientId}`, token, {
+          method: "PATCH",
+          body: JSON.stringify(payload.body),
+        });
       } else {
         await browserApiFetch(
           `/workouts/${workoutId}/days/${payload.dayId}/exercises/${payload.exerciseId}`,
@@ -130,7 +152,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
     [getToken, workoutId],
   );
 
-  const { status, schedule } = useAutosave<SavePayload>({
+  const { status, schedule, retry } = useAutosave<SavePayload>({
     save,
     delayMs: 600,
     keyFor: (p) =>
@@ -138,7 +160,9 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
         ? "program"
         : p.kind === "day"
           ? `day:${p.dayId}`
-          : `ex:${p.dayId}:${p.exerciseId}`,
+          : p.kind === "client"
+            ? `client:${p.clientId}`
+            : `ex:${p.dayId}:${p.exerciseId}`,
     merge: (existing, incoming) => ({
       ...incoming,
       body: { ...existing.body, ...incoming.body },
@@ -170,6 +194,16 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
     if (Object.keys(body).length > 0) {
       schedule({ kind: "program", body });
     }
+  }
+
+  function patchClientObservations(observations: string) {
+    setClientObservations(observations);
+    if (!clientId) return;
+    schedule({
+      kind: "client",
+      clientId,
+      body: { observations: observations || null },
+    });
   }
 
   function patchDay(dayId: string, patch: Partial<WorkoutDayDto>) {
@@ -233,6 +267,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
       await fn();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed");
+      throw e;
     } finally {
       setBusy(false);
     }
@@ -250,6 +285,8 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
         },
       );
       await load();
+    }).catch(() => {
+      /* error already set */
     });
   }
 
@@ -275,10 +312,15 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
           ),
         };
       });
+    }).catch(() => {
+      /* error already set */
     });
   }
 
   async function reorderExercises(dayId: string, orderedIds: string[]) {
+    const previous =
+      program?.days.find((d) => d.id === dayId)?.exercises ?? null;
+
     setProgram((prev) => {
       if (!prev) return prev;
       return {
@@ -298,17 +340,38 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
         }),
       };
     });
-    await withBusy(async () => {
-      const token = await getToken();
-      await browserApiFetch(
-        `/workouts/${workoutId}/days/${dayId}/exercises/reorder`,
-        token,
-        {
-          method: "PUT",
-          body: JSON.stringify({ orderedIds }),
-        },
-      );
-    });
+
+    try {
+      await withBusy(async () => {
+        const token = await getToken();
+        await browserApiFetch(
+          `/workouts/${workoutId}/days/${dayId}/exercises/reorder`,
+          token,
+          {
+            method: "PUT",
+            body: JSON.stringify({ ids: orderedIds }),
+          },
+        );
+      });
+    } catch {
+      // Rollback optimistic order, then refresh from server.
+      if (previous) {
+        setProgram((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            days: prev.days.map((d) =>
+              d.id === dayId ? { ...d, exercises: previous } : d,
+            ),
+          };
+        });
+      }
+      try {
+        await load();
+      } catch {
+        /* keep local rollback */
+      }
+    }
   }
 
   async function duplicateDay(dayId: string) {
@@ -320,6 +383,8 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
         { method: "POST" },
       );
       await load();
+    }).catch(() => {
+      /* error already set */
     });
   }
 
@@ -332,6 +397,8 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
         { method: "POST" },
       );
       router.push(`/workouts/${copy.id}`);
+    }).catch(() => {
+      /* error already set */
     });
   }
 
@@ -350,7 +417,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
   return (
     <div className="workout-spreadsheet space-y-6">
       <div className="no-print flex flex-wrap items-center justify-between gap-3">
-        <AutosaveBadge status={status} />
+        <AutosaveBadge status={status} onRetry={retry} />
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -396,7 +463,10 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
       <ProgramHeader
         program={program}
         clientName={clientName}
+        trainerName={trainerName}
+        clientObservations={clientObservations}
         onPatch={patchProgram}
+        onClientObservationsChange={patchClientObservations}
       />
 
       {weekly ? (

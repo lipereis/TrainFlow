@@ -7,15 +7,31 @@ import { ObservationField } from "./observation-field";
 type Props = {
   program: WorkoutProgramDto;
   clientName: string;
+  trainerName: string;
+  clientObservations: string;
   onPatch: (patch: Partial<WorkoutProgramDto>) => void;
+  onClientObservationsChange: (observations: string) => void;
 };
 
-function dateInputValue(iso: string | null): string {
-  if (!iso) return "";
-  return iso.slice(0, 10);
+/** Prefer date-only YYYY-MM-DD; avoid UTC shift from Date parsing. */
+function dateInputValue(value: string | null): string {
+  if (!value) return "";
+  const match = /^(\d{4}-\d{2}-\d{2})/.exec(value);
+  return match?.[1] ?? "";
 }
 
-export function ProgramHeader({ program, clientName, onPatch }: Props) {
+function toDateOnly(value: string): string {
+  return value; // already YYYY-MM-DD from <input type="date">
+}
+
+export function ProgramHeader({
+  program,
+  clientName,
+  trainerName,
+  clientObservations,
+  onPatch,
+  onClientObservationsChange,
+}: Props) {
   return (
     <header className="space-y-4 border-b border-zinc-200 pb-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -24,6 +40,12 @@ export function ProgramHeader({ program, clientName, onPatch }: Props) {
             Client
           </p>
           <h1 className="text-2xl font-semibold tracking-tight">{clientName}</h1>
+          <p className="mt-1 text-sm text-zinc-600">
+            <span className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+              Trainer
+            </span>{" "}
+            {trainerName}
+          </p>
         </div>
         <span className="rounded border border-zinc-200 bg-zinc-50 px-2 py-1 text-xs uppercase tracking-wide text-zinc-600">
           {program.status}
@@ -69,7 +91,7 @@ export function ProgramHeader({ program, clientName, onPatch }: Props) {
             onChange={(e) =>
               onPatch({
                 startDate: e.target.value
-                  ? new Date(e.target.value).toISOString()
+                  ? toDateOnly(e.target.value)
                   : program.startDate,
               })
             }
@@ -83,9 +105,7 @@ export function ProgramHeader({ program, clientName, onPatch }: Props) {
             value={dateInputValue(program.endDate)}
             onChange={(e) =>
               onPatch({
-                endDate: e.target.value
-                  ? new Date(e.target.value).toISOString()
-                  : null,
+                endDate: e.target.value ? toDateOnly(e.target.value) : null,
               })
             }
           />
@@ -97,6 +117,13 @@ export function ProgramHeader({ program, clientName, onPatch }: Props) {
           </p>
         </div>
       </div>
+
+      <ObservationField
+        label="Client observations"
+        value={clientObservations}
+        onChange={onClientObservationsChange}
+        rows={2}
+      />
 
       <ObservationField
         label="Program observations"
