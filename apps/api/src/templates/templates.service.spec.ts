@@ -15,6 +15,9 @@ describe("TemplatesService", () => {
     client: {
       findUnique: jest.Mock;
     };
+    exercise: {
+      findMany: jest.Mock;
+    };
   } = {
     workoutTemplate: {
       findMany: jest.fn(),
@@ -27,6 +30,9 @@ describe("TemplatesService", () => {
     },
     client: {
       findUnique: jest.fn(),
+    },
+    exercise: {
+      findMany: jest.fn(),
     },
   };
 
@@ -173,6 +179,9 @@ describe("TemplatesService", () => {
       id: "c1",
       trainerId: "t1",
     });
+    prisma.exercise.findMany.mockResolvedValue([
+      { id: "ex1", name: "Back Squat" },
+    ]);
     prisma.workoutProgram.create.mockResolvedValue({ id: "prog1" });
 
     const id = await service.createWorkoutFromTemplate("t1", "tmpl1", {
@@ -181,6 +190,10 @@ describe("TemplatesService", () => {
     });
 
     expect(id).toBe("prog1");
+    expect(prisma.exercise.findMany).toHaveBeenCalledWith({
+      where: { id: { in: ["ex1"] } },
+      select: { id: true, name: true },
+    });
     expect(prisma.workoutProgram.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
@@ -189,8 +202,57 @@ describe("TemplatesService", () => {
           name: "From template",
           status: "DRAFT",
           daysPerWeek: 3,
+          days: {
+            create: [
+              expect.objectContaining({
+                exercises: {
+                  create: [
+                    expect.objectContaining({
+                      exerciseId: "ex1",
+                      customName: "Back Squat",
+                    }),
+                  ],
+                },
+              }),
+            ],
+          },
         }),
       }),
+    );
+  });
+
+  it("resolves catalog exercise names when template customName is empty", async () => {
+    prisma.workoutTemplate.findUnique.mockResolvedValue({
+      ...sampleTemplate,
+      days: [
+        {
+          ...sampleTemplate.days[0],
+          exercises: [
+            {
+              ...sampleTemplate.days[0].exercises[0],
+              customName: "   ",
+              exerciseId: "ex1",
+            },
+          ],
+        },
+      ],
+    });
+    prisma.client.findUnique.mockResolvedValue({
+      id: "c1",
+      trainerId: "t1",
+    });
+    prisma.exercise.findMany.mockResolvedValue([
+      { id: "ex1", name: "Back Squat" },
+    ]);
+    prisma.workoutProgram.create.mockResolvedValue({ id: "prog1" });
+
+    await service.createWorkoutFromTemplate("t1", "tmpl1", {
+      clientId: "c1",
+    });
+
+    const createArg = prisma.workoutProgram.create.mock.calls[0][0];
+    expect(createArg.data.days.create[0].exercises.create[0].customName).toBe(
+      "Back Squat",
     );
   });
 

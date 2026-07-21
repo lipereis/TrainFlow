@@ -109,7 +109,7 @@ async function upsertSampleTemplate(
         }
         return {
           exerciseId,
-          customName: null,
+          customName: ex.exerciseName,
           muscleGroup: ex.muscleGroup,
           category: ex.category,
           sets: ex.sets,

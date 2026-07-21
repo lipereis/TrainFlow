@@ -310,6 +310,35 @@ export class TemplatesService {
         ? template.daysPerWeek
         : Math.max(days.length, 1);
 
+    const idsNeedingNames = new Set<string>();
+    for (const day of days) {
+      for (const ex of day.exercises ?? []) {
+        if ((!ex.customName || !ex.customName.trim()) && ex.exerciseId) {
+          idsNeedingNames.add(ex.exerciseId);
+        }
+      }
+    }
+
+    const nameByExerciseId = new Map<string, string>();
+    if (idsNeedingNames.size > 0) {
+      const catalog = await this.prisma.exercise.findMany({
+        where: { id: { in: [...idsNeedingNames] } },
+        select: { id: true, name: true },
+      });
+      for (const row of catalog) {
+        nameByExerciseId.set(row.id, row.name);
+      }
+    }
+
+    const resolveCustomName = (ex: TemplateExerciseRow): string | null => {
+      const trimmed = ex.customName?.trim();
+      if (trimmed) return trimmed;
+      if (ex.exerciseId) {
+        return nameByExerciseId.get(ex.exerciseId) ?? null;
+      }
+      return null;
+    };
+
     const today = new Date();
     const startDate = new Date(
       Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
@@ -341,7 +370,7 @@ export class TemplatesService {
             exercises: {
               create: (day.exercises ?? []).map((ex) => ({
                 exerciseId: ex.exerciseId,
-                customName: ex.customName,
+                customName: resolveCustomName(ex),
                 muscleGroup: ex.muscleGroup,
                 category: ex.category,
                 sets: ex.sets,
