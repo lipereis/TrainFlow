@@ -3,15 +3,23 @@ import { redirect } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { roleFromClaims } from "@/lib/roles";
+import { ensureTrainerRole } from "@/lib/ensure-trainer";
 
-export default async function TrainerLayout({ children }: { children: React.ReactNode }) {
+export default async function TrainerLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await auth();
   if (!session.userId) redirect("/sign-in");
-  const role = roleFromClaims(session.sessionClaims as Record<string, unknown>);
-  if (role !== "TRAINER") {
-    if (role === "CLIENT") redirect("/portal");
-    redirect("/sign-in");
+
+  let role = roleFromClaims(session.sessionClaims as Record<string, unknown>);
+  if (!role) {
+    await ensureTrainerRole(session.userId);
+    role = "TRAINER";
   }
+  if (role === "CLIENT") redirect("/portal");
+  if (role !== "TRAINER") redirect("/sign-in");
 
   return (
     <div className="min-h-screen">

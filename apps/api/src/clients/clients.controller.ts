@@ -8,6 +8,7 @@ import {
   UseGuards,
   BadRequestException,
 } from "@nestjs/common";
+import { createClerkClient } from "@clerk/backend";
 import { inviteClientSchema } from "@trainflow/shared-types";
 import { AuthGuard } from "../common/guards/auth.guard";
 import { RolesGuard } from "../common/guards/roles.guard";
@@ -27,14 +28,34 @@ export class ClientsController {
   ) {}
 
   private async trainerIdFor(user: AuthUser): Promise<string> {
-    const trainer = await this.trainers.findByClerkUserId(user.clerkUserId);
-    if (!trainer) {
+    const existing = await this.trainers.findByClerkUserId(user.clerkUserId);
+    if (existing) return existing.id;
+
+    // No webhook locally yet — create trainer on first API use
+    const clerk = createClerkClient({
+      secretKey: process.env.CLERK_SECRET_KEY!,
+    });
+    const clerkUser = await clerk.users.getUser(user.clerkUserId);
+    const email =
+      clerkUser.emailAddresses.find(
+        (e) => e.id === clerkUser.primaryEmailAddressId,
+      )?.emailAddress ??
+      clerkUser.emailAddresses[0]?.emailAddress;
+    if (!email) {
       throw new BadRequestException({
         code: "VALIDATION_ERROR",
-        message: "Trainer profile not found",
+        message: "Trainer email missing on Clerk user",
       });
     }
-    return trainer.id;
+    const name =
+      [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") ||
+      email;
+    const created = await this.trainers.createFromClerk({
+      clerkUserId: user.clerkUserId,
+      name,
+      email,
+    });
+    return created.id;
   }
 
   @Post("invite")

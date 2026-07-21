@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import type { Trainer } from "@trainflow/db";
 import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
@@ -9,7 +10,7 @@ export class TrainersService {
     clerkUserId: string;
     name: string;
     email: string;
-  }) {
+  }): Promise<Trainer> {
     return this.prisma.trainer.upsert({
       where: { clerkUserId: input.clerkUserId },
       create: {
@@ -24,7 +25,7 @@ export class TrainersService {
     });
   }
 
-  findByClerkUserId(clerkUserId: string) {
+  findByClerkUserId(clerkUserId: string): Promise<Trainer | null> {
     return this.prisma.trainer.findUnique({ where: { clerkUserId } });
   }
 }
