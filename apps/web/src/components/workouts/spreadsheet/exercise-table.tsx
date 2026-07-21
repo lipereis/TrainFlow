@@ -7,16 +7,14 @@ import {
   useReactTable,
   type ColumnDef,
 } from "@tanstack/react-table";
-import {
-  EXECUTION_METHODS,
-  OBSERVATION_TEMPLATES,
-} from "@trainflow/shared-types";
+import { EXECUTION_METHODS } from "@trainflow/shared-types";
 import {
   emptyDisplay,
   formatRepRange,
   formatRest,
   formatWeight,
 } from "@trainflow/workout-math";
+import { ObservationTemplateInsert } from "@/components/observation-template-insert";
 import {
   btnSecondary,
   exerciseDisplayName,
@@ -308,35 +306,18 @@ export function ExerciseTable({
         header: "Observation",
         cell: ({ row }) => {
           const value = row.original.observation ?? "";
-          function insertTemplate(template: string) {
-            const next = value.trim()
-              ? `${value.trim()}\n${template}`
-              : template;
-            onPatch(row.original.id, { observation: next || null });
-          }
           return (
             <div className="flex min-w-[10rem] flex-col gap-0.5">
-              <select
-                className={`${cellInput} no-print max-w-[10rem] text-xs`}
-                defaultValue=""
+              <ObservationTemplateInsert
+                value={value}
                 disabled={busy}
-                aria-label="Insert observation template"
-                onChange={(e) => {
-                  const t = e.target.value;
-                  if (t) {
-                    insertTemplate(t);
-                    e.target.value = "";
-                  }
-                }}
-              >
-                <option value="">Template…</option>
-                {OBSERVATION_TEMPLATES.map((t) => (
-                  <option key={t} value={t}>
-                    {t.slice(0, 40)}
-                    {t.length > 40 ? "…" : ""}
-                  </option>
-                ))}
-              </select>
+                truncateAt={40}
+                placeholder="Template…"
+                className={`${cellInput} no-print max-w-[10rem] text-xs`}
+                onInsert={(next) =>
+                  onPatch(row.original.id, { observation: next || null })
+                }
+              />
               <input
                 className={`${cellInput} min-w-[8rem]`}
                 value={value}

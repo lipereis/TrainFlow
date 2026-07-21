@@ -4,6 +4,7 @@ import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { experienceLevelSchema } from "@trainflow/shared-types";
+import { ObservationTemplateInsert } from "@/components/observation-template-insert";
 import {
   btnPrimary,
   btnSecondary,
@@ -55,6 +56,8 @@ export function StepProgram({
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProgramFormValues>({
     resolver: zodResolver(programFormSchema) as Resolver<ProgramFormValues>,
@@ -70,6 +73,8 @@ export function StepProgram({
       observations: defaultValues?.observations ?? "",
     },
   });
+
+  const observationsValue = watch("observations") ?? "";
 
   async function submit(raw: ProgramFormValues) {
     await onSubmit({
@@ -164,7 +169,16 @@ export function StepProgram({
           </label>
         </div>
         <label className={labelClass}>
-          <span>Observations</span>
+          <span className="flex flex-wrap items-center justify-between gap-2">
+            <span>Observations</span>
+            <ObservationTemplateInsert
+              value={observationsValue}
+              ariaLabel="Insert observation template for program"
+              onInsert={(next) =>
+                setValue("observations", next, { shouldDirty: true })
+              }
+            />
+          </span>
           <textarea
             className={inputClass}
             rows={3}
