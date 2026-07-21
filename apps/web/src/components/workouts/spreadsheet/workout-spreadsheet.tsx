@@ -5,6 +5,7 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import type { ClientDto, ExerciseDto } from "@trainflow/shared-types";
 import { browserApiFetch } from "@/lib/browser-api";
+import { downloadWorkoutExport } from "@/lib/api-download";
 import { useAutosave } from "@/hooks/use-autosave";
 import {
   btnPrimary,
@@ -273,6 +274,14 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
     }
   }
 
+  async function exportFile(format: "xlsx" | "pdf") {
+    await withBusy(async () => {
+      await downloadWorkoutExport(workoutId, format, getToken);
+    }).catch(() => {
+      /* error already set */
+    });
+  }
+
   async function addExercise(dayId: string, exercise: ExerciseDto) {
     await withBusy(async () => {
       const token = await getToken();
@@ -430,16 +439,16 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
           <button
             type="button"
             className={btnSecondary}
-            disabled
-            title="Available in Task 11"
+            disabled={busy}
+            onClick={() => void exportFile("xlsx")}
           >
             Export Excel
           </button>
           <button
             type="button"
             className={btnSecondary}
-            disabled
-            title="Available in Task 11"
+            disabled={busy}
+            onClick={() => void exportFile("pdf")}
           >
             Export PDF
           </button>
