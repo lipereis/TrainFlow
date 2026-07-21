@@ -1,0 +1,402 @@
+[
+  {
+    "name": "Barbell Bench Press",
+    "primaryMuscle": "Chest",
+    "secondaryMuscles": ["Triceps", "Shoulders"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Lie on a flat bench, lower the bar to mid-chest, press up until arms are extended."
+  },
+  {
+    "name": "Incline Dumbbell Press",
+    "primaryMuscle": "Chest",
+    "secondaryMuscles": ["Shoulders", "Triceps"],
+    "category": "Compound",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Set bench to ~30–45°. Press dumbbells from chest level to lockout."
+  },
+  {
+    "name": "Cable Fly",
+    "primaryMuscle": "Chest",
+    "secondaryMuscles": ["Shoulders"],
+    "category": "Isolation",
+    "equipment": "Cable",
+    "defaultInstructions": "With a slight bend in elbows, bring handles together in a hugging motion."
+  },
+  {
+    "name": "Push-Up",
+    "primaryMuscle": "Chest",
+    "secondaryMuscles": ["Triceps", "Core"],
+    "category": "Compound",
+    "equipment": "Bodyweight",
+    "defaultInstructions": "Keep body rigid; lower chest toward floor and press back up."
+  },
+  {
+    "name": "Chest Dip",
+    "primaryMuscle": "Chest",
+    "secondaryMuscles": ["Triceps", "Shoulders"],
+    "category": "Compound",
+    "equipment": "Dip bars",
+    "defaultInstructions": "Lean slightly forward; lower until shoulders are below elbows, then press up."
+  },
+  {
+    "name": "Pull-Up",
+    "primaryMuscle": "Back",
+    "secondaryMuscles": ["Biceps", "Core"],
+    "category": "Compound",
+    "equipment": "Pull-up bar",
+    "defaultInstructions": "Hang with overhand grip; pull chest toward bar, control the descent."
+  },
+  {
+    "name": "Barbell Bent-Over Row",
+    "primaryMuscle": "Back",
+    "secondaryMuscles": ["Biceps", "Hamstrings"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Hinge at hips, pull bar to lower ribs, squeeze scapulae."
+  },
+  {
+    "name": "Lat Pulldown",
+    "primaryMuscle": "Back",
+    "secondaryMuscles": ["Biceps"],
+    "category": "Compound",
+    "equipment": "Cable",
+    "defaultInstructions": "Pull bar to upper chest; avoid excessive lean or momentum."
+  },
+  {
+    "name": "Seated Cable Row",
+    "primaryMuscle": "Back",
+    "secondaryMuscles": ["Biceps"],
+    "category": "Compound",
+    "equipment": "Cable",
+    "defaultInstructions": "Sit tall, pull handle to torso, pause, return with control."
+  },
+  {
+    "name": "Single-Arm Dumbbell Row",
+    "primaryMuscle": "Back",
+    "secondaryMuscles": ["Biceps", "Core"],
+    "category": "Compound",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Support on bench, row dumbbell to hip, keep torso stable."
+  },
+  {
+    "name": "Overhead Press",
+    "primaryMuscle": "Shoulders",
+    "secondaryMuscles": ["Triceps", "Core"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Press bar from shoulders to overhead lockout; brace core."
+  },
+  {
+    "name": "Dumbbell Lateral Raise",
+    "primaryMuscle": "Shoulders",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Raise arms to sides until near shoulder height; soft elbows."
+  },
+  {
+    "name": "Face Pull",
+    "primaryMuscle": "Shoulders",
+    "secondaryMuscles": ["Back"],
+    "category": "Isolation",
+    "equipment": "Cable",
+    "defaultInstructions": "Pull rope to face level, externally rotate at end range."
+  },
+  {
+    "name": "Arnold Press",
+    "primaryMuscle": "Shoulders",
+    "secondaryMuscles": ["Triceps"],
+    "category": "Compound",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Start palms facing you; rotate and press overhead."
+  },
+  {
+    "name": "Rear Delt Fly",
+    "primaryMuscle": "Shoulders",
+    "secondaryMuscles": ["Back"],
+    "category": "Isolation",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Hinge forward; raise dumbbells out to sides with soft elbows."
+  },
+  {
+    "name": "Barbell Curl",
+    "primaryMuscle": "Biceps",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Barbell",
+    "defaultInstructions": "Curl bar without swinging; squeeze at top, control down."
+  },
+  {
+    "name": "Dumbbell Hammer Curl",
+    "primaryMuscle": "Biceps",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Curl with neutral grip; keep elbows pinned to sides."
+  },
+  {
+    "name": "Cable Curl",
+    "primaryMuscle": "Biceps",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Cable",
+    "defaultInstructions": "Curl cable attachment; maintain constant tension."
+  },
+  {
+    "name": "Concentration Curl",
+    "primaryMuscle": "Biceps",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Seated, brace elbow on inner thigh; curl through full ROM."
+  },
+  {
+    "name": "Triceps Pushdown",
+    "primaryMuscle": "Triceps",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Cable",
+    "defaultInstructions": "Push attachment down to full extension; elbows stay by sides."
+  },
+  {
+    "name": "Skull Crusher",
+    "primaryMuscle": "Triceps",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Barbell",
+    "defaultInstructions": "Lower bar toward forehead by bending elbows; extend without flaring."
+  },
+  {
+    "name": "Overhead Triceps Extension",
+    "primaryMuscle": "Triceps",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Extend dumbbell overhead from behind the head; elbows point up."
+  },
+  {
+    "name": "Close-Grip Bench Press",
+    "primaryMuscle": "Triceps",
+    "secondaryMuscles": ["Chest", "Shoulders"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Narrow grip; lower to mid-chest and press, elbows closer to body."
+  },
+  {
+    "name": "Back Squat",
+    "primaryMuscle": "Quadriceps",
+    "secondaryMuscles": ["Glutes", "Hamstrings", "Core"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Sit back and down until thighs near parallel; drive up through mid-foot."
+  },
+  {
+    "name": "Leg Press",
+    "primaryMuscle": "Quadriceps",
+    "secondaryMuscles": ["Glutes", "Hamstrings"],
+    "category": "Compound",
+    "equipment": "Machine",
+    "defaultInstructions": "Lower sled with control; press without locking knees hard."
+  },
+  {
+    "name": "Walking Lunge",
+    "primaryMuscle": "Quadriceps",
+    "secondaryMuscles": ["Glutes", "Hamstrings"],
+    "category": "Compound",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Step forward into a lunge; knee tracks over mid-foot; alternate legs."
+  },
+  {
+    "name": "Leg Extension",
+    "primaryMuscle": "Quadriceps",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Machine",
+    "defaultInstructions": "Extend knees fully under control; avoid slamming the stack."
+  },
+  {
+    "name": "Front Squat",
+    "primaryMuscle": "Quadriceps",
+    "secondaryMuscles": ["Core", "Glutes"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Bar on front delts; upright torso; squat to depth you can control."
+  },
+  {
+    "name": "Romanian Deadlift",
+    "primaryMuscle": "Hamstrings",
+    "secondaryMuscles": ["Glutes", "Back"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Hinge at hips with soft knees; feel stretch in hamstrings; stand tall."
+  },
+  {
+    "name": "Lying Leg Curl",
+    "primaryMuscle": "Hamstrings",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Machine",
+    "defaultInstructions": "Curl pad toward glutes; control eccentric."
+  },
+  {
+    "name": "Nordic Hamstring Curl",
+    "primaryMuscle": "Hamstrings",
+    "secondaryMuscles": ["Glutes"],
+    "category": "Isolation",
+    "equipment": "Bodyweight",
+    "defaultInstructions": "Kneel, lower torso slowly with hamstrings; assist with hands if needed."
+  },
+  {
+    "name": "Good Morning",
+    "primaryMuscle": "Hamstrings",
+    "secondaryMuscles": ["Glutes", "Back"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Bar on upper back; hinge until torso near parallel; return upright."
+  },
+  {
+    "name": "Hip Thrust",
+    "primaryMuscle": "Glutes",
+    "secondaryMuscles": ["Hamstrings"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Upper back on bench; drive hips up until torso and thighs align."
+  },
+  {
+    "name": "Bulgarian Split Squat",
+    "primaryMuscle": "Glutes",
+    "secondaryMuscles": ["Quadriceps", "Hamstrings"],
+    "category": "Compound",
+    "equipment": "Dumbbells",
+    "defaultInstructions": "Rear foot elevated; lower until front thigh near parallel; drive up."
+  },
+  {
+    "name": "Cable Kickback",
+    "primaryMuscle": "Glutes",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Cable",
+    "defaultInstructions": "Extend hip against cable; squeeze glute at top without arching lumbar."
+  },
+  {
+    "name": "Glute Bridge",
+    "primaryMuscle": "Glutes",
+    "secondaryMuscles": ["Hamstrings", "Core"],
+    "category": "Compound",
+    "equipment": "Bodyweight",
+    "defaultInstructions": "Lie on back, feet flat; lift hips and squeeze glutes at top."
+  },
+  {
+    "name": "Standing Calf Raise",
+    "primaryMuscle": "Calves",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Machine",
+    "defaultInstructions": "Rise onto toes through full ROM; pause; lower heels under control."
+  },
+  {
+    "name": "Seated Calf Raise",
+    "primaryMuscle": "Calves",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Machine",
+    "defaultInstructions": "Press through balls of feet; full stretch at bottom."
+  },
+  {
+    "name": "Single-Leg Calf Raise",
+    "primaryMuscle": "Calves",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Bodyweight",
+    "defaultInstructions": "Balance on one foot; raise and lower heel with control."
+  },
+  {
+    "name": "Plank",
+    "primaryMuscle": "Core",
+    "secondaryMuscles": ["Shoulders"],
+    "category": "Isometric",
+    "equipment": "Bodyweight",
+    "defaultInstructions": "Hold straight body line; brace abs; avoid sagging hips."
+  },
+  {
+    "name": "Hanging Knee Raise",
+    "primaryMuscle": "Core",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Pull-up bar",
+    "defaultInstructions": "Hang stable; raise knees toward chest without swinging."
+  },
+  {
+    "name": "Cable Woodchop",
+    "primaryMuscle": "Core",
+    "secondaryMuscles": ["Shoulders"],
+    "category": "Compound",
+    "equipment": "Cable",
+    "defaultInstructions": "Rotate torso while pulling cable across body; hips stable."
+  },
+  {
+    "name": "Dead Bug",
+    "primaryMuscle": "Core",
+    "secondaryMuscles": [],
+    "category": "Isolation",
+    "equipment": "Bodyweight",
+    "defaultInstructions": "Opposite arm/leg extend while keeping low back pressed down."
+  },
+  {
+    "name": "Burpee",
+    "primaryMuscle": "Full body",
+    "secondaryMuscles": ["Chest", "Quadriceps", "Core"],
+    "category": "Compound",
+    "equipment": "Bodyweight",
+    "defaultInstructions": "Squat, kick to plank, optional push-up, jump up explosively."
+  },
+  {
+    "name": "Kettlebell Swing",
+    "primaryMuscle": "Full body",
+    "secondaryMuscles": ["Glutes", "Hamstrings", "Core"],
+    "category": "Compound",
+    "equipment": "Kettlebell",
+    "defaultInstructions": "Hinge and snap hips to swing bell to chest height; arms stay loose."
+  },
+  {
+    "name": "Thruster",
+    "primaryMuscle": "Full body",
+    "secondaryMuscles": ["Quadriceps", "Shoulders", "Core"],
+    "category": "Compound",
+    "equipment": "Barbell",
+    "defaultInstructions": "Front squat into overhead press in one fluid motion."
+  },
+  {
+    "name": "Jump Rope",
+    "primaryMuscle": "Cardio",
+    "secondaryMuscles": ["Calves"],
+    "category": "Cardio",
+    "equipment": "Jump rope",
+    "defaultInstructions": "Light bounce on balls of feet; keep elbows close; steady rhythm."
+  },
+  {
+    "name": "Assault Bike",
+    "primaryMuscle": "Cardio",
+    "secondaryMuscles": ["Full body"],
+    "category": "Cardio",
+    "equipment": "Bike",
+    "defaultInstructions": "Drive arms and legs together; maintain consistent cadence or intervals."
+  },
+  {
+    "name": "Rowing Ergometer",
+    "primaryMuscle": "Cardio",
+    "secondaryMuscles": ["Back", "Legs"],
+    "category": "Cardio",
+    "equipment": "Rower",
+    "defaultInstructions": "Drive with legs, then hinge and pull; recover controlled."
+  },
+  {
+    "name": "Treadmill Incline Walk",
+    "primaryMuscle": "Cardio",
+    "secondaryMuscles": ["Glutes", "Calves"],
+    "category": "Cardio",
+    "equipment": "Treadmill",
+    "defaultInstructions": "Brisk walk on incline; upright posture; avoid holding rails tightly."
+  }
+]
