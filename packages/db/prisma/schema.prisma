@@ -13,25 +13,58 @@ enum ClientStatus {
   INACTIVE
 }
 
+enum ExperienceLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum ProgramStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum WeightUnit {
+  KG
+  LB
+}
+
 model Trainer {
-  id          String   @id @default(uuid())
-  clerkUserId String   @unique
+  id          String            @id @default(uuid())
+  clerkUserId String            @unique
   name        String
-  email       String   @unique
-  createdAt   DateTime @default(now())
+  email       String            @unique
+  createdAt   DateTime          @default(now())
   clients     Client[]
+  exercises   Exercise[]
+  programs    WorkoutProgram[]
+  templates   WorkoutTemplate[]
 }
 
 model Client {
-  id          String       @id @default(uuid())
-  trainerId   String
-  trainer     Trainer      @relation(fields: [trainerId], references: [id])
-  clerkUserId String?      @unique
-  name        String
-  email       String
-  status      ClientStatus @default(PENDING)
-  createdAt   DateTime     @default(now())
-  inviteToken InviteToken?
+  id                  String           @id @default(uuid())
+  trainerId           String
+  trainer             Trainer          @relation(fields: [trainerId], references: [id])
+  clerkUserId         String?          @unique
+  name                String
+  email               String
+  status              ClientStatus     @default(PENDING)
+  phone               String?
+  birthDate           DateTime?
+  heightCm            Float?
+  weightKg            Float?
+  goal                String?
+  experienceLevel     ExperienceLevel?
+  weeklyAvailability  String?
+  injuries            String?
+  restrictions        String?
+  equipment           String?
+  observations        String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  inviteToken         InviteToken?
+  workoutPrograms     WorkoutProgram[]
 
   @@index([trainerId])
 }
@@ -43,4 +76,147 @@ model InviteToken {
   token     String    @unique
   expiresAt DateTime
   usedAt    DateTime?
+}
+
+model Exercise {
+  id                  String   @id @default(uuid())
+  trainerId           String?
+  trainer             Trainer? @relation(fields: [trainerId], references: [id])
+  name                String
+  primaryMuscle       String
+  secondaryMuscles    String[] @default([])
+  category            String
+  equipment           String
+  defaultInstructions String   @default("")
+  videoUrl            String?
+  alternativeIds      String[] @default([])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([trainerId])
+  @@index([primaryMuscle])
+}
+
+model WorkoutProgram {
+  id           String          @id @default(uuid())
+  trainerId    String
+  trainer      Trainer         @relation(fields: [trainerId], references: [id])
+  clientId     String
+  client       Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name         String
+  goal         String?
+  startDate    DateTime
+  endDate      DateTime?
+  daysPerWeek  Int
+  level        ExperienceLevel?
+  location     String?
+  equipment    String?
+  observations String?
+  status       ProgramStatus   @default(DRAFT)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  days         WorkoutDay[]
+
+  @@index([trainerId])
+  @@index([clientId])
+}
+
+model WorkoutDay {
+  id                   String            @id @default(uuid())
+  programId            String
+  program              WorkoutProgram    @relation(fields: [programId], references: [id], onDelete: Cascade)
+  name                 String
+  focus                String?
+  estimatedDurationMin Int?
+  warmup               String?
+  cooldown             String?
+  observations         String?
+  sortOrder            Int               @default(0)
+  exercises            WorkoutExercise[]
+
+  @@index([programId])
+}
+
+model WorkoutExercise {
+  id              String     @id @default(uuid())
+  dayId           String
+  day             WorkoutDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  exerciseId      String?
+  customName      String?
+  muscleGroup     String
+  category        String
+  sets            Int
+  repsMin         Int
+  repsMax         Int
+  weight          Float?
+  weightUnit      WeightUnit @default(KG)
+  restSec         Int?
+  tempo           String?
+  rpe             Float?
+  rir             Float?
+  method          String     @default("Standard sets")
+  sortOrder       Int        @default(0)
+  observation     String?
+  videoUrl        String?
+  alternativeText String?
+
+  @@index([dayId])
+}
+
+model WorkoutTemplate {
+  id           String          @id @default(uuid())
+  trainerId    String?
+  trainer      Trainer?        @relation(fields: [trainerId], references: [id])
+  name         String
+  goal         String?
+  daysPerWeek  Int?
+  level        ExperienceLevel?
+  observations String?
+  isSample     Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  days         TemplateDay[]
+
+  @@index([trainerId])
+}
+
+model TemplateDay {
+  id           String             @id @default(uuid())
+  templateId   String
+  template     WorkoutTemplate    @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  name         String
+  focus        String?
+  warmup       String?
+  cooldown     String?
+  observations String?
+  sortOrder    Int                @default(0)
+  exercises    TemplateExercise[]
+
+  @@index([templateId])
+}
+
+model TemplateExercise {
+  id              String      @id @default(uuid())
+  dayId           String
+  day             TemplateDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  exerciseId      String?
+  customName      String?
+  muscleGroup     String
+  category        String
+  sets            Int
+  repsMin         Int
+  repsMax         Int
+  weight          Float?
+  weightUnit      WeightUnit  @default(KG)
+  restSec         Int?
+  tempo           String?
+  rpe             Float?
+  rir             Float?
+  method          String      @default("Standard sets")
+  sortOrder       Int         @default(0)
+  observation     String?
+  videoUrl        String?
+  alternativeText String?
+
+  @@index([dayId])
 }
