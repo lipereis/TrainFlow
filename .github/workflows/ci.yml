@@ -22,11 +22,13 @@ jobs:
           --health-retries 5
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trainflow
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/trainflow
       CLERK_SECRET_KEY: sk_test_ci_dummy
       CLERK_WEBHOOK_SECRET: whsec_ci_dummy
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ci_dummy
       CLERK_PUBLISHABLE_KEY: pk_test_ci_dummy
       NEXT_PUBLIC_API_URL: http://localhost:3001
+      WEB_ORIGIN: http://localhost:3000
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

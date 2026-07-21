@@ -10,7 +10,8 @@ async function bootstrap() {
     origin: process.env.WEB_ORIGIN ?? "http://localhost:3000",
     credentials: true,
   });
-  const port = Number(process.env.API_PORT ?? 3001);
+  // Railway injects PORT; local/dev uses API_PORT.
+  const port = Number(process.env.PORT ?? process.env.API_PORT ?? 3001);
   await app.listen(port);
 }
 bootstrap();

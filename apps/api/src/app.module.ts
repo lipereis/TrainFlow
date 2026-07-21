@@ -7,6 +7,7 @@ import { ExercisesModule } from "./exercises/exercises.module";
 import { WorkoutsModule } from "./workouts/workouts.module";
 import { TemplatesModule } from "./templates/templates.module";
 import { ExportsModule } from "./exports/exports.module";
+import { HealthController } from "./health/health.controller";
 
 @Module({
   imports: [
@@ -19,5 +20,6 @@ import { ExportsModule } from "./exports/exports.module";
     TemplatesModule,
     ExportsModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
