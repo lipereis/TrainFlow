@@ -7,8 +7,10 @@ export default async function HomePage() {
   const { userId, sessionClaims } = await auth();
   if (userId) {
     const role = roleFromClaims(sessionClaims as Record<string, unknown>);
+    // Always go through post-auth so role bootstrap runs
+    if (!role) redirect("/post-auth");
     if (role === "CLIENT") redirect("/portal");
-    redirect("/clients");
+    redirect("/dashboard");
   }
   return (
     <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center gap-6 px-6">
@@ -22,6 +24,12 @@ export default async function HomePage() {
           Sign up as trainer
         </Link>
       </div>
+      <p className="text-xs text-zinc-400">
+        Stuck after login?{" "}
+        <Link className="underline" href="/dev/clear-clerk">
+          Clear session
+        </Link>
+      </p>
     </main>
   );
 }

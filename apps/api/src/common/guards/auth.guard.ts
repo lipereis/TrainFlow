@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { verifyToken } from "@clerk/backend";
+import { createClerkClient, verifyToken } from "@clerk/backend";
 import { ROLES, type Role } from "@trainflow/shared-types";
 import type { AuthUser } from "../types/auth-user";
 
@@ -30,17 +30,38 @@ export class AuthGuard implements CanActivate {
     }
     const token = header.slice("Bearer ".length);
     try {
-      // @clerk/backend verifyToken accepts secretKey (JWKS remote) or jwtKey (networkless).
       const payload = (await verifyToken(token, {
         secretKey: process.env.CLERK_SECRET_KEY!,
       })) as VerifiedPayload;
-      const role = payload.metadata?.role ?? payload.publicMetadata?.role;
-      if (!payload.sub || !role || !ROLES.includes(role as Role)) {
+
+      if (!payload.sub) {
         throw new UnauthorizedException({
           code: "UNAUTHORIZED",
-          message: "Missing or invalid role in token",
+          message: "Invalid token subject",
         });
       }
+
+      let role = payload.metadata?.role ?? payload.publicMetadata?.role;
+
+      // JWT can lag after metadata updates — fall back to Clerk user record
+      if (!role || !ROLES.includes(role as Role)) {
+        const clerk = createClerkClient({
+          secretKey: process.env.CLERK_SECRET_KEY!,
+        });
+        const user = await clerk.users.getUser(payload.sub);
+        role = (user.publicMetadata as { role?: string } | undefined)?.role;
+
+        if (!role || !ROLES.includes(role as Role)) {
+          await clerk.users.updateUserMetadata(payload.sub, {
+            publicMetadata: {
+              ...(user.publicMetadata as Record<string, unknown>),
+              role: "TRAINER",
+            },
+          });
+          role = "TRAINER";
+        }
+      }
+
       request.user = { clerkUserId: payload.sub, role: role as Role };
       return true;
     } catch (err) {

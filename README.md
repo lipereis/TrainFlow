@@ -35,5 +35,58 @@ API: http://localhost:3001
 ## Scripts
 
 - `pnpm dev` — web + api
-- `pnpm test` — unit tests
+- `pnpm test` — unit tests (turbo: includes `@trainflow/api` + `@trainflow/workout-math`)
 - `pnpm --filter @trainflow/api test:e2e` — invite e2e (needs DATABASE_URL)
+- `pnpm db:seed` — seed exercises + sample workout templates
+
+## Workout Spreadsheet MVP
+
+Trainer workflow: full client profiles → multi-day wizard → autosaving spreadsheet with volume math → templates → Excel/PDF export.
+
+### Install / migrate / seed
+
+```bash
+pnpm install
+pnpm db:generate && pnpm db:migrate
+pnpm db:seed
+```
+
+Seed loads the global exercise library (`packages/db/prisma/data/exercises.json`) and sample workout templates (`templates.json`). Idempotent upserts — safe to re-run.
+
+### Dev
+
+```bash
+pnpm dev
+```
+
+- Web: http://localhost:3000  
+- API: http://localhost:3001 (no `/api` prefix; set `NEXT_PUBLIC_API_URL` accordingly)
+
+### Tests
+
+```bash
+pnpm test
+# or targeted:
+pnpm --filter @trainflow/api test
+pnpm --filter @trainflow/workout-math test
+pnpm --filter @trainflow/web exec tsc --noEmit
+```
+
+### Export notes
+
+- Excel: `GET /workouts/:id/export.xlsx` (ExcelJS; summary + per-day sheets)
+- PDF: `GET /workouts/:id/export.pdf` (PDFKit)
+- Trainer ownership enforced; UI downloads via authenticated blob fetch (`apps/web/src/lib/api-download.ts`)
+- Missing weight → volume shown as unavailable (never treated as 0)
+
+### Manual DoD smoke (human)
+
+1. Log in (Clerk)  
+2. Register client (full profile)  
+3. Create multi-day workout via wizard  
+4. Generate spreadsheet  
+5. Edit + autosave  
+6. Confirm volume / weekly / muscle sets  
+7. Export Excel  
+8. Export PDF  
+9. Reopen workout URL later  

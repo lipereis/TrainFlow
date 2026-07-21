@@ -1,0 +1,228 @@
+[
+  {
+    "name": "Beginner Full Body 3d",
+    "goal": "General fitness",
+    "daysPerWeek": 3,
+    "level": "BEGINNER",
+    "observations": "Sample template — example only, not a prescription.",
+    "days": [
+      {
+        "name": "Full Body A",
+        "focus": "Full body",
+        "sortOrder": 0,
+        "exercises": [
+          { "exerciseName": "Back Squat", "muscleGroup": "Quads", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 0 },
+          { "exerciseName": "Barbell Bench Press", "muscleGroup": "Chest", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 1 },
+          { "exerciseName": "Seated Cable Row", "muscleGroup": "Back", "category": "Compound", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 75, "sortOrder": 2 },
+          { "exerciseName": "Plank", "muscleGroup": "Core", "category": "Isolation", "sets": 3, "repsMin": 20, "repsMax": 40, "restSec": 60, "sortOrder": 3 }
+        ]
+      },
+      {
+        "name": "Full Body B",
+        "focus": "Full body",
+        "sortOrder": 1,
+        "exercises": [
+          { "exerciseName": "Romanian Deadlift", "muscleGroup": "Hamstrings", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 0 },
+          { "exerciseName": "Overhead Press", "muscleGroup": "Shoulders", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 1 },
+          { "exerciseName": "Lat Pulldown", "muscleGroup": "Back", "category": "Compound", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 75, "sortOrder": 2 },
+          { "exerciseName": "Walking Lunge", "muscleGroup": "Quads", "category": "Compound", "sets": 2, "repsMin": 8, "repsMax": 10, "restSec": 75, "sortOrder": 3 }
+        ]
+      },
+      {
+        "name": "Full Body C",
+        "focus": "Full body",
+        "sortOrder": 2,
+        "exercises": [
+          { "exerciseName": "Leg Press", "muscleGroup": "Quads", "category": "Compound", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 90, "sortOrder": 0 },
+          { "exerciseName": "Incline Dumbbell Press", "muscleGroup": "Chest", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 12, "restSec": 75, "sortOrder": 1 },
+          { "exerciseName": "Single-Arm Dumbbell Row", "muscleGroup": "Back", "category": "Compound", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 75, "sortOrder": 2 },
+          { "exerciseName": "Dumbbell Hammer Curl", "muscleGroup": "Biceps", "category": "Isolation", "sets": 2, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 3 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Upper/Lower 4d",
+    "goal": "Hypertrophy",
+    "daysPerWeek": 4,
+    "level": "INTERMEDIATE",
+    "observations": "Sample template — example only, not a prescription.",
+    "days": [
+      {
+        "name": "Upper A",
+        "focus": "Upper",
+        "sortOrder": 0,
+        "exercises": [
+          { "exerciseName": "Barbell Bench Press", "muscleGroup": "Chest", "category": "Compound", "sets": 4, "repsMin": 6, "repsMax": 8, "restSec": 120, "sortOrder": 0 },
+          { "exerciseName": "Barbell Bent-Over Row", "muscleGroup": "Back", "category": "Compound", "sets": 4, "repsMin": 6, "repsMax": 8, "restSec": 120, "sortOrder": 1 },
+          { "exerciseName": "Overhead Press", "muscleGroup": "Shoulders", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 2 },
+          { "exerciseName": "Triceps Pushdown", "muscleGroup": "Triceps", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 3 },
+          { "exerciseName": "Barbell Curl", "muscleGroup": "Biceps", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 4 }
+        ]
+      },
+      {
+        "name": "Lower A",
+        "focus": "Lower",
+        "sortOrder": 1,
+        "exercises": [
+          { "exerciseName": "Back Squat", "muscleGroup": "Quads", "category": "Compound", "sets": 4, "repsMin": 6, "repsMax": 8, "restSec": 150, "sortOrder": 0 },
+          { "exerciseName": "Romanian Deadlift", "muscleGroup": "Hamstrings", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 120, "sortOrder": 1 },
+          { "exerciseName": "Walking Lunge", "muscleGroup": "Quads", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 2 },
+          { "exerciseName": "Standing Calf Raise", "muscleGroup": "Calves", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 15, "restSec": 60, "sortOrder": 3 }
+        ]
+      },
+      {
+        "name": "Upper B",
+        "focus": "Upper",
+        "sortOrder": 2,
+        "exercises": [
+          { "exerciseName": "Incline Dumbbell Press", "muscleGroup": "Chest", "category": "Compound", "sets": 4, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 0 },
+          { "exerciseName": "Pull-Up", "muscleGroup": "Back", "category": "Compound", "sets": 4, "repsMin": 5, "repsMax": 8, "restSec": 120, "sortOrder": 1 },
+          { "exerciseName": "Dumbbell Lateral Raise", "muscleGroup": "Shoulders", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 2 },
+          { "exerciseName": "Face Pull", "muscleGroup": "Shoulders", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 3 },
+          { "exerciseName": "Cable Curl", "muscleGroup": "Biceps", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 4 }
+        ]
+      },
+      {
+        "name": "Lower B",
+        "focus": "Lower",
+        "sortOrder": 3,
+        "exercises": [
+          { "exerciseName": "Front Squat", "muscleGroup": "Quads", "category": "Compound", "sets": 3, "repsMin": 6, "repsMax": 8, "restSec": 150, "sortOrder": 0 },
+          { "exerciseName": "Hip Thrust", "muscleGroup": "Glutes", "category": "Compound", "sets": 4, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 1 },
+          { "exerciseName": "Lying Leg Curl", "muscleGroup": "Hamstrings", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 75, "sortOrder": 2 },
+          { "exerciseName": "Seated Calf Raise", "muscleGroup": "Calves", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 3 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Push Pull Legs 3d",
+    "goal": "Hypertrophy",
+    "daysPerWeek": 3,
+    "level": "INTERMEDIATE",
+    "observations": "Sample template — example only, not a prescription.",
+    "days": [
+      {
+        "name": "Push",
+        "focus": "Push",
+        "sortOrder": 0,
+        "exercises": [
+          { "exerciseName": "Barbell Bench Press", "muscleGroup": "Chest", "category": "Compound", "sets": 4, "repsMin": 6, "repsMax": 8, "restSec": 120, "sortOrder": 0 },
+          { "exerciseName": "Overhead Press", "muscleGroup": "Shoulders", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 90, "sortOrder": 1 },
+          { "exerciseName": "Cable Fly", "muscleGroup": "Chest", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 2 },
+          { "exerciseName": "Triceps Pushdown", "muscleGroup": "Triceps", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 3 }
+        ]
+      },
+      {
+        "name": "Pull",
+        "focus": "Pull",
+        "sortOrder": 1,
+        "exercises": [
+          { "exerciseName": "Pull-Up", "muscleGroup": "Back", "category": "Compound", "sets": 4, "repsMin": 5, "repsMax": 8, "restSec": 120, "sortOrder": 0 },
+          { "exerciseName": "Barbell Bent-Over Row", "muscleGroup": "Back", "category": "Compound", "sets": 4, "repsMin": 6, "repsMax": 8, "restSec": 120, "sortOrder": 1 },
+          { "exerciseName": "Face Pull", "muscleGroup": "Shoulders", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 2 },
+          { "exerciseName": "Barbell Curl", "muscleGroup": "Biceps", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 3 }
+        ]
+      },
+      {
+        "name": "Legs",
+        "focus": "Legs",
+        "sortOrder": 2,
+        "exercises": [
+          { "exerciseName": "Back Squat", "muscleGroup": "Quads", "category": "Compound", "sets": 4, "repsMin": 6, "repsMax": 8, "restSec": 150, "sortOrder": 0 },
+          { "exerciseName": "Romanian Deadlift", "muscleGroup": "Hamstrings", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 120, "sortOrder": 1 },
+          { "exerciseName": "Leg Extension", "muscleGroup": "Quads", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 2 },
+          { "exerciseName": "Standing Calf Raise", "muscleGroup": "Calves", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 3 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Strength Foundation 3d",
+    "goal": "Strength",
+    "daysPerWeek": 3,
+    "level": "INTERMEDIATE",
+    "observations": "Sample template — example only, not a prescription.",
+    "days": [
+      {
+        "name": "Squat Focus",
+        "focus": "Squat",
+        "sortOrder": 0,
+        "exercises": [
+          { "exerciseName": "Back Squat", "muscleGroup": "Quads", "category": "Compound", "sets": 5, "repsMin": 3, "repsMax": 5, "restSec": 180, "sortOrder": 0 },
+          { "exerciseName": "Romanian Deadlift", "muscleGroup": "Hamstrings", "category": "Compound", "sets": 3, "repsMin": 5, "repsMax": 6, "restSec": 150, "sortOrder": 1 },
+          { "exerciseName": "Walking Lunge", "muscleGroup": "Quads", "category": "Compound", "sets": 3, "repsMin": 6, "repsMax": 8, "restSec": 90, "sortOrder": 2 },
+          { "exerciseName": "Plank", "muscleGroup": "Core", "category": "Isolation", "sets": 3, "repsMin": 30, "repsMax": 45, "restSec": 60, "sortOrder": 3 }
+        ]
+      },
+      {
+        "name": "Bench Focus",
+        "focus": "Bench",
+        "sortOrder": 1,
+        "exercises": [
+          { "exerciseName": "Barbell Bench Press", "muscleGroup": "Chest", "category": "Compound", "sets": 5, "repsMin": 3, "repsMax": 5, "restSec": 180, "sortOrder": 0 },
+          { "exerciseName": "Overhead Press", "muscleGroup": "Shoulders", "category": "Compound", "sets": 4, "repsMin": 5, "repsMax": 6, "restSec": 150, "sortOrder": 1 },
+          { "exerciseName": "Close-Grip Bench Press", "muscleGroup": "Triceps", "category": "Compound", "sets": 3, "repsMin": 6, "repsMax": 8, "restSec": 120, "sortOrder": 2 },
+          { "exerciseName": "Dumbbell Lateral Raise", "muscleGroup": "Shoulders", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 3 }
+        ]
+      },
+      {
+        "name": "Deadlift Focus",
+        "focus": "Pull",
+        "sortOrder": 2,
+        "exercises": [
+          { "exerciseName": "Romanian Deadlift", "muscleGroup": "Hamstrings", "category": "Compound", "sets": 5, "repsMin": 3, "repsMax": 5, "restSec": 180, "sortOrder": 0 },
+          { "exerciseName": "Barbell Bent-Over Row", "muscleGroup": "Back", "category": "Compound", "sets": 4, "repsMin": 5, "repsMax": 6, "restSec": 150, "sortOrder": 1 },
+          { "exerciseName": "Pull-Up", "muscleGroup": "Back", "category": "Compound", "sets": 3, "repsMin": 5, "repsMax": 8, "restSec": 120, "sortOrder": 2 },
+          { "exerciseName": "Barbell Curl", "muscleGroup": "Biceps", "category": "Isolation", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 75, "sortOrder": 3 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Hypertrophy A/B/C 3d",
+    "goal": "Hypertrophy",
+    "daysPerWeek": 3,
+    "level": "ADVANCED",
+    "observations": "Sample template — example only, not a prescription.",
+    "days": [
+      {
+        "name": "Day A",
+        "focus": "Push + quads",
+        "sortOrder": 0,
+        "exercises": [
+          { "exerciseName": "Incline Dumbbell Press", "muscleGroup": "Chest", "category": "Compound", "sets": 4, "repsMin": 8, "repsMax": 12, "restSec": 90, "sortOrder": 0 },
+          { "exerciseName": "Arnold Press", "muscleGroup": "Shoulders", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 12, "restSec": 75, "sortOrder": 1 },
+          { "exerciseName": "Leg Press", "muscleGroup": "Quads", "category": "Compound", "sets": 4, "repsMin": 10, "repsMax": 15, "restSec": 90, "sortOrder": 2 },
+          { "exerciseName": "Skull Crusher", "muscleGroup": "Triceps", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 3 },
+          { "exerciseName": "Leg Extension", "muscleGroup": "Quads", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 4 }
+        ]
+      },
+      {
+        "name": "Day B",
+        "focus": "Pull + hams",
+        "sortOrder": 1,
+        "exercises": [
+          { "exerciseName": "Lat Pulldown", "muscleGroup": "Back", "category": "Compound", "sets": 4, "repsMin": 8, "repsMax": 12, "restSec": 90, "sortOrder": 0 },
+          { "exerciseName": "Seated Cable Row", "muscleGroup": "Back", "category": "Compound", "sets": 4, "repsMin": 8, "repsMax": 12, "restSec": 90, "sortOrder": 1 },
+          { "exerciseName": "Romanian Deadlift", "muscleGroup": "Hamstrings", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 10, "restSec": 120, "sortOrder": 2 },
+          { "exerciseName": "Dumbbell Hammer Curl", "muscleGroup": "Biceps", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 60, "sortOrder": 3 },
+          { "exerciseName": "Lying Leg Curl", "muscleGroup": "Hamstrings", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 15, "restSec": 60, "sortOrder": 4 }
+        ]
+      },
+      {
+        "name": "Day C",
+        "focus": "Full body pump",
+        "sortOrder": 2,
+        "exercises": [
+          { "exerciseName": "Bulgarian Split Squat", "muscleGroup": "Quads", "category": "Compound", "sets": 3, "repsMin": 8, "repsMax": 12, "restSec": 90, "sortOrder": 0 },
+          { "exerciseName": "Cable Fly", "muscleGroup": "Chest", "category": "Isolation", "sets": 3, "repsMin": 12, "repsMax": 15, "restSec": 60, "sortOrder": 1 },
+          { "exerciseName": "Single-Arm Dumbbell Row", "muscleGroup": "Back", "category": "Compound", "sets": 3, "repsMin": 10, "repsMax": 12, "restSec": 75, "sortOrder": 2 },
+          { "exerciseName": "Hip Thrust", "muscleGroup": "Glutes", "category": "Compound", "sets": 4, "repsMin": 10, "repsMax": 12, "restSec": 90, "sortOrder": 3 },
+          { "exerciseName": "Hanging Knee Raise", "muscleGroup": "Core", "category": "Isolation", "sets": 3, "repsMin": 10, "repsMax": 15, "restSec": 60, "sortOrder": 4 }
+        ]
+      }
+    ]
+  }
+]

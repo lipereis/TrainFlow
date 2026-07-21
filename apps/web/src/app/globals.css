@@ -5,3 +5,42 @@
 body {
   @apply bg-zinc-50 text-zinc-900 antialiased;
 }
+
+@media print {
+  body {
+    @apply bg-white text-black;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  aside,
+  header:has([data-clerk]),
+  nav {
+    display: none !important;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .workout-day {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .workout-table-scroll {
+    overflow: visible !important;
+  }
+
+  .workout-spreadsheet input,
+  .workout-spreadsheet textarea,
+  .workout-spreadsheet select {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
