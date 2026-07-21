@@ -1,5 +1,5 @@
-import { ComingSoonPage } from "@/components/coming-soon";
+import { WorkoutWizard } from "@/components/workouts/wizard/workout-wizard";
 
-export default function NewWorkoutPlaceholderPage() {
-  return <ComingSoonPage title="New workout" />;
+export default function NewWorkoutPage() {
+  return <WorkoutWizard />;
 }
