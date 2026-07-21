@@ -9,7 +9,7 @@ const isPublic = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
-  "/dev/clear-clerk",
+  "/dev/clear-clerk(.*)",
   "/post-auth",
 ]);
 
