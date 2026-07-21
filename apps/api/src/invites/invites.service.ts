@@ -42,24 +42,47 @@ export class InvitesService {
         message: "Invite not found",
       });
     }
+
+    const now = new Date();
+    if (row.expiresAt.getTime() < now.getTime()) {
+      throw new GoneException({
+        code: "INVITE_EXPIRED",
+        message: "Invite expired",
+      });
+    }
     if (row.usedAt) {
       throw new ConflictException({
         code: "INVITE_ALREADY_USED",
         message: "Invite already used",
       });
     }
-    if (row.expiresAt.getTime() < Date.now()) {
-      throw new GoneException({
-        code: "INVITE_EXPIRED",
-        message: "Invite expired",
-      });
-    }
 
     const updated = await this.prisma.$transaction(async (tx) => {
-      await tx.inviteToken.update({
-        where: { token: input.token },
-        data: { usedAt: new Date() },
+      const claimed = await tx.inviteToken.updateMany({
+        where: {
+          token: input.token,
+          usedAt: null,
+          expiresAt: { gt: now },
+        },
+        data: { usedAt: now },
       });
+
+      if (claimed.count === 0) {
+        const current = await tx.inviteToken.findUnique({
+          where: { token: input.token },
+        });
+        if (current?.usedAt) {
+          throw new ConflictException({
+            code: "INVITE_ALREADY_USED",
+            message: "Invite already used",
+          });
+        }
+        throw new GoneException({
+          code: "INVITE_EXPIRED",
+          message: "Invite expired",
+        });
+      }
+
       return tx.client.update({
         where: { id: row.clientId },
         data: {

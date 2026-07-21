@@ -8,7 +8,10 @@ export default async function TrainerLayout({ children }: { children: React.Reac
   const session = await auth();
   if (!session.userId) redirect("/sign-in");
   const role = roleFromClaims(session.sessionClaims as Record<string, unknown>);
-  if (role === "CLIENT") redirect("/portal");
+  if (role !== "TRAINER") {
+    if (role === "CLIENT") redirect("/portal");
+    redirect("/sign-in");
+  }
 
   return (
     <div className="min-h-screen">

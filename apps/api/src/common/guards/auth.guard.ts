@@ -10,6 +10,7 @@ import type { AuthUser } from "../types/auth-user";
 
 type VerifiedPayload = {
   sub?: string;
+  metadata?: { role?: string };
   publicMetadata?: { role?: string };
 };
 
@@ -33,7 +34,7 @@ export class AuthGuard implements CanActivate {
       const payload = (await verifyToken(token, {
         secretKey: process.env.CLERK_SECRET_KEY!,
       })) as VerifiedPayload;
-      const role = payload.publicMetadata?.role;
+      const role = payload.metadata?.role ?? payload.publicMetadata?.role;
       if (!payload.sub || !role || !ROLES.includes(role as Role)) {
         throw new UnauthorizedException({
           code: "UNAUTHORIZED",

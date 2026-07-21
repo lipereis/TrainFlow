@@ -28,7 +28,7 @@ describe("AuthGuard", () => {
     );
   });
 
-  it("attaches user from verified token", async () => {
+  it("attaches user from verified token (publicMetadata)", async () => {
     (verifyToken as jest.Mock).mockResolvedValue({
       sub: "user_123",
       publicMetadata: { role: "TRAINER" },
@@ -37,5 +37,28 @@ describe("AuthGuard", () => {
     await expect(guard.canActivate(ctx)).resolves.toBe(true);
     const req = ctx.switchToHttp().getRequest() as { user: { clerkUserId: string; role: string } };
     expect(req.user).toEqual({ clerkUserId: "user_123", role: "TRAINER" });
+  });
+
+  it("attaches user from session token metadata claim", async () => {
+    (verifyToken as jest.Mock).mockResolvedValue({
+      sub: "user_456",
+      metadata: { role: "CLIENT" },
+    });
+    const ctx = ctxWithAuth("Bearer tok");
+    await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    const req = ctx.switchToHttp().getRequest() as { user: { clerkUserId: string; role: string } };
+    expect(req.user).toEqual({ clerkUserId: "user_456", role: "CLIENT" });
+  });
+
+  it("prefers metadata over publicMetadata when both present", async () => {
+    (verifyToken as jest.Mock).mockResolvedValue({
+      sub: "user_789",
+      metadata: { role: "TRAINER" },
+      publicMetadata: { role: "CLIENT" },
+    });
+    const ctx = ctxWithAuth("Bearer tok");
+    await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    const req = ctx.switchToHttp().getRequest() as { user: { clerkUserId: string; role: string } };
+    expect(req.user).toEqual({ clerkUserId: "user_789", role: "TRAINER" });
   });
 });

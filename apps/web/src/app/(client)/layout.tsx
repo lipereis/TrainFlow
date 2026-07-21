@@ -7,7 +7,10 @@ export default async function ClientLayout({ children }: { children: React.React
   const session = await auth();
   if (!session.userId) redirect("/sign-in");
   const role = roleFromClaims(session.sessionClaims as Record<string, unknown>);
-  if (role === "TRAINER") redirect("/clients");
+  if (role !== "CLIENT") {
+    if (role === "TRAINER") redirect("/clients");
+    redirect("/sign-in");
+  }
 
   return (
     <div className="min-h-screen">

@@ -68,11 +68,16 @@ export class ClientsService {
     });
 
     const webOrigin = process.env.WEB_ORIGIN ?? "http://localhost:3000";
-    await this.clerk.sendInvitation({
-      email: input.email,
-      redirectUrl: `${webOrigin}/sign-up?invite_token=${token}`,
-      publicMetadata: { role: "CLIENT", inviteToken: token },
-    });
+    try {
+      await this.clerk.sendInvitation({
+        email: input.email,
+        redirectUrl: `${webOrigin}/sign-up?invite_token=${token}`,
+        publicMetadata: { role: "CLIENT", inviteToken: token },
+      });
+    } catch (err) {
+      await this.prisma.client.delete({ where: { id: client.id } });
+      throw err;
+    }
 
     return this.toDto(client);
   }

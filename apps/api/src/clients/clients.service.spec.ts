@@ -4,6 +4,7 @@ describe("ClientsService.invite", () => {
   const prisma: {
     client: {
       create: jest.Mock;
+      delete: jest.Mock;
       findFirst: jest.Mock;
       findMany: jest.Mock;
       update: jest.Mock;
@@ -17,6 +18,7 @@ describe("ClientsService.invite", () => {
   } = {
     client: {
       create: jest.fn(),
+      delete: jest.fn(),
       findFirst: jest.fn(),
       findMany: jest.fn(),
       update: jest.fn(),
@@ -80,5 +82,25 @@ describe("ClientsService.invite", () => {
     await expect(service.resendInvite("t1", "c-other")).rejects.toMatchObject({
       response: { code: "FORBIDDEN_CROSS_TENANT" },
     });
+  });
+
+  it("rolls back PENDING client when Clerk invitation fails", async () => {
+    const client = {
+      id: "c1",
+      trainerId: "t1",
+      clerkUserId: null,
+      name: "Ana",
+      email: "ana@ex.com",
+      status: "PENDING",
+      createdAt: new Date("2026-01-01"),
+    };
+    prisma.client.create.mockResolvedValue(client);
+    prisma.client.delete.mockResolvedValue(client);
+    clerk.sendInvitation.mockRejectedValue(new Error("Clerk down"));
+
+    await expect(
+      service.invite("t1", { name: "Ana", email: "ana@ex.com" }),
+    ).rejects.toThrow("Clerk down");
+    expect(prisma.client.delete).toHaveBeenCalledWith({ where: { id: "c1" } });
   });
 });
