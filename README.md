@@ -38,7 +38,7 @@ API: http://localhost:3001 · Health: http://localhost:3001/health
 
 ## Production deploy
 
-See **[docs/deploy.md](docs/deploy.md)** for Vercel + Railway + Supabase + production Clerk.
+See **[docs/deploy.md](docs/deploy.md)** for the exact Railway + Vercel + Clerk + Supabase production matrix (env vars, webhooks, session claims, build settings).
 
 | Layer | Host |
 |-------|------|

@@ -22,7 +22,9 @@ export class InvitesController {
     @Headers("svix-timestamp") svixTimestamp: string,
     @Headers("svix-signature") svixSignature: string,
   ) {
-    const secret = process.env.CLERK_WEBHOOK_SECRET;
+    const secret =
+      process.env.CLERK_INVITE_WEBHOOK_SECRET ??
+      process.env.CLERK_WEBHOOK_SECRET;
     if (!secret) {
       throw new BadRequestException({
         code: "INTERNAL_ERROR",
