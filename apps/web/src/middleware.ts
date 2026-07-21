@@ -29,12 +29,12 @@ const clerk = clerkMiddleware(async (auth, req) => {
   await auth.protect();
 });
 
+/** Only clear cookies for a different Clerk *instance* (JWKS kid mismatch). */
 function isClerkInstanceMismatch(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
   return (
     msg.includes("jwk-kid-mismatch") ||
-    msg.includes("Handshake token verification failed") ||
-    msg.includes("Unable to find a signing key in JWKS")
+    msg.includes("Unable to find a signing key in JWKS that matches the kid")
   );
 }
 
@@ -52,8 +52,9 @@ function clearClerkCookies(req: NextRequest, res: NextResponse) {
 }
 
 /**
- * Stale cookies from a previous Clerk instance crash Edge middleware with
- * MIDDLEWARE_INVOCATION_FAILED. Clear them and retry as a signed-out visit.
+ * Stale cookies from a previous Clerk instance can crash Edge middleware.
+ * Only recover from JWKS kid mismatch — do not intercept normal handshake
+ * flows (e.g. development `dev-browser-missing`), or we cause redirect loops.
  */
 export default function middleware(req: NextRequest, event: NextFetchEvent) {
   try {
@@ -61,7 +62,7 @@ export default function middleware(req: NextRequest, event: NextFetchEvent) {
     if (result instanceof Promise) {
       return result.catch((err: unknown) => {
         if (!isClerkInstanceMismatch(err)) throw err;
-        const res = NextResponse.redirect(new URL("/", req.url));
+        const res = NextResponse.redirect(new URL("/dev/clear-clerk", req.url));
         clearClerkCookies(req, res);
         return res;
       });
@@ -69,7 +70,7 @@ export default function middleware(req: NextRequest, event: NextFetchEvent) {
     return result;
   } catch (err) {
     if (!isClerkInstanceMismatch(err)) throw err;
-    const res = NextResponse.redirect(new URL("/", req.url));
+    const res = NextResponse.redirect(new URL("/dev/clear-clerk", req.url));
     clearClerkCookies(req, res);
     return res;
   }
