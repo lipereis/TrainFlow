@@ -34,6 +34,7 @@ describe("Invite flow (e2e)", () => {
     invites = app.get(InvitesService);
 
     await prisma.inviteToken.deleteMany();
+    await prisma.workoutProgram.deleteMany();
     await prisma.client.deleteMany();
     await prisma.trainer.deleteMany();
     await prisma.trainer.create({

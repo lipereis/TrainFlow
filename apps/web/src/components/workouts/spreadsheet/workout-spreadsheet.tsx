@@ -10,6 +10,7 @@ import { useAutosave } from "@/hooks/use-autosave";
 import {
   btnPrimary,
   btnSecondary,
+  dayLetterName,
   type WorkoutDayDto,
   type WorkoutExerciseDto,
   type WorkoutProgramDto,
@@ -286,6 +287,51 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
     });
   }
 
+  async function saveAsTemplate() {
+    if (!program) return;
+    const name = window.prompt(
+      "Template name",
+      `${program.name} (template)`,
+    );
+    if (name == null) return;
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    await withBusy(async () => {
+      await flush();
+      const token = await getToken();
+      await browserApiFetch(`/templates/from-workout/${workoutId}`, token, {
+        method: "POST",
+        body: JSON.stringify({ name: trimmed }),
+      });
+    }).catch(() => {
+      /* error already set */
+    });
+  }
+
+  async function moveExerciseToDay(
+    fromDayId: string,
+    exerciseId: string,
+    targetDayId: string,
+  ) {
+    if (fromDayId === targetDayId) return;
+    await withBusy(async () => {
+      await flush();
+      cancel([exerciseKey(fromDayId, exerciseId)]);
+      const token = await getToken();
+      await browserApiFetch(
+        `/workouts/${workoutId}/days/${fromDayId}/exercises/${exerciseId}/move`,
+        token,
+        {
+          method: "POST",
+          body: JSON.stringify({ targetDayId }),
+        },
+      );
+      await load();
+    }).catch(() => {
+      /* error already set */
+    });
+  }
+
   async function addExercise(dayId: string, exercise: ExerciseDto) {
     await withBusy(async () => {
       await flush();
@@ -405,6 +451,24 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
     });
   }
 
+  async function addDay() {
+    if (!program) return;
+    await withBusy(async () => {
+      await flush();
+      const token = await getToken();
+      await browserApiFetch(`/workouts/${workoutId}/days`, token, {
+        method: "POST",
+        body: JSON.stringify({
+          name: dayLetterName(program.days.length),
+          sortOrder: program.days.length,
+        }),
+      });
+      await load();
+    }).catch(() => {
+      /* error already set */
+    });
+  }
+
   async function duplicateProgram() {
     await withBusy(async () => {
       await flush();
@@ -463,6 +527,14 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
           </button>
           <button
             type="button"
+            className={btnSecondary}
+            disabled={busy}
+            onClick={() => void saveAsTemplate()}
+          >
+            Save as template
+          </button>
+          <button
+            type="button"
             className={btnPrimary}
             disabled={busy}
             onClick={() => void duplicateProgram()}
@@ -495,9 +567,19 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
       ) : null}
 
       <div className="space-y-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          Days
-        </h2>
+        <div className="no-print flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+            Days
+          </h2>
+          <button
+            type="button"
+            className={btnSecondary}
+            disabled={busy}
+            onClick={() => void addDay()}
+          >
+            Add day
+          </button>
+        </div>
         {program.days.length === 0 ? (
           <p className="text-sm text-zinc-500">No days in this program.</p>
         ) : (
@@ -505,6 +587,9 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
             <DaySection
               key={day.id}
               day={day}
+              otherDays={program.days
+                .filter((d) => d.id !== day.id)
+                .map((d) => ({ id: d.id, name: d.name }))}
               busy={busy}
               onPatchDay={(patch) => patchDay(day.id, patch)}
               onDuplicateDay={() => void duplicateDay(day.id)}
@@ -517,6 +602,9 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
               }
               onReorderExercises={(ids) =>
                 void reorderExercises(day.id, ids)
+              }
+              onMoveExercise={(exerciseId, targetDayId) =>
+                void moveExerciseToDay(day.id, exerciseId, targetDayId)
               }
             />
           ))

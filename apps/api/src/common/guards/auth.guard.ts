@@ -29,9 +29,17 @@ export class AuthGuard implements CanActivate {
       });
     }
     const token = header.slice("Bearer ".length);
+    const secretKey = process.env.CLERK_SECRET_KEY;
+    if (!secretKey) {
+      throw new UnauthorizedException({
+        code: "UNAUTHORIZED",
+        message:
+          "Server misconfigured: CLERK_SECRET_KEY is missing. Check root .env / apps/api/.env",
+      });
+    }
     try {
       const payload = (await verifyToken(token, {
-        secretKey: process.env.CLERK_SECRET_KEY!,
+        secretKey,
       })) as VerifiedPayload;
 
       if (!payload.sub) {
@@ -46,7 +54,7 @@ export class AuthGuard implements CanActivate {
       // JWT can lag after metadata updates — fall back to Clerk user record
       if (!role || !ROLES.includes(role as Role)) {
         const clerk = createClerkClient({
-          secretKey: process.env.CLERK_SECRET_KEY!,
+          secretKey,
         });
         const user = await clerk.users.getUser(payload.sub);
         role = (user.publicMetadata as { role?: string } | undefined)?.role;
@@ -66,9 +74,13 @@ export class AuthGuard implements CanActivate {
       return true;
     } catch (err) {
       if (err instanceof UnauthorizedException) throw err;
+      const detail =
+        err instanceof Error && err.message
+          ? err.message
+          : "Invalid token";
       throw new UnauthorizedException({
         code: "UNAUTHORIZED",
-        message: "Invalid token",
+        message: detail,
       });
     }
   }

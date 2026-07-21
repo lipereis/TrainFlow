@@ -12,6 +12,16 @@ import { verifyToken } from "@clerk/backend";
 
 describe("AuthGuard", () => {
   const guard = new AuthGuard();
+  const prevSecret = process.env.CLERK_SECRET_KEY;
+
+  beforeAll(() => {
+    process.env.CLERK_SECRET_KEY = "sk_test_unit";
+  });
+
+  afterAll(() => {
+    if (prevSecret === undefined) delete process.env.CLERK_SECRET_KEY;
+    else process.env.CLERK_SECRET_KEY = prevSecret;
+  });
 
   function ctxWithAuth(header?: string): ExecutionContext {
     const request: { headers: Record<string, string | undefined>; user?: unknown } = {

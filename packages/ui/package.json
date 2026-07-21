@@ -6,7 +6,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "build": "tsc --noEmit",
-    "lint": "echo ok"
+    "lint": "tsc --noEmit"
   },
   "devDependencies": {
     "typescript": "^5.7.2",

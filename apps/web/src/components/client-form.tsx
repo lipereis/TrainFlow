@@ -8,6 +8,7 @@ import {
   type ClientDto,
   type CreateClientInput,
 } from "@trainflow/shared-types";
+import { ObservationTemplateInsert } from "@/components/observation-template-insert";
 
 const inputClass =
   "w-full rounded border border-zinc-300 px-3 py-2 text-sm disabled:bg-zinc-50";
@@ -55,6 +56,8 @@ export function ClientForm({
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
     setError,
   } = useForm<CreateClientInput>({
@@ -62,6 +65,8 @@ export function ClientForm({
     resolver: zodResolver(schema) as Resolver<CreateClientInput>,
     defaultValues: toFormDefaults(defaultValues),
   });
+
+  const observations = watch("observations") ?? "";
 
   async function submit(raw: CreateClientInput) {
     const payload: CreateClientInput = {
@@ -204,7 +209,15 @@ export function ClientForm({
         <textarea className={inputClass} rows={2} {...register("equipment")} />
       </label>
       <label className={labelClass}>
-        <span>Observations</span>
+        <span className="flex flex-wrap items-center justify-between gap-2">
+          <span>Observations</span>
+          <ObservationTemplateInsert
+            value={observations}
+            onInsert={(next) =>
+              setValue("observations", next, { shouldDirty: true })
+            }
+          />
+        </span>
         <textarea className={inputClass} rows={3} {...register("observations")} />
       </label>
 

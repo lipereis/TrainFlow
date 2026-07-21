@@ -17,6 +17,7 @@ import { DayTotalsCard, computeDayTotals } from "./summary-cards";
 
 type Props = {
   day: WorkoutDayDto;
+  otherDays?: { id: string; name: string }[];
   busy?: boolean;
   onPatchDay: (patch: Partial<WorkoutDayDto>) => void;
   onDuplicateDay: () => void;
@@ -27,10 +28,12 @@ type Props = {
   ) => void;
   onRemoveExercise: (exerciseId: string) => void;
   onReorderExercises: (orderedIds: string[]) => void;
+  onMoveExercise?: (exerciseId: string, targetDayId: string) => void;
 };
 
 export function DaySection({
   day,
+  otherDays = [],
   busy,
   onPatchDay,
   onDuplicateDay,
@@ -38,6 +41,7 @@ export function DaySection({
   onPatchExercise,
   onRemoveExercise,
   onReorderExercises,
+  onMoveExercise,
 }: Props) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const totals = computeDayTotals(day.exercises);
@@ -100,10 +104,12 @@ export function DaySection({
       <ExerciseTable
         exercises={day.exercises}
         busy={busy}
+        otherDays={otherDays}
         onPatch={onPatchExercise}
         onRemove={onRemoveExercise}
         onMoveUp={(id) => move(id, -1)}
         onMoveDown={(id) => move(id, 1)}
+        onMoveToDay={onMoveExercise}
       />
 
       <div className="no-print">

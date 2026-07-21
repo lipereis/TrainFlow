@@ -35,12 +35,20 @@ function defaultExercisePayload(exercise: ExerciseDto) {
   };
 }
 
-export function WorkoutWizard() {
+type WizardProps = {
+  initialClientId?: string | null;
+  initialClientName?: string | null;
+};
+
+export function WorkoutWizard({
+  initialClientId = null,
+  initialClientName = null,
+}: WizardProps) {
   const { getToken } = useAuth();
   const router = useRouter();
-  const [step, setStep] = useState<WizardStep>(1);
-  const [clientId, setClientId] = useState<string | null>(null);
-  const [clientName, setClientName] = useState<string | null>(null);
+  const [step, setStep] = useState<WizardStep>(initialClientId ? 2 : 1);
+  const [clientId, setClientId] = useState<string | null>(initialClientId);
+  const [clientName, setClientName] = useState<string | null>(initialClientName);
   const [program, setProgram] = useState<WorkoutProgramDto | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -376,9 +384,9 @@ export function WorkoutWizard() {
         <StepClient
           selectedId={clientId}
           selectedName={clientName}
-          locked={program !== null}
+          locked={program !== null || Boolean(initialClientId)}
           onSelect={({ id, name }) => {
-            if (program) return;
+            if (program || initialClientId) return;
             setClientId(id);
             setClientName(name);
           }}

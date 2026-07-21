@@ -26,10 +26,12 @@ type Patch = Partial<WorkoutExerciseDto>;
 type Props = {
   exercises: WorkoutExerciseDto[];
   busy?: boolean;
+  otherDays?: { id: string; name: string }[];
   onPatch: (exerciseId: string, patch: Patch) => void;
   onRemove: (exerciseId: string) => void;
   onMoveUp: (exerciseId: string) => void;
   onMoveDown: (exerciseId: string) => void;
+  onMoveToDay?: (exerciseId: string, targetDayId: string) => void;
 };
 
 const cellInput =
@@ -70,10 +72,12 @@ function VideoUrlCell({
 export function ExerciseTable({
   exercises,
   busy,
+  otherDays = [],
   onPatch,
   onRemove,
   onMoveUp,
   onMoveDown,
+  onMoveToDay,
 }: Props) {
   const columns = useMemo<ColumnDef<WorkoutExerciseDto>[]>(
     () => [
@@ -397,18 +401,50 @@ export function ExerciseTable({
         id: "actions",
         header: "",
         cell: ({ row }) => (
-          <button
-            type="button"
-            className={`${btnSecondary} no-print px-2 py-1 text-xs`}
-            disabled={busy}
-            onClick={() => onRemove(row.original.id)}
-          >
-            Remove
-          </button>
+          <div className="no-print flex flex-col gap-1">
+            {otherDays.length > 0 && onMoveToDay ? (
+              <select
+                className="max-w-[8rem] rounded border border-zinc-300 bg-white px-1 py-0.5 text-xs"
+                defaultValue=""
+                disabled={busy}
+                aria-label="Move exercise to another day"
+                onChange={(e) => {
+                  const target = e.target.value;
+                  if (!target) return;
+                  onMoveToDay(row.original.id, target);
+                  e.target.value = "";
+                }}
+              >
+                <option value="">Move to…</option>
+                {otherDays.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+            <button
+              type="button"
+              className={`${btnSecondary} px-2 py-1 text-xs`}
+              disabled={busy}
+              onClick={() => onRemove(row.original.id)}
+            >
+              Remove
+            </button>
+          </div>
         ),
       },
     ],
-    [busy, exercises.length, onMoveDown, onMoveUp, onPatch, onRemove],
+    [
+      busy,
+      exercises.length,
+      onMoveDown,
+      onMoveToDay,
+      onMoveUp,
+      onPatch,
+      onRemove,
+      otherDays,
+    ],
   );
 
   const table = useReactTable({
