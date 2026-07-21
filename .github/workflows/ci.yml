@@ -30,8 +30,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -39,8 +37,11 @@ jobs:
       - run: pnpm install
       - run: pnpm db:generate
       - run: pnpm --filter @trainflow/db migrate:deploy
+      - run: pnpm --filter @trainflow/db seed
       - run: pnpm --filter @trainflow/shared-types build
       - run: pnpm lint
+      - run: pnpm --filter @trainflow/workout-math test
       - run: pnpm --filter @trainflow/api test
       - run: pnpm --filter @trainflow/api test:e2e
       - run: pnpm --filter @trainflow/api build
+      - run: pnpm --filter @trainflow/web exec tsc --noEmit
