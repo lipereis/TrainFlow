@@ -15,5 +15,5 @@ export default async function PostAuthPage() {
   }
 
   if (role === "CLIENT") redirect("/portal");
-  redirect("/clients");
+  redirect("/dashboard");
 }

@@ -9,12 +9,14 @@
     "lint": "echo ok"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.9.3",
+    "@hookform/resolvers": "^5.4.0",
     "@trainflow/shared-types": "workspace:*",
     "@trainflow/ui": "workspace:*",
-    "@clerk/nextjs": "^6.9.3",
     "next": "^14.2.21",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.82.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

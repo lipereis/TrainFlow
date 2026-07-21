@@ -10,7 +10,7 @@ export default async function HomePage() {
     // Always go through post-auth so role bootstrap runs
     if (!role) redirect("/post-auth");
     if (role === "CLIENT") redirect("/portal");
-    redirect("/clients");
+    redirect("/dashboard");
   }
   return (
     <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center gap-6 px-6">
