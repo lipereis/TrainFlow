@@ -36,6 +36,7 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm db:generate
+      - run: pnpm --filter @trainflow/db build
       - run: pnpm --filter @trainflow/db migrate:deploy
       - run: pnpm --filter @trainflow/db seed
       - run: pnpm --filter @trainflow/shared-types build
