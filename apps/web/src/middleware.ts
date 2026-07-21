@@ -1,9 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
-/** Linked Clerk app instance (My Application). */
+/** Linked Clerk app instance (TrainFlow). */
 const EXPECTED_INSTANCE_ID =
-  process.env.CLERK_INSTANCE_ID ?? "ins_3Gn7pPSHiU82HYfOKXSLtbkZ4Fv";
+  process.env.CLERK_INSTANCE_ID ?? "ins_3GobP9br2JvquBgzekos1eZFuAc";
 
 const isPublic = createRouteMatcher([
   "/",
@@ -101,5 +101,6 @@ export const config = {
   matcher: [
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     "/(api|trpc)(.*)",
+    "/__clerk/:path*",
   ],
 };
