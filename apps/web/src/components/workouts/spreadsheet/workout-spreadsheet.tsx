@@ -153,7 +153,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
     [getToken, workoutId],
   );
 
-  const { status, schedule, retry } = useAutosave<SavePayload>({
+  const { status, schedule, flush, cancel, retry } = useAutosave<SavePayload>({
     save,
     delayMs: 600,
     keyFor: (p) =>
@@ -169,6 +169,9 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
       body: { ...existing.body, ...incoming.body },
     }),
   });
+
+  const exerciseKey = (dayId: string, exerciseId: string) =>
+    `ex:${dayId}:${exerciseId}`;
 
   const weekly = useMemo(
     () => (program ? computeWeekly(program.days) : null),
@@ -276,6 +279,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
   async function exportFile(format: "xlsx" | "pdf") {
     await withBusy(async () => {
+      await flush();
       await downloadWorkoutExport(workoutId, format, getToken);
     }).catch(() => {
       /* error already set */
@@ -284,6 +288,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
   async function addExercise(dayId: string, exercise: ExerciseDto) {
     await withBusy(async () => {
+      await flush();
       const token = await getToken();
       await browserApiFetch(
         `/workouts/${workoutId}/days/${dayId}/exercises`,
@@ -301,6 +306,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
   async function removeExercise(dayId: string, exerciseId: string) {
     await withBusy(async () => {
+      cancel([exerciseKey(dayId, exerciseId)]);
       const token = await getToken();
       await browserApiFetch(
         `/workouts/${workoutId}/days/${dayId}/exercises/${exerciseId}`,
@@ -352,6 +358,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
     try {
       await withBusy(async () => {
+        await flush();
         const token = await getToken();
         await browserApiFetch(
           `/workouts/${workoutId}/days/${dayId}/exercises/reorder`,
@@ -385,6 +392,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
   async function duplicateDay(dayId: string) {
     await withBusy(async () => {
+      await flush();
       const token = await getToken();
       await browserApiFetch(
         `/workouts/${workoutId}/days/${dayId}/duplicate`,
@@ -399,6 +407,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
   async function duplicateProgram() {
     await withBusy(async () => {
+      await flush();
       const token = await getToken();
       const copy = await browserApiFetch<WorkoutProgramDto>(
         `/workouts/${workoutId}/duplicate`,

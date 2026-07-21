@@ -611,4 +611,62 @@ describe("WorkoutsService", () => {
       where: { id: "we1" },
     });
   });
+
+  it("rejects partial exercise PATCH when merged repsMin > repsMax", async () => {
+    prisma.workoutProgram.findUnique.mockResolvedValue(programRow);
+    prisma.workoutDay.findUnique.mockResolvedValue({
+      ...dayRow,
+      exercises: [exerciseRow],
+    });
+    prisma.workoutExercise.findUnique.mockResolvedValue(exerciseRow);
+
+    await expect(
+      service.updateExercise("t1", "p1", "d1", "we1", { repsMin: 15 }),
+    ).rejects.toMatchObject({
+      response: { code: "VALIDATION_ERROR" },
+    });
+    expect(prisma.workoutExercise.update).not.toHaveBeenCalled();
+  });
+
+  it("rejects partial exercise PATCH that clears both exerciseId and customName", async () => {
+    prisma.workoutProgram.findUnique.mockResolvedValue(programRow);
+    prisma.workoutDay.findUnique.mockResolvedValue({
+      ...dayRow,
+      exercises: [exerciseRow],
+    });
+    prisma.workoutExercise.findUnique.mockResolvedValue({
+      ...exerciseRow,
+      exerciseId: null,
+      customName: "Push-up",
+    });
+
+    await expect(
+      service.updateExercise("t1", "p1", "d1", "we1", { customName: "  " }),
+    ).rejects.toMatchObject({
+      response: { code: "VALIDATION_ERROR" },
+    });
+    expect(prisma.workoutExercise.update).not.toHaveBeenCalled();
+  });
+
+  it("rejects program PATCH when only endDate is before existing startDate", async () => {
+    prisma.workoutProgram.findUnique.mockResolvedValue(programRow);
+
+    await expect(
+      service.update("t1", "p1", { endDate: "2026-06-01" }),
+    ).rejects.toMatchObject({
+      response: { code: "VALIDATION_ERROR" },
+    });
+    expect(prisma.workoutProgram.update).not.toHaveBeenCalled();
+  });
+
+  it("rejects program PATCH when only startDate is after existing endDate", async () => {
+    prisma.workoutProgram.findUnique.mockResolvedValue(programRow);
+
+    await expect(
+      service.update("t1", "p1", { startDate: "2026-09-01" }),
+    ).rejects.toMatchObject({
+      response: { code: "VALIDATION_ERROR" },
+    });
+    expect(prisma.workoutProgram.update).not.toHaveBeenCalled();
+  });
 });

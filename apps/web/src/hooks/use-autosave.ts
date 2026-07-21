@@ -26,6 +26,7 @@ export function useAutosave<T>({
   const keyForRef = useRef(keyFor);
   const mergeRef = useRef(merge);
   const seqRef = useRef(0);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
     saveRef.current = save;
@@ -39,12 +40,6 @@ export function useAutosave<T>({
     mergeRef.current = merge;
   }, [merge]);
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
   const flush = useCallback(async () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -55,12 +50,12 @@ export function useAutosave<T>({
     if (entries.length === 0) return;
 
     const seq = ++seqRef.current;
-    setStatus("saving");
+    if (mountedRef.current) setStatus("saving");
     try {
       for (const [, payload] of entries) {
         await saveRef.current(payload);
       }
-      if (seq === seqRef.current) setStatus("saved");
+      if (mountedRef.current && seq === seqRef.current) setStatus("saved");
     } catch {
       // Re-queue failed payloads; merge with anything scheduled during the attempt.
       for (const [key, payload] of entries) {
@@ -71,9 +66,36 @@ export function useAutosave<T>({
           pendingRef.current.set(key, payload);
         }
       }
-      if (seq === seqRef.current) setStatus("error");
+      if (mountedRef.current && seq === seqRef.current) setStatus("error");
     }
   }, []);
+
+  const cancel = useCallback((keys?: string[]) => {
+    if (!keys) {
+      pendingRef.current.clear();
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      return;
+    }
+    for (const key of keys) {
+      pendingRef.current.delete(key);
+    }
+    if (pendingRef.current.size === 0 && timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      // Best-effort: cancel debounce and flush pending saves on leave.
+      void flush();
+    };
+  }, [flush]);
 
   const schedule = useCallback(
     (payload: T) => {
@@ -96,5 +118,5 @@ export function useAutosave<T>({
     void flush();
   }, [flush]);
 
-  return { status, schedule, flush, retry };
+  return { status, schedule, flush, cancel, retry };
 }

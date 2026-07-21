@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -345,7 +346,27 @@ export class WorkoutsService {
     programId: string,
     input: UpdateWorkoutInput,
   ) {
-    await this.requireOwnedProgram(trainerId, programId);
+    const existing = await this.requireOwnedProgram(trainerId, programId);
+
+    if (input.startDate !== undefined || input.endDate !== undefined) {
+      const start =
+        input.startDate !== undefined
+          ? new Date(input.startDate)
+          : existing.startDate;
+      const end =
+        input.endDate !== undefined
+          ? input.endDate
+            ? new Date(input.endDate)
+            : null
+          : existing.endDate;
+      if (end && end < start) {
+        throw new BadRequestException({
+          code: "VALIDATION_ERROR",
+          message: "endDate must be on or after startDate",
+        });
+      }
+    }
+
     const row = await this.prisma.workoutProgram.update({
       where: { id: programId },
       data: {
@@ -503,7 +524,35 @@ export class WorkoutsService {
     exerciseId: string,
     input: Partial<WorkoutExerciseInput>,
   ) {
-    await this.requireExerciseInDay(trainerId, programId, dayId, exerciseId);
+    const existing = await this.requireExerciseInDay(
+      trainerId,
+      programId,
+      dayId,
+      exerciseId,
+    );
+
+    const mergedExerciseId =
+      input.exerciseId !== undefined ? input.exerciseId : existing.exerciseId;
+    const mergedCustomName =
+      input.customName !== undefined ? input.customName : existing.customName;
+    const mergedRepsMin =
+      input.repsMin !== undefined ? input.repsMin : existing.repsMin;
+    const mergedRepsMax =
+      input.repsMax !== undefined ? input.repsMax : existing.repsMax;
+
+    if (mergedRepsMin > mergedRepsMax) {
+      throw new BadRequestException({
+        code: "VALIDATION_ERROR",
+        message: "repsMin must be less than or equal to repsMax",
+      });
+    }
+    if (!mergedExerciseId && !mergedCustomName?.trim()) {
+      throw new BadRequestException({
+        code: "VALIDATION_ERROR",
+        message: "Either exerciseId or customName is required",
+      });
+    }
+
     const row = await this.prisma.workoutExercise.update({
       where: { id: exerciseId },
       data: {

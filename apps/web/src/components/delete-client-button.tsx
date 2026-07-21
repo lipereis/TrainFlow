@@ -20,7 +20,11 @@ export function DeleteClientButton({
   const [error, setError] = useState<string | null>(null);
 
   async function onDelete() {
-    if (!window.confirm(`Delete client "${clientName}"? This cannot be undone.`)) {
+    if (
+      !window.confirm(
+        `Delete client "${clientName}"? Associated workout programs will also be deleted. This cannot be undone.`,
+      )
+    ) {
       return;
     }
     setLoading(true);

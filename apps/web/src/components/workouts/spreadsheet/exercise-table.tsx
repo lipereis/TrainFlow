@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -34,6 +34,38 @@ type Props = {
 
 const cellInput =
   "w-full min-w-[3.5rem] rounded border border-transparent bg-transparent px-1 py-0.5 text-sm hover:border-zinc-300 focus:border-zinc-400 focus:outline-none";
+
+/** Local draft + blur-save so incomplete URLs are not autosaved on every keystroke. */
+function VideoUrlCell({
+  value,
+  disabled,
+  onCommit,
+}: {
+  value: string | null;
+  disabled?: boolean;
+  onCommit: (videoUrl: string | null) => void;
+}) {
+  const [draft, setDraft] = useState(value ?? "");
+
+  useEffect(() => {
+    setDraft(value ?? "");
+  }, [value]);
+
+  return (
+    <input
+      className={`${cellInput} min-w-[6rem]`}
+      value={draft}
+      placeholder="—"
+      disabled={disabled}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={() => {
+        const next = draft.trim() || null;
+        const current = value ?? null;
+        if (next !== current) onCommit(next);
+      }}
+    />
+  );
+}
 
 export function ExerciseTable({
   exercises,
@@ -354,16 +386,10 @@ export function ExerciseTable({
         id: "video",
         header: "Video",
         cell: ({ row }) => (
-          <input
-            className={`${cellInput} min-w-[6rem]`}
-            value={row.original.videoUrl ?? ""}
-            placeholder="—"
+          <VideoUrlCell
+            value={row.original.videoUrl}
             disabled={busy}
-            onChange={(e) =>
-              onPatch(row.original.id, {
-                videoUrl: e.target.value || null,
-              })
-            }
+            onCommit={(videoUrl) => onPatch(row.original.id, { videoUrl })}
           />
         ),
       },
