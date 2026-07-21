@@ -18,7 +18,19 @@ export class InvitesService {
     name: string;
     email: string;
     status: "PENDING" | "ACTIVE" | "INACTIVE";
+    phone: string | null;
+    birthDate: Date | null;
+    heightCm: number | null;
+    weightKg: number | null;
+    goal: string | null;
+    experienceLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | null;
+    weeklyAvailability: string | null;
+    injuries: string | null;
+    restrictions: string | null;
+    equipment: string | null;
+    observations: string | null;
     createdAt: Date;
+    updatedAt: Date;
   }): ClientDto {
     return {
       id: client.id,
@@ -27,7 +39,19 @@ export class InvitesService {
       name: client.name,
       email: client.email,
       status: client.status,
+      phone: client.phone,
+      birthDate: client.birthDate?.toISOString() ?? null,
+      heightCm: client.heightCm,
+      weightKg: client.weightKg,
+      goal: client.goal,
+      experienceLevel: client.experienceLevel,
+      weeklyAvailability: client.weeklyAvailability,
+      injuries: client.injuries,
+      restrictions: client.restrictions,
+      equipment: client.equipment,
+      observations: client.observations,
       createdAt: client.createdAt.toISOString(),
+      updatedAt: client.updatedAt.toISOString(),
     };
   }
 

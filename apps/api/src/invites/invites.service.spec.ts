@@ -43,7 +43,19 @@ describe("InvitesService.accept", () => {
       name: "Ana",
       email: "ana@ex.com",
       status: "ACTIVE",
+      phone: null,
+      birthDate: null,
+      heightCm: null,
+      weightKg: null,
+      goal: null,
+      experienceLevel: null,
+      weeklyAvailability: null,
+      injuries: null,
+      restrictions: null,
+      equipment: null,
+      observations: null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     const result = await service.accept({

@@ -1,15 +1,22 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
+  Query,
   UseGuards,
   BadRequestException,
 } from "@nestjs/common";
 import { createClerkClient } from "@clerk/backend";
-import { inviteClientSchema } from "@trainflow/shared-types";
+import {
+  inviteClientSchema,
+  createClientSchema,
+  updateClientSchema,
+} from "@trainflow/shared-types";
 import { AuthGuard } from "../common/guards/auth.guard";
 import { RolesGuard } from "../common/guards/roles.guard";
 import { Roles } from "../common/decorators/roles.decorator";
@@ -78,15 +85,56 @@ export class ClientsController {
     return this.clients.resendInvite(trainerId, id);
   }
 
-  @Get()
-  async list(@CurrentUser() user: AuthUser) {
+  @Post()
+  @HttpCode(201)
+  async create(@CurrentUser() user: AuthUser, @Body() body: unknown) {
+    const parsed = createClientSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException({
+        code: "VALIDATION_ERROR",
+        message: parsed.error.errors[0]?.message ?? "Invalid body",
+      });
+    }
     const trainerId = await this.trainerIdFor(user);
-    return this.clients.listForTrainer(trainerId);
+    return this.clients.create(trainerId, parsed.data);
+  }
+
+  @Get()
+  async list(
+    @CurrentUser() user: AuthUser,
+    @Query("q") q?: string,
+  ) {
+    const trainerId = await this.trainerIdFor(user);
+    return this.clients.list(trainerId, q);
   }
 
   @Get(":id")
   async get(@CurrentUser() user: AuthUser, @Param("id") id: string) {
     const trainerId = await this.trainerIdFor(user);
-    return this.clients.getForTrainer(trainerId, id);
+    return this.clients.get(trainerId, id);
+  }
+
+  @Patch(":id")
+  async update(
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Body() body: unknown,
+  ) {
+    const parsed = updateClientSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException({
+        code: "VALIDATION_ERROR",
+        message: parsed.error.errors[0]?.message ?? "Invalid body",
+      });
+    }
+    const trainerId = await this.trainerIdFor(user);
+    return this.clients.update(trainerId, id, parsed.data);
+  }
+
+  @Delete(":id")
+  @HttpCode(204)
+  async remove(@CurrentUser() user: AuthUser, @Param("id") id: string) {
+    const trainerId = await this.trainerIdFor(user);
+    await this.clients.remove(trainerId, id);
   }
 }
