@@ -14,6 +14,7 @@ import {
 } from "@nestjs/common";
 import { createClerkClient } from "@clerk/backend";
 import {
+  createWorkoutFromTemplateSchema,
   createWorkoutSchema,
   executionMethodEnum,
   updateWorkoutSchema,
@@ -27,6 +28,7 @@ import { Roles } from "../common/decorators/roles.decorator";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import type { AuthUser } from "../common/types/auth-user";
 import { TrainersService } from "../trainers/trainers.service";
+import { TemplatesService } from "../templates/templates.service";
 import { WorkoutsService } from "./workouts.service";
 
 const updateDaySchema = workoutDaySchema
@@ -97,6 +99,7 @@ function parseOrThrow<T>(
 export class WorkoutsController {
   constructor(
     private readonly workouts: WorkoutsService,
+    private readonly templates: TemplatesService,
     private readonly trainers: TrainersService,
   ) {}
 
@@ -136,6 +139,23 @@ export class WorkoutsController {
     const data = parseOrThrow(createWorkoutSchema, body);
     const trainerId = await this.trainerIdFor(user);
     return this.workouts.create(trainerId, data);
+  }
+
+  @Post("from-template/:templateId")
+  @HttpCode(201)
+  async createFromTemplate(
+    @CurrentUser() user: AuthUser,
+    @Param("templateId") templateId: string,
+    @Body() body: unknown,
+  ) {
+    const data = parseOrThrow(createWorkoutFromTemplateSchema, body);
+    const trainerId = await this.trainerIdFor(user);
+    const programId = await this.templates.createWorkoutFromTemplate(
+      trainerId,
+      templateId,
+      data,
+    );
+    return this.workouts.get(trainerId, programId);
   }
 
   @Get()
