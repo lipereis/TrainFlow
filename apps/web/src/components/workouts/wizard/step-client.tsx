@@ -10,6 +10,7 @@ import { btnPrimary, btnSecondary, inputClass } from "./types";
 type Props = {
   selectedId: string | null;
   selectedName: string | null;
+  locked?: boolean;
   onSelect: (client: { id: string; name: string }) => void;
   onContinue: () => void;
 };
@@ -17,6 +18,7 @@ type Props = {
 export function StepClient({
   selectedId,
   selectedName,
+  locked = false,
   onSelect,
   onContinue,
 }: Props) {
@@ -60,6 +62,28 @@ export function StepClient({
     onSelect({ id: created.id, name: created.name });
     setMode("select");
     await load("");
+  }
+
+  if (locked) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-lg font-semibold">Client</h2>
+          <p className="text-sm text-zinc-500">
+            The client is locked after the workout draft is saved.
+          </p>
+        </div>
+        <div className="rounded border border-zinc-200 bg-zinc-50 px-4 py-3">
+          <p className="text-sm text-zinc-500">Selected client</p>
+          <p className="font-medium">{selectedName ?? "—"}</p>
+        </div>
+        <div className="flex justify-end">
+          <button type="button" className={btnPrimary} onClick={onContinue}>
+            Continue
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

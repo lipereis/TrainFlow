@@ -53,6 +53,7 @@ export function WorkoutWizard() {
         token,
       );
       setProgram(fresh);
+      setClientId(fresh.clientId);
       return fresh;
     },
     [getToken],
@@ -106,6 +107,7 @@ export function WorkoutWizard() {
           },
         );
         setProgram(created);
+        setClientId(created.clientId);
       }
       setStep(3);
     } catch (e) {
@@ -374,7 +376,9 @@ export function WorkoutWizard() {
         <StepClient
           selectedId={clientId}
           selectedName={clientName}
+          locked={program !== null}
           onSelect={({ id, name }) => {
+            if (program) return;
             setClientId(id);
             setClientName(name);
           }}
