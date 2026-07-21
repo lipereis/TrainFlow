@@ -52,7 +52,7 @@ describe("WorkoutsService", () => {
       delete: jest.fn(),
       updateMany: jest.fn(),
     },
-    $transaction: jest.fn((fn: (tx: typeof prisma) => unknown) => fn(prisma)),
+    $transaction: jest.fn(),
   };
 
   const service = new WorkoutsService(prisma as never);
@@ -128,7 +128,12 @@ describe("WorkoutsService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     prisma.$transaction.mockImplementation(
-      (fn: (tx: typeof prisma) => unknown) => fn(prisma),
+      (arg: ((tx: typeof prisma) => unknown) | PromiseLike<unknown>[]) => {
+        if (Array.isArray(arg)) {
+          return Promise.all(arg);
+        }
+        return arg(prisma);
+      },
     );
   });
 
@@ -255,7 +260,7 @@ describe("WorkoutsService", () => {
     );
   });
 
-  it("lists programs scoped to trainer and optional clientId", async () => {
+  it("lists programs without summary or days", async () => {
     prisma.workoutProgram.findMany.mockResolvedValue([programRow]);
 
     const result = await service.list("t1", "c1");
@@ -266,6 +271,8 @@ describe("WorkoutsService", () => {
     });
     expect(result).toHaveLength(1);
     expect(result[0].id).toBe("p1");
+    expect(result[0]).not.toHaveProperty("summary");
+    expect(result[0]).not.toHaveProperty("days");
   });
 
   it("updates status to ACTIVE (generate)", async () => {
@@ -273,6 +280,7 @@ describe("WorkoutsService", () => {
     prisma.workoutProgram.update.mockResolvedValue({
       ...programRow,
       status: "ACTIVE",
+      days: [],
     });
 
     const result = await service.update("t1", "p1", { status: "ACTIVE" });
@@ -344,5 +352,263 @@ describe("WorkoutsService", () => {
       response: { code: "FORBIDDEN_CROSS_TENANT" },
     });
     expect(prisma.workoutExercise.create).not.toHaveBeenCalled();
+  });
+
+  it("reorders days with contiguous sortOrder via $transaction array", async () => {
+    prisma.workoutProgram.findUnique
+      .mockResolvedValueOnce(programRow)
+      .mockResolvedValueOnce({
+        ...nestedProgram,
+        days: [
+          { ...dayRow, id: "d2", sortOrder: 0, exercises: [] },
+          { ...dayRow, id: "d1", sortOrder: 1, exercises: [exerciseRow] },
+        ],
+      });
+    prisma.workoutDay.findMany.mockResolvedValue([
+      { ...dayRow, id: "d1", sortOrder: 0 },
+      { ...dayRow, id: "d2", sortOrder: 1 },
+    ]);
+    prisma.workoutDay.update.mockResolvedValue({});
+
+    await service.reorderDays("t1", "p1", ["d2", "d1"]);
+
+    expect(prisma.$transaction).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.anything(),
+        expect.anything(),
+      ]),
+    );
+    expect(prisma.workoutDay.update).toHaveBeenCalledWith({
+      where: { id: "d2" },
+      data: { sortOrder: 0 },
+    });
+    expect(prisma.workoutDay.update).toHaveBeenCalledWith({
+      where: { id: "d1" },
+      data: { sortOrder: 1 },
+    });
+  });
+
+  it("reorders exercises with contiguous sortOrder", async () => {
+    const we2 = { ...exerciseRow, id: "we2", sortOrder: 1 };
+    prisma.workoutProgram.findUnique
+      .mockResolvedValueOnce(programRow)
+      .mockResolvedValueOnce({
+        ...nestedProgram,
+        days: [{ ...dayRow, exercises: [we2, exerciseRow] }],
+      });
+    prisma.workoutDay.findUnique.mockResolvedValue({
+      ...dayRow,
+      exercises: [exerciseRow, we2],
+    });
+    prisma.workoutExercise.findMany.mockResolvedValue([exerciseRow, we2]);
+    prisma.workoutExercise.update.mockResolvedValue({});
+
+    await service.reorderExercises("t1", "p1", "d1", ["we2", "we1"]);
+
+    expect(prisma.workoutExercise.update).toHaveBeenCalledWith({
+      where: { id: "we2" },
+      data: { sortOrder: 0 },
+    });
+    expect(prisma.workoutExercise.update).toHaveBeenCalledWith({
+      where: { id: "we1" },
+      data: { sortOrder: 1 },
+    });
+  });
+
+  it("moveExercise inserts at sortOrder without duplicate orders on target day", async () => {
+    const we2 = { ...exerciseRow, id: "we2", dayId: "d2", sortOrder: 0 };
+    const we3 = { ...exerciseRow, id: "we3", dayId: "d2", sortOrder: 1 };
+    const day2 = { ...dayRow, id: "d2", name: "Day B", sortOrder: 1 };
+
+    prisma.workoutProgram.findUnique.mockResolvedValue(programRow);
+    prisma.workoutDay.findUnique
+      .mockResolvedValueOnce({ ...dayRow, exercises: [exerciseRow] })
+      .mockResolvedValueOnce({ ...day2, exercises: [we2, we3] });
+    prisma.workoutExercise.findUnique.mockResolvedValue(exerciseRow);
+
+    prisma.workoutExercise.findMany
+      .mockResolvedValueOnce([we2, we3])
+      .mockResolvedValueOnce([]);
+    prisma.workoutExercise.update.mockImplementation(
+      ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) =>
+        Promise.resolve({
+          ...(where.id === "we1"
+            ? exerciseRow
+            : where.id === "we2"
+              ? we2
+              : we3),
+          ...data,
+          id: where.id,
+        }),
+    );
+
+    const result = await service.moveExercise(
+      "t1",
+      "p1",
+      "d1",
+      "we1",
+      "d2",
+      0,
+    );
+
+    expect(result.dayId).toBe("d2");
+    expect(result.sortOrder).toBe(0);
+
+    const targetUpdates = prisma.workoutExercise.update.mock.calls
+      .map(
+        ([args]: [{ where: { id: string }; data: { dayId?: string; sortOrder: number } }]) =>
+          args,
+      )
+      .filter((args) => args.data.sortOrder !== undefined);
+
+    const targetDayOrders = targetUpdates
+      .filter(
+        (a) =>
+          a.where.id === "we1" ||
+          a.where.id === "we2" ||
+          a.where.id === "we3",
+      )
+      .slice(0, 3)
+      .map((a) => ({ id: a.where.id, ...a.data }));
+
+    expect(targetDayOrders).toEqual([
+      { id: "we1", dayId: "d2", sortOrder: 0 },
+      { id: "we2", sortOrder: 1 },
+      { id: "we3", sortOrder: 2 },
+    ]);
+
+    const sortOrders = targetDayOrders.map((u) => u.sortOrder);
+    expect(new Set(sortOrders).size).toBe(sortOrders.length);
+  });
+
+  it("moveExercise same-day reassigns contiguous unique sortOrders", async () => {
+    const we2 = { ...exerciseRow, id: "we2", sortOrder: 1 };
+    const we3 = { ...exerciseRow, id: "we3", sortOrder: 2 };
+
+    prisma.workoutProgram.findUnique.mockResolvedValue(programRow);
+    prisma.workoutDay.findUnique.mockResolvedValue({
+      ...dayRow,
+      exercises: [exerciseRow, we2, we3],
+    });
+    prisma.workoutExercise.findUnique.mockResolvedValue(exerciseRow);
+    prisma.workoutExercise.findMany.mockResolvedValue([we2, we3]);
+    prisma.workoutExercise.update.mockImplementation(
+      ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) =>
+        Promise.resolve({
+          ...(where.id === "we1"
+            ? exerciseRow
+            : where.id === "we2"
+              ? we2
+              : we3),
+          ...data,
+          id: where.id,
+        }),
+    );
+
+    const result = await service.moveExercise(
+      "t1",
+      "p1",
+      "d1",
+      "we1",
+      "d1",
+      2,
+    );
+
+    expect(result.sortOrder).toBe(2);
+    const orders = prisma.workoutExercise.update.mock.calls.map(
+      ([args]: [{ where: { id: string }; data: { sortOrder: number } }]) => ({
+        id: args.where.id,
+        sortOrder: args.data.sortOrder,
+      }),
+    );
+    expect(orders).toEqual([
+      { id: "we2", sortOrder: 0 },
+      { id: "we3", sortOrder: 1 },
+      { id: "we1", sortOrder: 2 },
+    ]);
+    expect(new Set(orders.map((o) => o.sortOrder)).size).toBe(3);
+  });
+
+  it("duplicates a program as DRAFT with (copy) name", async () => {
+    prisma.workoutProgram.findUnique.mockResolvedValue(nestedProgram);
+    prisma.workoutProgram.create.mockResolvedValue({
+      ...nestedProgram,
+      id: "p2",
+      name: "Hypertrophy A/B (copy)",
+      status: "DRAFT",
+    });
+
+    const result = await service.duplicateProgram("t1", "p1");
+
+    expect(prisma.workoutProgram.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          name: "Hypertrophy A/B (copy)",
+          status: "DRAFT",
+          clientId: "c1",
+          trainerId: "t1",
+        }),
+      }),
+    );
+    expect(result.id).toBe("p2");
+    expect(result.name).toBe("Hypertrophy A/B (copy)");
+    expect(result.status).toBe("DRAFT");
+  });
+
+  it("duplicates a day appending at end with (copy) name", async () => {
+    prisma.workoutProgram.findUnique.mockResolvedValue(programRow);
+    prisma.workoutDay.findUnique.mockResolvedValue({
+      ...dayRow,
+      exercises: [exerciseRow],
+    });
+    prisma.workoutDay.findMany.mockResolvedValue([dayRow]);
+    prisma.workoutDay.create.mockResolvedValue({
+      ...dayRow,
+      id: "d2",
+      name: "Day A (copy)",
+      sortOrder: 1,
+      exercises: [{ ...exerciseRow, id: "we2", dayId: "d2" }],
+    });
+
+    const result = await service.duplicateDay("t1", "p1", "d1");
+
+    expect(prisma.workoutDay.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          name: "Day A (copy)",
+          sortOrder: 1,
+          programId: "p1",
+        }),
+      }),
+    );
+    expect(result.name).toBe("Day A (copy)");
+    expect(result.sortOrder).toBe(1);
+  });
+
+  it("deletes program, day, and exercise after ownership checks", async () => {
+    prisma.workoutProgram.findUnique.mockResolvedValue(programRow);
+    prisma.workoutProgram.delete.mockResolvedValue(programRow);
+    prisma.workoutDay.findUnique.mockResolvedValue({
+      ...dayRow,
+      exercises: [exerciseRow],
+    });
+    prisma.workoutDay.delete.mockResolvedValue(dayRow);
+    prisma.workoutExercise.findUnique.mockResolvedValue(exerciseRow);
+    prisma.workoutExercise.delete.mockResolvedValue(exerciseRow);
+
+    await service.remove("t1", "p1");
+    expect(prisma.workoutProgram.delete).toHaveBeenCalledWith({
+      where: { id: "p1" },
+    });
+
+    await service.removeDay("t1", "p1", "d1");
+    expect(prisma.workoutDay.delete).toHaveBeenCalledWith({
+      where: { id: "d1" },
+    });
+
+    await service.removeExercise("t1", "p1", "d1", "we1");
+    expect(prisma.workoutExercise.delete).toHaveBeenCalledWith({
+      where: { id: "we1" },
+    });
   });
 });

@@ -135,8 +135,7 @@ export class WorkoutsService {
     };
   }
 
-  private toProgramDto(row: ProgramRow, _withSummary = false) {
-    const days = (row.days ?? []).map((d) => this.toDayDto(d));
+  private toProgramListDto(row: ProgramRow) {
     return {
       id: row.id,
       trainerId: row.trainerId,
@@ -153,6 +152,13 @@ export class WorkoutsService {
       status: row.status,
       createdAt: row.createdAt.toISOString(),
       updatedAt: row.updatedAt.toISOString(),
+    };
+  }
+
+  private toProgramDto(row: ProgramRow) {
+    const days = (row.days ?? []).map((d) => this.toDayDto(d));
+    return {
+      ...this.toProgramListDto(row),
       days,
       summary: weeklySummary(
         days.map((d) => ({
@@ -315,7 +321,7 @@ export class WorkoutsService {
       },
       include: nestedInclude,
     });
-    return this.toProgramDto(row as ProgramRow, true);
+    return this.toProgramDto(row as ProgramRow);
   }
 
   async list(trainerId: string, clientId?: string) {
@@ -326,12 +332,12 @@ export class WorkoutsService {
       },
       orderBy: [{ updatedAt: "desc" }],
     });
-    return rows.map((r) => this.toProgramDto(r as ProgramRow));
+    return rows.map((r) => this.toProgramListDto(r as ProgramRow));
   }
 
   async get(trainerId: string, programId: string) {
     const row = await this.requireOwnedProgram(trainerId, programId, true);
-    return this.toProgramDto(row, true);
+    return this.toProgramDto(row);
   }
 
   async update(
@@ -366,7 +372,7 @@ export class WorkoutsService {
       },
       include: nestedInclude,
     });
-    return this.toProgramDto(row as ProgramRow, true);
+    return this.toProgramDto(row as ProgramRow);
   }
 
   async remove(trainerId: string, programId: string): Promise<void> {
@@ -585,15 +591,59 @@ export class WorkoutsService {
     dayId: string,
     exerciseId: string,
     targetDayId: string,
-    sortOrder: number,
+    sortOrder?: number,
   ) {
     await this.requireExerciseInDay(trainerId, programId, dayId, exerciseId);
     await this.requireDayInProgram(trainerId, programId, targetDayId);
-    const row = await this.prisma.workoutExercise.update({
-      where: { id: exerciseId },
-      data: { dayId: targetDayId, sortOrder },
+
+    const row = await this.prisma.$transaction(async (tx) => {
+      const targetOthers = await tx.workoutExercise.findMany({
+        where: { dayId: targetDayId, NOT: { id: exerciseId } },
+        orderBy: { sortOrder: "asc" },
+      });
+      const insertAt =
+        sortOrder === undefined
+          ? targetOthers.length
+          : Math.min(Math.max(0, sortOrder), targetOthers.length);
+
+      const orderedTargetIds = [
+        ...targetOthers.slice(0, insertAt).map((e) => e.id),
+        exerciseId,
+        ...targetOthers.slice(insertAt).map((e) => e.id),
+      ];
+
+      let moved: ExerciseRow | null = null;
+      for (let i = 0; i < orderedTargetIds.length; i++) {
+        const id = orderedTargetIds[i];
+        const updated = await tx.workoutExercise.update({
+          where: { id },
+          data:
+            id === exerciseId
+              ? { dayId: targetDayId, sortOrder: i }
+              : { sortOrder: i },
+        });
+        if (id === exerciseId) {
+          moved = updated as ExerciseRow;
+        }
+      }
+
+      if (dayId !== targetDayId) {
+        const sourceRemaining = await tx.workoutExercise.findMany({
+          where: { dayId },
+          orderBy: { sortOrder: "asc" },
+        });
+        for (let i = 0; i < sourceRemaining.length; i++) {
+          await tx.workoutExercise.update({
+            where: { id: sourceRemaining[i].id },
+            data: { sortOrder: i },
+          });
+        }
+      }
+
+      return moved!;
     });
-    return this.toExerciseDto(row as ExerciseRow);
+
+    return this.toExerciseDto(row);
   }
 
   async duplicateProgram(trainerId: string, programId: string) {
@@ -649,7 +699,7 @@ export class WorkoutsService {
       },
       include: nestedInclude,
     });
-    return this.toProgramDto(row as ProgramRow, true);
+    return this.toProgramDto(row as ProgramRow);
   }
 
   async duplicateDay(trainerId: string, programId: string, dayId: string) {

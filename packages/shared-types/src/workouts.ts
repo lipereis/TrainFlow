@@ -134,11 +134,9 @@ export const createWorkoutSchema = workoutProgramFieldsSchema
 
 export type CreateWorkoutInput = z.infer<typeof createWorkoutSchema>;
 
+/** Program scalar fields only — nested days use day/exercise endpoints. */
 export const updateWorkoutSchema = workoutProgramFieldsSchema
   .partial()
-  .extend({
-    days: z.array(workoutDaySchema).optional(),
-  })
   .superRefine(validateDateRange);
 
 export type UpdateWorkoutInput = z.infer<typeof updateWorkoutSchema>;

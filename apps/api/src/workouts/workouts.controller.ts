@@ -56,7 +56,7 @@ const updateExerciseSchema = z.object({
 
 const moveExerciseSchema = z.object({
   targetDayId: z.string().uuid(),
-  sortOrder: z.number().int().min(0),
+  sortOrder: z.number().int().min(0).optional(),
 });
 
 /** Accept shared-types `ids` or plan alias `orderedIds`. */
