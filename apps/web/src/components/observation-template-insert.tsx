@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { OBSERVATION_TEMPLATES } from "@trainflow/shared-types";
 
 type Props = {
@@ -15,18 +16,22 @@ type Props = {
 export function ObservationTemplateInsert({
   value,
   onInsert,
-  ariaLabel = "Insert observation template",
-  className = "no-print max-w-[14rem] rounded border border-zinc-300 bg-white px-2 py-1 text-xs text-zinc-700",
-  placeholder = "Insert template…",
+  ariaLabel,
+  className = "no-print max-w-[14rem] rounded border border-zinc-300 bg-white px-2 py-1 text-xs text-zinc-700 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200",
+  placeholder,
   truncateAt = 48,
   disabled = false,
 }: Props) {
+  const t = useTranslations("common");
+  const resolvedAria = ariaLabel ?? t("insertObservationAria");
+  const resolvedPlaceholder = placeholder ?? t("insertTemplate");
+
   return (
     <select
       className={className}
       defaultValue=""
       disabled={disabled}
-      aria-label={ariaLabel}
+      aria-label={resolvedAria}
       onChange={(e) => {
         const template = e.target.value;
         if (!template) return;
@@ -37,11 +42,11 @@ export function ObservationTemplateInsert({
         e.target.value = "";
       }}
     >
-      <option value="">{placeholder}</option>
-      {OBSERVATION_TEMPLATES.map((t) => (
-        <option key={t} value={t}>
-          {t.slice(0, truncateAt)}
-          {t.length > truncateAt ? "…" : ""}
+      <option value="">{resolvedPlaceholder}</option>
+      {OBSERVATION_TEMPLATES.map((tmpl) => (
+        <option key={tmpl} value={tmpl}>
+          {tmpl.slice(0, truncateAt)}
+          {tmpl.length > truncateAt ? "…" : ""}
         </option>
       ))}
     </select>

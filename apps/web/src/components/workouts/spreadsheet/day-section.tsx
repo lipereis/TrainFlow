@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { ExerciseDto } from "@trainflow/shared-types";
 import { ExercisePickerModal } from "../wizard/exercise-picker-modal";
 import {
@@ -43,6 +44,7 @@ export function DaySection({
   onReorderExercises,
   onMoveExercise,
 }: Props) {
+  const t = useTranslations("spreadsheet");
   const [pickerOpen, setPickerOpen] = useState(false);
   const totals = computeDayTotals(day.exercises);
 
@@ -58,11 +60,11 @@ export function DaySection({
   }
 
   return (
-    <section className="workout-day space-y-4 border-b border-zinc-200 py-6 print:break-inside-avoid">
+    <section className="workout-day space-y-4 border-b border-zinc-200 py-6 dark:border-zinc-800 print:break-inside-avoid">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="grid flex-1 gap-3 sm:grid-cols-2">
           <label className={labelClass}>
-            <span>Day title</span>
+            <span>{t("dayTitle")}</span>
             <input
               className={inputClass}
               value={day.name}
@@ -71,7 +73,7 @@ export function DaySection({
             />
           </label>
           <label className={labelClass}>
-            <span>Focus</span>
+            <span>{t("focus")}</span>
             <input
               className={inputClass}
               value={day.focus ?? ""}
@@ -86,12 +88,12 @@ export function DaySection({
           disabled={busy}
           onClick={onDuplicateDay}
         >
-          Duplicate day
+          {t("duplicateDay")}
         </button>
       </div>
 
       <label className={labelClass}>
-        <span>Warm-up</span>
+        <span>{t("warmup")}</span>
         <textarea
           className={inputClass}
           rows={2}
@@ -119,12 +121,12 @@ export function DaySection({
           disabled={busy}
           onClick={() => setPickerOpen(true)}
         >
-          Add exercise
+          {t("addExercise")}
         </button>
       </div>
 
       <ObservationField
-        label="Day observations"
+        label={t("dayObservations")}
         value={day.observations ?? ""}
         onChange={(observations) =>
           onPatchDay({ observations: observations || null })
@@ -132,7 +134,7 @@ export function DaySection({
       />
 
       <label className={labelClass}>
-        <span>Cooldown</span>
+        <span>{t("cooldown")}</span>
         <textarea
           className={inputClass}
           rows={2}

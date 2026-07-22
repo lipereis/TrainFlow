@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
 import type { ClientDto, CreateClientInput } from "@trainflow/shared-types";
 import { ClientForm } from "@/components/client-form";
 import { browserApiFetch } from "@/lib/browser-api";
@@ -22,6 +23,8 @@ export function StepClient({
   onSelect,
   onContinue,
 }: Props) {
+  const t = useTranslations("wizard");
+  const tCommon = useTranslations("common");
   const { getToken } = useAuth();
   const [mode, setMode] = useState<"select" | "create">("select");
   const [q, setQ] = useState("");
@@ -41,12 +44,12 @@ export function StepClient({
         const list = await browserApiFetch<ClientDto[]>(path, token);
         setClients(list);
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Failed to load clients");
+        setError(e instanceof Error ? e.message : t("loadClientsFailed"));
       } finally {
         setLoading(false);
       }
     },
-    [getToken],
+    [getToken, t],
   );
 
   useEffect(() => {
@@ -68,18 +71,24 @@ export function StepClient({
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-lg font-semibold">Client</h2>
-          <p className="text-sm text-zinc-500">
-            The client is locked after the workout draft is saved.
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            {t("stepClient")}
+          </h2>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            {t("clientLockedDesc")}
           </p>
         </div>
-        <div className="rounded border border-zinc-200 bg-zinc-50 px-4 py-3">
-          <p className="text-sm text-zinc-500">Selected client</p>
-          <p className="font-medium">{selectedName ?? "—"}</p>
+        <div className="rounded border border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            {t("selectedClient")}
+          </p>
+          <p className="font-medium text-zinc-900 dark:text-zinc-100">
+            {selectedName ?? tCommon("emDash")}
+          </p>
         </div>
         <div className="flex justify-end">
           <button type="button" className={btnPrimary} onClick={onContinue}>
-            Continue
+            {t("continue")}
           </button>
         </div>
       </div>
@@ -89,9 +98,11 @@ export function StepClient({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold">Select or create client</h2>
-        <p className="text-sm text-zinc-500">
-          Choose who this program is for, or create a new client.
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          {t("selectOrCreateTitle")}
+        </h2>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          {t("selectOrCreateDesc")}
         </p>
       </div>
 
@@ -101,14 +112,14 @@ export function StepClient({
           className={mode === "select" ? btnPrimary : btnSecondary}
           onClick={() => setMode("select")}
         >
-          Select existing
+          {t("selectExisting")}
         </button>
         <button
           type="button"
           className={mode === "create" ? btnPrimary : btnSecondary}
           onClick={() => setMode("create")}
         >
-          Create new
+          {t("createNew")}
         </button>
       </div>
 
@@ -116,7 +127,7 @@ export function StepClient({
         <ClientForm
           mode="create"
           onSubmit={onCreate}
-          submitLabel="Create and select"
+          submitLabel={t("createAndSelect")}
         />
       ) : (
         <div className="space-y-4">
@@ -131,18 +142,22 @@ export function StepClient({
               className={inputClass}
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search by name or email"
+              placeholder={t("searchClientsPlaceholder")}
             />
             <button type="submit" className={btnSecondary}>
-              Search
+              {tCommon("search")}
             </button>
           </form>
 
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {error ? (
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          ) : null}
           {loading ? (
-            <p className="text-sm text-zinc-500">Loading…</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              {tCommon("loading")}
+            </p>
           ) : (
-            <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white">
+            <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
               {clients.map((c) => {
                 const selected = c.id === selectedId;
                 return (
@@ -150,19 +165,21 @@ export function StepClient({
                     <button
                       type="button"
                       onClick={() => onSelect({ id: c.id, name: c.name })}
-                      className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-zinc-50 ${
-                        selected ? "bg-zinc-100" : ""
+                      className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800 ${
+                        selected ? "bg-zinc-100 dark:bg-zinc-800" : ""
                       }`}
                     >
                       <span>
-                        <span className="font-medium">{c.name}</span>
-                        <span className="mt-0.5 block text-sm text-zinc-500">
+                        <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                          {c.name}
+                        </span>
+                        <span className="mt-0.5 block text-sm text-zinc-500 dark:text-zinc-400">
                           {c.email}
                         </span>
                       </span>
                       {selected ? (
-                        <span className="text-xs font-medium uppercase tracking-wide text-zinc-700">
-                          Selected
+                        <span className="text-xs font-medium uppercase tracking-wide text-zinc-700 dark:text-zinc-300">
+                          {t("selected")}
                         </span>
                       ) : null}
                     </button>
@@ -170,16 +187,16 @@ export function StepClient({
                 );
               })}
               {clients.length === 0 ? (
-                <li className="px-4 py-8 text-center text-zinc-500">
-                  No clients found.
+                <li className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
+                  {t("noClientsFound")}
                 </li>
               ) : null}
             </ul>
           )}
 
           {selectedId ? (
-            <p className="text-sm text-zinc-600">
-              Selected: <span className="font-medium">{selectedName}</span>
+            <p className="text-sm text-zinc-600 dark:text-zinc-300">
+              {t("selectedNamed", { name: selectedName ?? "" })}
             </p>
           ) : null}
         </div>
@@ -192,7 +209,7 @@ export function StepClient({
           disabled={!selectedId}
           onClick={onContinue}
         >
-          Continue
+          {t("continue")}
         </button>
       </div>
     </div>

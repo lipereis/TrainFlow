@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ObservationTemplateInsert } from "@/components/observation-template-insert";
 import { inputClass, labelClass } from "../wizard/types";
 
@@ -18,6 +19,8 @@ export function ObservationField({
   rows = 3,
   className,
 }: Props) {
+  const t = useTranslations("spreadsheet");
+
   return (
     <label className={`${labelClass} ${className ?? ""}`}>
       <span className="flex flex-wrap items-center justify-between gap-2">
@@ -25,7 +28,7 @@ export function ObservationField({
         <ObservationTemplateInsert
           value={value}
           onInsert={onChange}
-          ariaLabel={`Insert observation template for ${label}`}
+          ariaLabel={t("insertObservationAria", { label })}
         />
       </span>
       <textarea

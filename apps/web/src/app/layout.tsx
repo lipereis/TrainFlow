@@ -1,24 +1,39 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+import { AppProviders } from "@/components/app-providers";
 import "./globals.css";
 
-export const metadata = {
-  title: "TrainFlow",
-  description: "Operating system for personal trainers",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("common");
+  return {
+    title: "TrainFlow",
+    description: t("appDescription"),
+  };
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale} suppressHydrationWarning>
       <body>
-        <ClerkProvider
-          signInUrl="/sign-in"
-          signUpUrl="/sign-up"
-          signInFallbackRedirectUrl="/post-auth"
-          signUpFallbackRedirectUrl="/post-auth"
-          afterSignOutUrl="/"
-        >
-          {children}
-        </ClerkProvider>
+        <AppProviders locale={locale} messages={messages}>
+          <ClerkProvider
+            signInUrl="/sign-in"
+            signUpUrl="/sign-up"
+            signInFallbackRedirectUrl="/post-auth"
+            signUpFallbackRedirectUrl="/post-auth"
+            afterSignOutUrl="/"
+          >
+            {children}
+          </ClerkProvider>
+        </AppProviders>
       </body>
     </html>
   );

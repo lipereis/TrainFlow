@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   DndContext,
   closestCenter,
@@ -22,6 +23,7 @@ import {
   btnPrimary,
   btnSecondary,
   dayLetterName,
+  DAY_LETTERS,
   inputClass,
   labelClass,
   type WorkoutDayDto,
@@ -58,6 +60,7 @@ function SortableDayRow({
   onRemove: () => Promise<void>;
   onDuplicate: () => Promise<void>;
 }) {
+  const t = useTranslations("wizard");
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: day.id });
   const style = {
@@ -71,12 +74,12 @@ function SortableDayRow({
     <li
       ref={setNodeRef}
       style={style}
-      className="flex flex-wrap items-end gap-3 border-b border-zinc-100 px-4 py-3 last:border-0"
+      className="flex flex-wrap items-end gap-3 border-b border-zinc-100 px-4 py-3 last:border-0 dark:border-zinc-800"
     >
       <button
         type="button"
-        className="cursor-grab touch-none rounded border border-zinc-200 px-2 py-2 text-xs text-zinc-500 active:cursor-grabbing"
-        aria-label="Drag to reorder"
+        className="cursor-grab touch-none rounded border border-zinc-200 px-2 py-2 text-xs text-zinc-500 active:cursor-grabbing dark:border-zinc-700 dark:text-zinc-400"
+        aria-label={t("dragReorder")}
         disabled={busy}
         {...attributes}
         {...listeners}
@@ -84,7 +87,7 @@ function SortableDayRow({
         ⋮⋮
       </button>
       <label className={`${labelClass} min-w-[10rem] flex-1`}>
-        <span>Name</span>
+        <span>{t("name")}</span>
         <input
           className={inputClass}
           value={name}
@@ -98,7 +101,7 @@ function SortableDayRow({
         />
       </label>
       <label className={`${labelClass} min-w-[10rem] flex-1`}>
-        <span>Focus</span>
+        <span>{t("focus")}</span>
         <input
           className={inputClass}
           value={focus}
@@ -112,8 +115,8 @@ function SortableDayRow({
           }}
         />
       </label>
-      <span className="pb-2 text-xs text-zinc-500">
-        {day.exercises.length} exercise{day.exercises.length === 1 ? "" : "s"}
+      <span className="pb-2 text-xs text-zinc-500 dark:text-zinc-400">
+        {t("exerciseCount", { count: day.exercises.length })}
       </span>
       <button
         type="button"
@@ -121,15 +124,15 @@ function SortableDayRow({
         disabled={busy}
         onClick={() => void onDuplicate()}
       >
-        Duplicate
+        {t("duplicate")}
       </button>
       <button
         type="button"
-        className="rounded border border-red-200 px-3 py-2 text-sm text-red-700 disabled:opacity-50"
+        className="rounded border border-red-200 px-3 py-2 text-sm text-red-700 disabled:opacity-50 dark:border-red-900 dark:text-red-400"
         disabled={busy}
         onClick={() => void onRemove()}
       >
-        Remove
+        {t("remove")}
       </button>
     </li>
   );
@@ -149,6 +152,8 @@ export function StepDays({
   onReorderDays,
   onSeedDays,
 }: Props) {
+  const t = useTranslations("wizard");
+  const tCommon = useTranslations("common");
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, {
@@ -157,6 +162,8 @@ export function StepDays({
   );
   const [newName, setNewName] = useState("");
   const [newFocus, setNewFocus] = useState("");
+  const seedLetter =
+    DAY_LETTERS[Math.max(0, daysPerWeek - 1)] ?? String(daysPerWeek);
 
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -171,24 +178,29 @@ export function StepDays({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold">Workout days</h2>
-        <p className="text-sm text-zinc-500">
-          Program targets {daysPerWeek} day{daysPerWeek === 1 ? "" : "s"}/week.
-          Add A/B/C days, reorder, or duplicate.
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          {t("daysTitle")}
+        </h2>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          {t("daysDesc", { count: daysPerWeek })}
         </p>
       </div>
 
       {days.length === 0 ? (
-        <div className="rounded border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center">
-          <p className="mb-3 text-sm text-zinc-600">No days yet.</p>
+        <div className="rounded border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center dark:border-zinc-700 dark:bg-zinc-900">
+          <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-300">
+            {t("noDaysYet")}
+          </p>
           <button
             type="button"
             className={btnPrimary}
             disabled={busy}
             onClick={() => void onSeedDays()}
           >
-            Create {daysPerWeek} day{daysPerWeek === 1 ? "" : "s"} (A–
-            {String.fromCharCode(64 + daysPerWeek)})
+            {t("createSeedDays", {
+              count: daysPerWeek,
+              letter: seedLetter,
+            })}
           </button>
         </div>
       ) : (
@@ -201,7 +213,7 @@ export function StepDays({
             items={days.map((d) => d.id)}
             strategy={verticalListSortingStrategy}
           >
-            <ul className="rounded border border-zinc-200 bg-white">
+            <ul className="rounded border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
               {days.map((day) => (
                 <SortableDayRow
                   key={day.id}
@@ -218,11 +230,10 @@ export function StepDays({
       )}
 
       <form
-        className="flex flex-wrap items-end gap-3 rounded border border-zinc-200 bg-white p-4"
+        className="flex flex-wrap items-end gap-3 rounded border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
         onSubmit={(e) => {
           e.preventDefault();
-          const name =
-            newName.trim() || dayLetterName(days.length);
+          const name = newName.trim() || dayLetterName(days.length);
           void onAddDay(name, newFocus.trim() || null).then(() => {
             setNewName("");
             setNewFocus("");
@@ -230,7 +241,7 @@ export function StepDays({
         }}
       >
         <label className={`${labelClass} min-w-[10rem] flex-1`}>
-          <span>New day name</span>
+          <span>{t("newDayName")}</span>
           <input
             className={inputClass}
             value={newName}
@@ -240,25 +251,27 @@ export function StepDays({
           />
         </label>
         <label className={`${labelClass} min-w-[10rem] flex-1`}>
-          <span>Focus</span>
+          <span>{t("focus")}</span>
           <input
             className={inputClass}
             value={newFocus}
             onChange={(e) => setNewFocus(e.target.value)}
-            placeholder="e.g. Push"
+            placeholder={t("focusPlaceholder")}
             disabled={busy}
           />
         </label>
         <button type="submit" className={btnSecondary} disabled={busy}>
-          Add day
+          {t("addDay")}
         </button>
       </form>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? (
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+      ) : null}
 
       <div className="flex justify-between gap-2">
         <button type="button" className={btnSecondary} onClick={onBack}>
-          Back
+          {tCommon("back")}
         </button>
         <button
           type="button"
@@ -266,7 +279,7 @@ export function StepDays({
           disabled={busy || days.length === 0}
           onClick={onContinue}
         >
-          Continue
+          {t("continue")}
         </button>
       </div>
     </div>

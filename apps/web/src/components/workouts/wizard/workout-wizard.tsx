@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { ExerciseDto } from "@trainflow/shared-types";
 import { browserApiFetch } from "@/lib/browser-api";
 import { WizardProgress } from "./progress-indicator";
@@ -44,6 +45,7 @@ export function WorkoutWizard({
   initialClientId = null,
   initialClientName = null,
 }: WizardProps) {
+  const t = useTranslations("wizard");
   const { getToken } = useAuth();
   const router = useRouter();
   const [step, setStep] = useState<WizardStep>(initialClientId ? 2 : 1);
@@ -119,7 +121,7 @@ export function WorkoutWizard({
       }
       setStep(3);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save program");
+      setError(e instanceof Error ? e.message : t("saveProgramFailed"));
     } finally {
       setBusy(false);
     }
@@ -131,7 +133,7 @@ export function WorkoutWizard({
     try {
       await fn();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Request failed");
+      setError(e instanceof Error ? e.message : t("requestFailed"));
       throw e;
     } finally {
       setBusy(false);
@@ -368,7 +370,7 @@ export function WorkoutWizard({
       );
       router.push(`/workouts/${updated.id}`);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to generate");
+      setError(e instanceof Error ? e.message : t("generateFailed"));
       setBusy(false);
     }
   }
@@ -376,7 +378,9 @@ export function WorkoutWizard({
   return (
     <section className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-2xl font-semibold">New workout</h1>
+        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+          {t("title")}
+        </h1>
         <WizardProgress step={step} />
       </div>
 

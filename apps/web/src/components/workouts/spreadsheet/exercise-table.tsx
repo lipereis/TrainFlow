@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   flexRender,
   getCoreRowModel,
@@ -9,7 +10,6 @@ import {
 } from "@tanstack/react-table";
 import { EXECUTION_METHODS } from "@trainflow/shared-types";
 import {
-  emptyDisplay,
   formatRepRange,
   formatRest,
   formatWeight,
@@ -35,16 +35,29 @@ type Props = {
 };
 
 const cellInput =
-  "w-full min-w-[3.5rem] rounded border border-transparent bg-transparent px-1 py-0.5 text-sm hover:border-zinc-300 focus:border-zinc-400 focus:outline-none";
+  "w-full min-w-[3.5rem] rounded border border-transparent bg-transparent px-1 py-0.5 text-sm text-zinc-900 hover:border-zinc-300 focus:border-zinc-400 focus:outline-none dark:text-zinc-100 dark:hover:border-zinc-600 dark:focus:border-zinc-500";
+
+const METHOD_LABEL_KEYS: Record<string, string> = {
+  "Standard sets": "methodStandardSets",
+  Superset: "methodSuperset",
+  "Bi-set": "methodBiSet",
+  "Tri-set": "methodTriSet",
+  "Giant set": "methodGiantSet",
+  "Drop set": "methodDropSet",
+  "Rest-pause": "methodRestPause",
+  Custom: "methodCustom",
+};
 
 /** Local draft + blur-save so incomplete URLs are not autosaved on every keystroke. */
 function VideoUrlCell({
   value,
   disabled,
+  placeholder,
   onCommit,
 }: {
   value: string | null;
   disabled?: boolean;
+  placeholder: string;
   onCommit: (videoUrl: string | null) => void;
 }) {
   const [draft, setDraft] = useState(value ?? "");
@@ -57,7 +70,7 @@ function VideoUrlCell({
     <input
       className={`${cellInput} min-w-[6rem]`}
       value={draft}
-      placeholder="—"
+      placeholder={placeholder}
       disabled={disabled}
       onChange={(e) => setDraft(e.target.value)}
       onBlur={() => {
@@ -79,6 +92,10 @@ export function ExerciseTable({
   onMoveDown,
   onMoveToDay,
 }: Props) {
+  const t = useTranslations("spreadsheet");
+  const tCommon = useTranslations("common");
+  const emDash = tCommon("emDash");
+
   const columns = useMemo<ColumnDef<WorkoutExerciseDto>[]>(
     () => [
       {
@@ -86,22 +103,24 @@ export function ExerciseTable({
         header: "#",
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
-            <span className="w-5 text-xs text-zinc-500">{row.index + 1}</span>
+            <span className="w-5 text-xs text-zinc-500 dark:text-zinc-400">
+              {row.index + 1}
+            </span>
             <div className="no-print flex flex-col">
               <button
                 type="button"
-                className="px-1 text-[10px] text-zinc-500 disabled:opacity-30"
+                className="px-1 text-[10px] text-zinc-500 disabled:opacity-30 dark:text-zinc-400"
                 disabled={busy || row.index === 0}
-                aria-label="Move up"
+                aria-label={t("moveUp")}
                 onClick={() => onMoveUp(row.original.id)}
               >
                 ▲
               </button>
               <button
                 type="button"
-                className="px-1 text-[10px] text-zinc-500 disabled:opacity-30"
+                className="px-1 text-[10px] text-zinc-500 disabled:opacity-30 dark:text-zinc-400"
                 disabled={busy || row.index === exercises.length - 1}
-                aria-label="Move down"
+                aria-label={t("moveDown")}
                 onClick={() => onMoveDown(row.original.id)}
               >
                 ▼
@@ -112,11 +131,11 @@ export function ExerciseTable({
       },
       {
         id: "exercise",
-        header: "Exercise",
+        header: t("colExercise"),
         cell: ({ row }) => (
           <input
             className={`${cellInput} min-w-[8rem] font-medium`}
-            value={exerciseDisplayName(row.original)}
+            value={exerciseDisplayName(row.original, t("exerciseFallback"))}
             disabled={busy}
             onChange={(e) =>
               onPatch(row.original.id, { customName: e.target.value })
@@ -126,7 +145,7 @@ export function ExerciseTable({
       },
       {
         id: "muscle",
-        header: "Muscle",
+        header: t("colMuscle"),
         cell: ({ row }) => (
           <input
             className={`${cellInput} min-w-[5rem]`}
@@ -140,7 +159,7 @@ export function ExerciseTable({
       },
       {
         id: "sets",
-        header: "Sets",
+        header: t("colSets"),
         cell: ({ row }) => (
           <input
             type="number"
@@ -158,7 +177,7 @@ export function ExerciseTable({
       },
       {
         id: "reps",
-        header: "Rep range",
+        header: t("colRepRange"),
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <input
@@ -167,7 +186,7 @@ export function ExerciseTable({
               className={`${cellInput} w-12`}
               value={row.original.repsMin}
               disabled={busy}
-              aria-label="Min reps"
+              aria-label={t("minReps")}
               onChange={(e) =>
                 onPatch(row.original.id, {
                   repsMin: Math.max(1, Number(e.target.value) || 1),
@@ -181,7 +200,7 @@ export function ExerciseTable({
               className={`${cellInput} w-12`}
               value={row.original.repsMax}
               disabled={busy}
-              aria-label="Max reps"
+              aria-label={t("maxReps")}
               onChange={(e) =>
                 onPatch(row.original.id, {
                   repsMax: Math.max(1, Number(e.target.value) || 1),
@@ -196,7 +215,7 @@ export function ExerciseTable({
       },
       {
         id: "weight",
-        header: "Weight",
+        header: t("colWeight"),
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <input
@@ -205,7 +224,7 @@ export function ExerciseTable({
               step="0.5"
               className={`${cellInput} w-16`}
               value={row.original.weight ?? ""}
-              placeholder="—"
+              placeholder={emDash}
               disabled={busy}
               onChange={(e) => {
                 const raw = e.target.value;
@@ -218,7 +237,7 @@ export function ExerciseTable({
               className={`${cellInput} w-14`}
               value={row.original.weightUnit}
               disabled={busy}
-              aria-label="Weight unit"
+              aria-label={t("weightUnit")}
               onChange={(e) =>
                 onPatch(row.original.id, {
                   weightUnit: e.target.value as "KG" | "LB",
@@ -236,7 +255,7 @@ export function ExerciseTable({
       },
       {
         id: "rest",
-        header: "Rest",
+        header: t("colRest"),
         cell: ({ row }) => (
           <div>
             <input
@@ -244,7 +263,7 @@ export function ExerciseTable({
               min={0}
               className={`${cellInput} w-16`}
               value={row.original.restSec ?? ""}
-              placeholder="—"
+              placeholder={emDash}
               disabled={busy}
               onChange={(e) => {
                 const raw = e.target.value;
@@ -261,12 +280,12 @@ export function ExerciseTable({
       },
       {
         id: "tempo",
-        header: "Tempo",
+        header: t("colTempo"),
         cell: ({ row }) => (
           <input
             className={`${cellInput} w-16`}
             value={row.original.tempo ?? ""}
-            placeholder="—"
+            placeholder={emDash}
             disabled={busy}
             onChange={(e) =>
               onPatch(row.original.id, { tempo: e.target.value || null })
@@ -276,7 +295,7 @@ export function ExerciseTable({
       },
       {
         id: "rpe",
-        header: "RPE",
+        header: t("colRpe"),
         cell: ({ row }) => (
           <input
             type="number"
@@ -285,7 +304,7 @@ export function ExerciseTable({
             step="0.5"
             className={`${cellInput} w-14`}
             value={row.original.rpe ?? ""}
-            placeholder="—"
+            placeholder={emDash}
             disabled={busy}
             onChange={(e) => {
               const raw = e.target.value;
@@ -298,7 +317,7 @@ export function ExerciseTable({
       },
       {
         id: "rir",
-        header: "RIR",
+        header: t("colRir"),
         cell: ({ row }) => (
           <input
             type="number"
@@ -306,7 +325,7 @@ export function ExerciseTable({
             step="0.5"
             className={`${cellInput} w-14`}
             value={row.original.rir ?? ""}
-            placeholder="—"
+            placeholder={emDash}
             disabled={busy}
             onChange={(e) => {
               const raw = e.target.value;
@@ -319,7 +338,7 @@ export function ExerciseTable({
       },
       {
         id: "method",
-        header: "Method",
+        header: t("colMethod"),
         cell: ({ row }) => (
           <select
             className={`${cellInput} min-w-[7rem]`}
@@ -329,17 +348,20 @@ export function ExerciseTable({
               onPatch(row.original.id, { method: e.target.value })
             }
           >
-            {EXECUTION_METHODS.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
+            {EXECUTION_METHODS.map((m) => {
+              const key = METHOD_LABEL_KEYS[m];
+              return (
+                <option key={m} value={m}>
+                  {key ? t(key as "methodStandardSets") : m}
+                </option>
+              );
+            })}
           </select>
         ),
       },
       {
         id: "observation",
-        header: "Observation",
+        header: t("colObservation"),
         cell: ({ row }) => {
           const value = row.original.observation ?? "";
           return (
@@ -348,7 +370,7 @@ export function ExerciseTable({
                 value={value}
                 disabled={busy}
                 truncateAt={40}
-                placeholder="Template…"
+                placeholder={t("templateShort")}
                 className={`${cellInput} no-print max-w-[10rem] text-xs`}
                 onInsert={(next) =>
                   onPatch(row.original.id, { observation: next || null })
@@ -357,7 +379,7 @@ export function ExerciseTable({
               <input
                 className={`${cellInput} min-w-[8rem]`}
                 value={value}
-                placeholder="—"
+                placeholder={emDash}
                 disabled={busy}
                 onChange={(e) =>
                   onPatch(row.original.id, {
@@ -371,12 +393,12 @@ export function ExerciseTable({
       },
       {
         id: "alternative",
-        header: "Alternative",
+        header: t("colAlternative"),
         cell: ({ row }) => (
           <input
             className={`${cellInput} min-w-[6rem]`}
             value={row.original.alternativeText ?? ""}
-            placeholder="—"
+            placeholder={emDash}
             disabled={busy}
             onChange={(e) =>
               onPatch(row.original.id, {
@@ -388,11 +410,12 @@ export function ExerciseTable({
       },
       {
         id: "video",
-        header: "Video",
+        header: t("colVideo"),
         cell: ({ row }) => (
           <VideoUrlCell
             value={row.original.videoUrl}
             disabled={busy}
+            placeholder={emDash}
             onCommit={(videoUrl) => onPatch(row.original.id, { videoUrl })}
           />
         ),
@@ -404,10 +427,10 @@ export function ExerciseTable({
           <div className="no-print flex flex-col gap-1">
             {otherDays.length > 0 && onMoveToDay ? (
               <select
-                className="max-w-[8rem] rounded border border-zinc-300 bg-white px-1 py-0.5 text-xs"
+                className="max-w-[8rem] rounded border border-zinc-300 bg-white px-1 py-0.5 text-xs dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
                 defaultValue=""
                 disabled={busy}
-                aria-label="Move exercise to another day"
+                aria-label={t("moveToDayAria")}
                 onChange={(e) => {
                   const target = e.target.value;
                   if (!target) return;
@@ -415,7 +438,7 @@ export function ExerciseTable({
                   e.target.value = "";
                 }}
               >
-                <option value="">Move to…</option>
+                <option value="">{t("moveTo")}</option>
                 {otherDays.map((d) => (
                   <option key={d.id} value={d.id}>
                     {d.name}
@@ -429,7 +452,7 @@ export function ExerciseTable({
               disabled={busy}
               onClick={() => onRemove(row.original.id)}
             >
-              Remove
+              {t("remove")}
             </button>
           </div>
         ),
@@ -437,6 +460,7 @@ export function ExerciseTable({
     ],
     [
       busy,
+      emDash,
       exercises.length,
       onMoveDown,
       onMoveToDay,
@@ -444,6 +468,7 @@ export function ExerciseTable({
       onPatch,
       onRemove,
       otherDays,
+      t,
     ],
   );
 
@@ -456,22 +481,22 @@ export function ExerciseTable({
 
   if (exercises.length === 0) {
     return (
-      <p className="rounded border border-dashed border-zinc-300 px-3 py-6 text-center text-sm text-zinc-500">
-        No exercises yet. Add one from the library.
+      <p className="rounded border border-dashed border-zinc-300 px-3 py-6 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+        {t("noExercises")}
       </p>
     );
   }
 
   return (
-    <div className="workout-table-scroll overflow-x-auto rounded border border-zinc-200">
+    <div className="workout-table-scroll overflow-x-auto rounded border border-zinc-200 dark:border-zinc-800">
       <table className="w-full min-w-[72rem] border-collapse text-left text-sm">
-        <thead className="bg-zinc-100">
+        <thead className="bg-zinc-100 dark:bg-zinc-900">
           {table.getHeaderGroups().map((hg) => (
             <tr key={hg.id}>
               {hg.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="whitespace-nowrap border-b border-zinc-200 px-2 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-600"
+                  className="whitespace-nowrap border-b border-zinc-200 px-2 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
                 >
                   {header.isPlaceholder
                     ? null
@@ -486,7 +511,10 @@ export function ExerciseTable({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="border-b border-zinc-100 last:border-0">
+            <tr
+              key={row.id}
+              className="border-b border-zinc-100 last:border-0 dark:border-zinc-800/80"
+            >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="px-1 py-1 align-middle">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -496,10 +524,6 @@ export function ExerciseTable({
           ))}
         </tbody>
       </table>
-      {/* Print-friendly formatted preview of key fields */}
-      <p className="sr-only">
-        Formatted samples use {emptyDisplay("—")} for empty cells.
-      </p>
     </div>
   );
 }

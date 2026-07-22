@@ -1,7 +1,9 @@
 "use client";
 
+import { useMemo } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { experienceLevelSchema } from "@trainflow/shared-types";
 import { ObservationTemplateInsert } from "@/components/observation-template-insert";
@@ -12,19 +14,17 @@ import {
   labelClass,
 } from "./types";
 
-const programFormSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(200),
-  goal: z.string().trim().max(500).optional().nullable(),
-  startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().optional().nullable(),
-  daysPerWeek: z.coerce.number().int().min(1).max(7),
-  level: experienceLevelSchema.optional().nullable(),
-  location: z.string().trim().max(200).optional().nullable(),
-  equipment: z.string().trim().max(1000).optional().nullable(),
-  observations: z.string().trim().max(5000).optional().nullable(),
-});
-
-export type ProgramFormValues = z.infer<typeof programFormSchema>;
+export type ProgramFormValues = {
+  name: string;
+  goal?: string | null;
+  startDate: string;
+  endDate?: string | null;
+  daysPerWeek: number;
+  level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | null;
+  location?: string | null;
+  equipment?: string | null;
+  observations?: string | null;
+};
 
 type Props = {
   clientName: string;
@@ -53,6 +53,25 @@ export function StepProgram({
   onBack,
   onSubmit,
 }: Props) {
+  const t = useTranslations("wizard");
+  const tCommon = useTranslations("common");
+
+  const programFormSchema = useMemo(
+    () =>
+      z.object({
+        name: z.string().trim().min(1, t("nameRequired")).max(200),
+        goal: z.string().trim().max(500).optional().nullable(),
+        startDate: z.string().min(1, t("startDateRequired")),
+        endDate: z.string().optional().nullable(),
+        daysPerWeek: z.coerce.number().int().min(1).max(7),
+        level: experienceLevelSchema.optional().nullable(),
+        location: z.string().trim().max(200).optional().nullable(),
+        equipment: z.string().trim().max(1000).optional().nullable(),
+        observations: z.string().trim().max(5000).optional().nullable(),
+      }),
+    [t],
+  );
+
   const {
     register,
     handleSubmit,
@@ -92,31 +111,41 @@ export function StepProgram({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold">Program info</h2>
-        <p className="text-sm text-zinc-500">
-          For <span className="font-medium text-zinc-700">{clientName}</span>.
-          Saves as a draft when you continue.
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          {t("programTitle")}
+        </h2>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          {t.rich("programDesc", {
+            clientName,
+            name: (chunks) => (
+              <span className="font-medium text-zinc-700 dark:text-zinc-200">
+                {chunks}
+              </span>
+            ),
+          })}
         </p>
       </div>
 
       <form
         onSubmit={handleSubmit(submit)}
-        className="space-y-4 rounded border border-zinc-200 bg-white p-6"
+        className="space-y-4 rounded border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <label className={`${labelClass} sm:col-span-2`}>
-            <span>Program name</span>
+            <span>{t("programName")}</span>
             <input className={inputClass} {...register("name")} required />
             {errors.name ? (
-              <span className="text-red-600">{errors.name.message}</span>
+              <span className="text-red-600 dark:text-red-400">
+                {errors.name.message}
+              </span>
             ) : null}
           </label>
           <label className={`${labelClass} sm:col-span-2`}>
-            <span>Goal</span>
+            <span>{t("goal")}</span>
             <input className={inputClass} {...register("goal")} />
           </label>
           <label className={labelClass}>
-            <span>Start date</span>
+            <span>{t("startDate")}</span>
             <input
               type="date"
               className={inputClass}
@@ -124,15 +153,17 @@ export function StepProgram({
               required
             />
             {errors.startDate ? (
-              <span className="text-red-600">{errors.startDate.message}</span>
+              <span className="text-red-600 dark:text-red-400">
+                {errors.startDate.message}
+              </span>
             ) : null}
           </label>
           <label className={labelClass}>
-            <span>End date</span>
+            <span>{t("endDate")}</span>
             <input type="date" className={inputClass} {...register("endDate")} />
           </label>
           <label className={labelClass}>
-            <span>Days per week</span>
+            <span>{t("daysPerWeek")}</span>
             <input
               type="number"
               min={1}
@@ -142,38 +173,40 @@ export function StepProgram({
               required
             />
             {errors.daysPerWeek ? (
-              <span className="text-red-600">{errors.daysPerWeek.message}</span>
+              <span className="text-red-600 dark:text-red-400">
+                {errors.daysPerWeek.message}
+              </span>
             ) : null}
           </label>
           <label className={labelClass}>
-            <span>Level</span>
+            <span>{t("level")}</span>
             <select
               className={inputClass}
               {...register("level", {
                 setValueAs: (v: string) => (v === "" ? null : v),
               })}
             >
-              <option value="">—</option>
-              <option value="BEGINNER">BEGINNER</option>
-              <option value="INTERMEDIATE">INTERMEDIATE</option>
-              <option value="ADVANCED">ADVANCED</option>
+              <option value="">{tCommon("emDash")}</option>
+              <option value="BEGINNER">{t("levelBeginner")}</option>
+              <option value="INTERMEDIATE">{t("levelIntermediate")}</option>
+              <option value="ADVANCED">{t("levelAdvanced")}</option>
             </select>
           </label>
           <label className={labelClass}>
-            <span>Location</span>
+            <span>{t("location")}</span>
             <input className={inputClass} {...register("location")} />
           </label>
           <label className={labelClass}>
-            <span>Equipment</span>
+            <span>{t("equipment")}</span>
             <input className={inputClass} {...register("equipment")} />
           </label>
         </div>
         <label className={labelClass}>
           <span className="flex flex-wrap items-center justify-between gap-2">
-            <span>Observations</span>
+            <span>{t("observations")}</span>
             <ObservationTemplateInsert
               value={observationsValue}
-              ariaLabel="Insert observation template for program"
+              ariaLabel={t("insertObservationAria")}
               onInsert={(next) =>
                 setValue("observations", next, { shouldDirty: true })
               }
@@ -186,14 +219,16 @@ export function StepProgram({
           />
         </label>
 
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {error ? (
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        ) : null}
 
         <div className="flex justify-between gap-2">
           <button type="button" className={btnSecondary} onClick={onBack}>
-            Back
+            {tCommon("back")}
           </button>
           <button type="submit" className={btnPrimary} disabled={submitting}>
-            {submitting ? "Saving…" : "Save draft & continue"}
+            {submitting ? t("saving") : t("saveDraftContinue")}
           </button>
         </div>
       </form>

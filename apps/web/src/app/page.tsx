@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { roleFromClaims } from "@/lib/roles";
 import { AuthControls } from "@/components/auth-controls";
 
@@ -13,15 +14,21 @@ export default async function HomePage() {
     if (role === "CLIENT") redirect("/portal");
     redirect("/dashboard");
   }
+
+  const t = await getTranslations("auth");
+  const tNav = await getTranslations("nav");
+
   return (
     <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center gap-6 px-6">
-      <h1 className="text-4xl font-semibold tracking-tight">TrainFlow</h1>
-      <p className="text-zinc-600">AI-powered OS for personal trainers.</p>
+      <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+        {tNav("brand")}
+      </h1>
+      <p className="text-zinc-600 dark:text-zinc-400">{t("tagline")}</p>
       <AuthControls />
-      <p className="text-xs text-zinc-400">
-        Stuck after login?{" "}
+      <p className="text-xs text-zinc-400 dark:text-zinc-500">
+        {t("stuckAfterLogin")}{" "}
         <Link className="underline" href="/dev/clear-clerk">
-          Clear session
+          {t("clearSession")}
         </Link>
       </p>
     </main>

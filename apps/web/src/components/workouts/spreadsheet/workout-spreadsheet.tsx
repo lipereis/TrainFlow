@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import type { ClientDto, ExerciseDto } from "@trainflow/shared-types";
 import { browserApiFetch } from "@/lib/browser-api";
@@ -70,8 +71,11 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
   const { getToken } = useAuth();
   const { user } = useUser();
   const router = useRouter();
+  const t = useTranslations("spreadsheet");
+  const tErrors = useTranslations("errors");
+  const tCommon = useTranslations("common");
   const [program, setProgram] = useState<WorkoutProgramDto | null>(null);
-  const [clientName, setClientName] = useState("Client");
+  const [clientName, setClientName] = useState("");
   const [clientObservations, setClientObservations] = useState("");
   const [clientId, setClientId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,7 +85,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
   const trainerName =
     user?.fullName?.trim() ||
     user?.primaryEmailAddress?.emailAddress ||
-    "Trainer";
+    t("trainerFallback");
 
   const load = useCallback(async () => {
     const token = await getToken();
@@ -99,10 +103,10 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
       setClientName(client.name);
       setClientObservations(client.observations ?? "");
     } catch {
-      setClientName("Client");
+      setClientName(t("clientFallback"));
       setClientObservations("");
     }
-  }, [getToken, workoutId]);
+  }, [getToken, t, workoutId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -113,7 +117,9 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
         await load();
       } catch (e) {
         if (!cancelled) {
-          setError(e instanceof Error ? e.message : "Failed to load workout");
+          setError(
+            e instanceof Error ? e.message : tErrors("loadWorkoutFailed"),
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -122,7 +128,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [load]);
+  }, [load, tErrors]);
 
   const save = useCallback(
     async (payload: SavePayload) => {
@@ -271,7 +277,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
     try {
       await fn();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Request failed");
+      setError(e instanceof Error ? e.message : tErrors("requestFailed"));
       throw e;
     } finally {
       setBusy(false);
@@ -290,8 +296,8 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
   async function saveAsTemplate() {
     if (!program) return;
     const name = window.prompt(
-      "Template name",
-      `${program.name} (template)`,
+      t("templateNamePrompt"),
+      t("templateNameDefault", { name: program.name }),
     );
     if (name == null) return;
     const trimmed = name.trim();
@@ -485,13 +491,15 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
   }
 
   if (loading) {
-    return <p className="text-sm text-zinc-500">Loading workout…</p>;
+    return (
+      <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("loading")}</p>
+    );
   }
 
   if (!program) {
     return (
-      <p className="text-sm text-red-600">
-        {error ?? "Workout not found."}
+      <p className="text-sm text-red-600 dark:text-red-400">
+        {error ?? t("notFound")}
       </p>
     );
   }
@@ -507,7 +515,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
             disabled={busy}
             onClick={() => window.print()}
           >
-            Print
+            {tCommon("print")}
           </button>
           <button
             type="button"
@@ -515,7 +523,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
             disabled={busy}
             onClick={() => void exportFile("xlsx")}
           >
-            Export Excel
+            {t("exportExcel")}
           </button>
           <button
             type="button"
@@ -523,7 +531,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
             disabled={busy}
             onClick={() => void exportFile("pdf")}
           >
-            Export PDF
+            {t("exportPdf")}
           </button>
           <button
             type="button"
@@ -531,7 +539,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
             disabled={busy}
             onClick={() => void saveAsTemplate()}
           >
-            Save as template
+            {t("saveAsTemplate")}
           </button>
           <button
             type="button"
@@ -539,20 +547,20 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
             disabled={busy}
             onClick={() => void duplicateProgram()}
           >
-            Duplicate program
+            {t("duplicateProgram")}
           </button>
         </div>
       </div>
 
       {error ? (
-        <p className="no-print rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="no-print rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300">
           {error}
         </p>
       ) : null}
 
       <ProgramHeader
         program={program}
-        clientName={clientName}
+        clientName={clientName || t("clientFallback")}
         trainerName={trainerName}
         clientObservations={clientObservations}
         onPatch={patchProgram}
@@ -568,8 +576,8 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
       <div className="space-y-2">
         <div className="no-print flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-            Days
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            {t("days")}
           </h2>
           <button
             type="button"
@@ -577,11 +585,13 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
             disabled={busy}
             onClick={() => void addDay()}
           >
-            Add day
+            {t("addDay")}
           </button>
         </div>
         {program.days.length === 0 ? (
-          <p className="text-sm text-zinc-500">No days in this program.</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            {t("noDays")}
+          </p>
         ) : (
           program.days.map((day) => (
             <DaySection

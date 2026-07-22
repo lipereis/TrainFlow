@@ -1,6 +1,6 @@
 "use client";
 
-import { emptyDisplay } from "@trainflow/workout-math";
+import { useTranslations } from "next-intl";
 import { inputClass, labelClass, type WorkoutProgramDto } from "../wizard/types";
 import { ObservationField } from "./observation-field";
 
@@ -24,6 +24,26 @@ function toDateOnly(value: string): string {
   return value; // already YYYY-MM-DD from <input type="date">
 }
 
+function statusLabel(
+  status: WorkoutProgramDto["status"],
+  t: ReturnType<typeof useTranslations>,
+) {
+  if (status === "DRAFT") return t("statusDraft");
+  if (status === "ACTIVE") return t("statusActive");
+  return t("statusArchived");
+}
+
+function levelLabel(
+  level: WorkoutProgramDto["level"],
+  t: ReturnType<typeof useTranslations>,
+  emDash: string,
+) {
+  if (level === "BEGINNER") return t("levelBeginner");
+  if (level === "INTERMEDIATE") return t("levelIntermediate");
+  if (level === "ADVANCED") return t("levelAdvanced");
+  return emDash;
+}
+
 export function ProgramHeader({
   program,
   clientName,
@@ -32,29 +52,35 @@ export function ProgramHeader({
   onPatch,
   onClientObservationsChange,
 }: Props) {
+  const t = useTranslations("spreadsheet");
+  const tCommon = useTranslations("common");
+  const emDash = tCommon("emDash");
+
   return (
-    <header className="space-y-4 border-b border-zinc-200 pb-6">
+    <header className="space-y-4 border-b border-zinc-200 pb-6 dark:border-zinc-800">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-            Client
+          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            {t("client")}
           </p>
-          <h1 className="text-2xl font-semibold tracking-tight">{clientName}</h1>
-          <p className="mt-1 text-sm text-zinc-600">
-            <span className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-              Trainer
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+            {clientName}
+          </h1>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
+            <span className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              {t("trainer")}
             </span>{" "}
             {trainerName}
           </p>
         </div>
-        <span className="rounded border border-zinc-200 bg-zinc-50 px-2 py-1 text-xs uppercase tracking-wide text-zinc-600">
-          {program.status}
+        <span className="rounded border border-zinc-200 bg-zinc-50 px-2 py-1 text-xs uppercase tracking-wide text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+          {statusLabel(program.status, t)}
         </span>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <label className={labelClass}>
-          <span>Program</span>
+          <span>{t("program")}</span>
           <input
             className={inputClass}
             value={program.name}
@@ -62,7 +88,7 @@ export function ProgramHeader({
           />
         </label>
         <label className={labelClass}>
-          <span>Goal</span>
+          <span>{t("goal")}</span>
           <input
             className={inputClass}
             value={program.goal ?? ""}
@@ -70,7 +96,7 @@ export function ProgramHeader({
           />
         </label>
         <label className={labelClass}>
-          <span>Frequency (days/week)</span>
+          <span>{t("frequency")}</span>
           <input
             type="number"
             min={1}
@@ -83,7 +109,7 @@ export function ProgramHeader({
           />
         </label>
         <label className={labelClass}>
-          <span>Start date</span>
+          <span>{t("startDate")}</span>
           <input
             type="date"
             className={inputClass}
@@ -98,7 +124,7 @@ export function ProgramHeader({
           />
         </label>
         <label className={labelClass}>
-          <span>End date</span>
+          <span>{t("endDate")}</span>
           <input
             type="date"
             className={inputClass}
@@ -111,22 +137,23 @@ export function ProgramHeader({
           />
         </label>
         <div className={labelClass}>
-          <span>Level / location</span>
-          <p className="rounded border border-transparent px-1 py-2 text-sm text-zinc-700">
-            {emptyDisplay(program.level)} · {emptyDisplay(program.location)}
+          <span>{t("levelLocation")}</span>
+          <p className="rounded border border-transparent px-1 py-2 text-sm text-zinc-700 dark:text-zinc-300">
+            {levelLabel(program.level, t, emDash)} ·{" "}
+            {program.location?.trim() || emDash}
           </p>
         </div>
       </div>
 
       <ObservationField
-        label="Client observations"
+        label={t("clientObservations")}
         value={clientObservations}
         onChange={onClientObservationsChange}
         rows={2}
       />
 
       <ObservationField
-        label="Program observations"
+        label={t("programObservations")}
         value={program.observations ?? ""}
         onChange={(observations) =>
           onPatch({ observations: observations || null })

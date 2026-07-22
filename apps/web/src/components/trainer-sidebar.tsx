@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const links = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/clients", label: "Clients" },
-  { href: "/workouts/new", label: "Workouts" },
-  { href: "/templates", label: "Templates" },
-  { href: "/exercises", label: "Exercises" },
+  { href: "/dashboard", labelKey: "dashboard" },
+  { href: "/clients", labelKey: "clients" },
+  { href: "/workouts/new", labelKey: "workouts" },
+  { href: "/templates", labelKey: "templates" },
+  { href: "/exercises", labelKey: "exercises" },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -21,12 +22,13 @@ function isActive(pathname: string, href: string) {
 
 export function TrainerSidebar() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
-    <aside className="flex w-56 shrink-0 flex-col border-r border-zinc-200 bg-white">
-      <div className="border-b border-zinc-200 px-5 py-4">
+    <aside className="flex w-56 shrink-0 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="border-b border-zinc-200 px-5 py-4 dark:border-zinc-800">
         <Link href="/dashboard" className="font-semibold tracking-tight">
-          TrainFlow
+          {t("brand")}
         </Link>
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-3 text-sm">
@@ -38,11 +40,11 @@ export function TrainerSidebar() {
               href={link.href}
               className={`rounded px-3 py-2 ${
                 active
-                  ? "bg-zinc-100 font-medium text-zinc-900"
-                  : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+                  ? "bg-zinc-100 font-medium text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
+                  : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
               }`}
             >
-              {link.label}
+              {t(link.labelKey)}
             </Link>
           );
         })}

@@ -2,6 +2,7 @@
 
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import {
   createClientSchema,
   updateClientSchema,
@@ -11,8 +12,8 @@ import {
 import { ObservationTemplateInsert } from "@/components/observation-template-insert";
 
 const inputClass =
-  "w-full rounded border border-zinc-300 px-3 py-2 text-sm disabled:bg-zinc-50";
-const labelClass = "block space-y-1 text-sm";
+  "w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 disabled:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:disabled:bg-zinc-900";
+const labelClass = "block space-y-1 text-sm text-zinc-900 dark:text-zinc-100";
 
 type ClientFormProps = {
   mode?: "create" | "edit";
@@ -52,6 +53,8 @@ export function ClientForm({
   onSubmit,
   submitLabel,
 }: ClientFormProps) {
+  const t = useTranslations("clients");
+  const tCommon = useTranslations("common");
   const schema = mode === "edit" ? updateClientSchema : createClientSchema;
   const {
     register,
@@ -96,7 +99,7 @@ export function ClientForm({
       await onSubmit(payload);
     } catch (e) {
       setError("root", {
-        message: e instanceof Error ? e.message : "Save failed",
+        message: e instanceof Error ? e.message : tCommon("saveFailed"),
       });
     }
   }
@@ -104,18 +107,20 @@ export function ClientForm({
   return (
     <form
       onSubmit={handleSubmit(submit)}
-      className="space-y-4 rounded border border-zinc-200 bg-white p-6"
+      className="space-y-4 rounded border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <label className={labelClass}>
-          <span>Full name</span>
+          <span>{t("fullName")}</span>
           <input className={inputClass} {...register("name")} required />
           {errors.name ? (
-            <span className="text-red-600">{errors.name.message}</span>
+            <span className="text-red-600 dark:text-red-400">
+              {errors.name.message}
+            </span>
           ) : null}
         </label>
         <label className={labelClass}>
-          <span>Email</span>
+          <span>{t("email")}</span>
           <input
             type="email"
             className={inputClass}
@@ -123,41 +128,43 @@ export function ClientForm({
             required
           />
           {errors.email ? (
-            <span className="text-red-600">{errors.email.message}</span>
+            <span className="text-red-600 dark:text-red-400">
+              {errors.email.message}
+            </span>
           ) : null}
         </label>
         <label className={labelClass}>
-          <span>Phone</span>
+          <span>{t("phone")}</span>
           <input className={inputClass} {...register("phone")} />
         </label>
         <label className={labelClass}>
-          <span>Status</span>
+          <span>{t("status")}</span>
           <select className={inputClass} {...register("status")}>
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="PENDING">PENDING</option>
-            <option value="INACTIVE">INACTIVE</option>
+            <option value="ACTIVE">{t("statusActive")}</option>
+            <option value="PENDING">{t("statusPending")}</option>
+            <option value="INACTIVE">{t("statusInactive")}</option>
           </select>
         </label>
         <label className={labelClass}>
-          <span>Birth date</span>
+          <span>{t("birthDate")}</span>
           <input type="date" className={inputClass} {...register("birthDate")} />
         </label>
         <label className={labelClass}>
-          <span>Experience</span>
+          <span>{t("experience")}</span>
           <select
             className={inputClass}
             {...register("experienceLevel", {
               setValueAs: (v: string) => (v === "" ? null : v),
             })}
           >
-            <option value="">—</option>
-            <option value="BEGINNER">BEGINNER</option>
-            <option value="INTERMEDIATE">INTERMEDIATE</option>
-            <option value="ADVANCED">ADVANCED</option>
+            <option value="">{tCommon("emDash")}</option>
+            <option value="BEGINNER">{t("experienceBeginner")}</option>
+            <option value="INTERMEDIATE">{t("experienceIntermediate")}</option>
+            <option value="ADVANCED">{t("experienceAdvanced")}</option>
           </select>
         </label>
         <label className={labelClass}>
-          <span>Height (cm)</span>
+          <span>{t("heightCm")}</span>
           <input
             type="number"
             step="any"
@@ -168,11 +175,13 @@ export function ClientForm({
             })}
           />
           {errors.heightCm ? (
-            <span className="text-red-600">{errors.heightCm.message}</span>
+            <span className="text-red-600 dark:text-red-400">
+              {errors.heightCm.message}
+            </span>
           ) : null}
         </label>
         <label className={labelClass}>
-          <span>Weight (kg)</span>
+          <span>{t("weightKg")}</span>
           <input
             type="number"
             step="any"
@@ -183,34 +192,40 @@ export function ClientForm({
             })}
           />
           {errors.weightKg ? (
-            <span className="text-red-600">{errors.weightKg.message}</span>
+            <span className="text-red-600 dark:text-red-400">
+              {errors.weightKg.message}
+            </span>
           ) : null}
         </label>
       </div>
 
       <label className={labelClass}>
-        <span>Goal</span>
+        <span>{t("goal")}</span>
         <input className={inputClass} {...register("goal")} />
       </label>
       <label className={labelClass}>
-        <span>Weekly availability</span>
+        <span>{t("weeklyAvailability")}</span>
         <input className={inputClass} {...register("weeklyAvailability")} />
       </label>
       <label className={labelClass}>
-        <span>Injuries</span>
+        <span>{t("injuries")}</span>
         <textarea className={inputClass} rows={2} {...register("injuries")} />
       </label>
       <label className={labelClass}>
-        <span>Restrictions</span>
-        <textarea className={inputClass} rows={2} {...register("restrictions")} />
+        <span>{t("restrictions")}</span>
+        <textarea
+          className={inputClass}
+          rows={2}
+          {...register("restrictions")}
+        />
       </label>
       <label className={labelClass}>
-        <span>Equipment</span>
+        <span>{t("equipment")}</span>
         <textarea className={inputClass} rows={2} {...register("equipment")} />
       </label>
       <label className={labelClass}>
         <span className="flex flex-wrap items-center justify-between gap-2">
-          <span>Observations</span>
+          <span>{t("observations")}</span>
           <ObservationTemplateInsert
             value={observations}
             onInsert={(next) =>
@@ -218,19 +233,25 @@ export function ClientForm({
             }
           />
         </span>
-        <textarea className={inputClass} rows={3} {...register("observations")} />
+        <textarea
+          className={inputClass}
+          rows={3}
+          {...register("observations")}
+        />
       </label>
 
       {errors.root ? (
-        <p className="text-sm text-red-600">{errors.root.message}</p>
+        <p className="text-sm text-red-600 dark:text-red-400">
+          {errors.root.message}
+        </p>
       ) : null}
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="rounded bg-zinc-900 px-4 py-2 text-sm text-white disabled:opacity-50"
+        className="rounded bg-zinc-900 px-4 py-2 text-sm text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
       >
-        {isSubmitting ? "Saving…" : submitLabel}
+        {isSubmitting ? tCommon("saving") : submitLabel}
       </button>
     </form>
   );

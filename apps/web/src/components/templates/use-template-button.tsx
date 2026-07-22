@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { ClientDto } from "@trainflow/shared-types";
 import { browserApiFetch } from "@/lib/browser-api";
 
@@ -22,6 +23,8 @@ export function UseTemplateButton({
   template: TemplateListItem;
   clients: ClientDto[];
 }) {
+  const t = useTranslations("templates");
+  const tCommon = useTranslations("common");
   const { getToken } = useAuth();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -52,7 +55,7 @@ export function UseTemplateButton({
       router.push(`/workouts/${program.id}`);
       router.refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to create program");
+      setError(e instanceof Error ? e.message : t("createFailed"));
     } finally {
       setLoading(false);
     }
@@ -63,23 +66,25 @@ export function UseTemplateButton({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white disabled:opacity-50"
+        className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
         disabled={clients.length === 0}
         title={
           clients.length === 0
-            ? "Create a client first"
-            : `Use ${template.name}`
+            ? t("createClientFirst")
+            : t("useTemplateTitle", { name: template.name })
         }
       >
-        Use template
+        {t("useTemplate")}
       </button>
       {open ? (
-        <div className="absolute right-0 z-10 mt-2 w-72 rounded border border-zinc-200 bg-white p-3 shadow-lg">
-          <p className="mb-2 text-sm font-medium">Pick a client</p>
+        <div className="absolute right-0 z-10 mt-2 w-72 rounded border border-zinc-200 bg-white p-3 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+          <p className="mb-2 text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            {t("pickClient")}
+          </p>
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="mb-3 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm"
+            className="mb-3 w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
           >
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -87,22 +92,24 @@ export function UseTemplateButton({
               </option>
             ))}
           </select>
-          {error ? <p className="mb-2 text-sm text-red-600">{error}</p> : null}
+          {error ? (
+            <p className="mb-2 text-sm text-red-600 dark:text-red-400">{error}</p>
+          ) : null}
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded px-2 py-1 text-sm text-zinc-600 hover:underline"
+              className="rounded px-2 py-1 text-sm text-zinc-600 hover:underline dark:text-zinc-400"
             >
-              Cancel
+              {tCommon("cancel")}
             </button>
             <button
               type="button"
               onClick={onUse}
               disabled={!canSubmit}
-              className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white disabled:opacity-50"
+              className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
             >
-              {loading ? "Creating…" : "Create draft"}
+              {loading ? t("creating") : t("createDraft")}
             </button>
           </div>
         </div>

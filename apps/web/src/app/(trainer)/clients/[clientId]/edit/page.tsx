@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import type { ClientDto } from "@trainflow/shared-types";
 import { apiFetch } from "@/lib/api";
 import { EditClientForm } from "./edit-form";
@@ -9,6 +10,8 @@ export default async function EditClientPage({
 }: {
   params: Promise<{ clientId: string }> | { clientId: string };
 }) {
+  const t = await getTranslations("clients");
+  const tCommon = await getTranslations("common");
   const { clientId } = await Promise.resolve(params);
 
   let client: ClientDto;
@@ -22,20 +25,22 @@ export default async function EditClientPage({
     <section className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
             <Link href={`/clients/${client.id}`} className="hover:underline">
               {client.name}
             </Link>
             <span className="mx-1">/</span>
-            Edit
+            {t("edit")}
           </p>
-          <h1 className="mt-1 text-2xl font-semibold">Edit client</h1>
+          <h1 className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+            {t("editClient")}
+          </h1>
         </div>
         <Link
           href={`/clients/${client.id}`}
-          className="text-sm text-zinc-600 hover:underline"
+          className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
         >
-          Cancel
+          {tCommon("cancel")}
         </Link>
       </div>
       <EditClientForm client={client} />

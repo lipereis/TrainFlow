@@ -2,9 +2,17 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
 import type { CreateExerciseInput, ExerciseDto } from "@trainflow/shared-types";
 import { browserApiFetch } from "@/lib/browser-api";
-import { btnPrimary, btnSecondary, inputClass, labelClass } from "./types";
+import {
+  btnPrimary,
+  btnSecondary,
+  inputClass,
+  labelClass,
+  translateCategoryLabel,
+  translateMuscleLabel,
+} from "./types";
 
 type Props = {
   open: boolean;
@@ -19,6 +27,9 @@ export function ExercisePickerModal({
   onPickLibrary,
   onCreateCustom,
 }: Props) {
+  const t = useTranslations("wizard");
+  const tCommon = useTranslations("common");
+  const tExercises = useTranslations("exercises");
   const { getToken } = useAuth();
   const [tab, setTab] = useState<"library" | "custom">("library");
   const [q, setQ] = useState("");
@@ -45,12 +56,12 @@ export function ExercisePickerModal({
         const list = await browserApiFetch<ExerciseDto[]>(path, token);
         setResults(list);
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Search failed");
+        setError(e instanceof Error ? e.message : t("searchFailed"));
       } finally {
         setLoading(false);
       }
     },
-    [getToken],
+    [getToken, t],
   );
 
   useEffect(() => {
@@ -67,7 +78,7 @@ export function ExercisePickerModal({
       await onPickLibrary(ex);
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to add exercise");
+      setError(e instanceof Error ? e.message : t("addExerciseFailed"));
     } finally {
       setBusy(false);
     }
@@ -95,7 +106,7 @@ export function ExercisePickerModal({
       await onCreateCustom(created);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Create failed");
+      setError(err instanceof Error ? err.message : t("createFailed"));
     } finally {
       setBusy(false);
     }
@@ -106,39 +117,45 @@ export function ExercisePickerModal({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Exercise picker"
-        className="flex max-h-[90vh] w-full max-w-lg flex-col rounded border border-zinc-200 bg-white shadow-lg"
+        aria-label={t("pickerAria")}
+        className="flex max-h-[90vh] w-full max-w-lg flex-col rounded border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
       >
-        <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3">
-          <h3 className="font-semibold">Add exercise</h3>
+        <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+            {t("pickerTitle")}
+          </h3>
           <button
             type="button"
-            className="text-sm text-zinc-500 hover:text-zinc-900"
+            className="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             onClick={onClose}
           >
-            Close
+            {t("close")}
           </button>
         </div>
 
-        <div className="flex gap-2 border-b border-zinc-100 px-4 py-2 text-sm">
+        <div className="flex gap-2 border-b border-zinc-100 px-4 py-2 text-sm dark:border-zinc-800">
           <button
             type="button"
             className={tab === "library" ? btnPrimary : btnSecondary}
             onClick={() => setTab("library")}
           >
-            Library
+            {t("library")}
           </button>
           <button
             type="button"
             className={tab === "custom" ? btnPrimary : btnSecondary}
             onClick={() => setTab("custom")}
           >
-            Custom
+            {t("custom")}
           </button>
         </div>
 
         <div className="overflow-y-auto p-4">
-          {error ? <p className="mb-3 text-sm text-red-600">{error}</p> : null}
+          {error ? (
+            <p className="mb-3 text-sm text-red-600 dark:text-red-400">
+              {error}
+            </p>
+          ) : null}
 
           {tab === "library" ? (
             <div className="space-y-3">
@@ -153,37 +170,45 @@ export function ExercisePickerModal({
                   className={inputClass}
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search exercises"
+                  placeholder={t("searchExercisesPlaceholder")}
                 />
                 <button type="submit" className={btnSecondary}>
-                  Search
+                  {tCommon("search")}
                 </button>
               </form>
               {loading ? (
-                <p className="text-sm text-zinc-500">Searching…</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  {t("searching")}
+                </p>
               ) : (
-                <ul className="divide-y divide-zinc-100 rounded border border-zinc-200">
+                <ul className="divide-y divide-zinc-100 rounded border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
                   {results.map((ex) => (
                     <li key={ex.id}>
                       <button
                         type="button"
                         disabled={busy}
                         onClick={() => void pick(ex)}
-                        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-zinc-50 disabled:opacity-50"
+                        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-zinc-50 disabled:opacity-50 dark:hover:bg-zinc-800"
                       >
                         <span>
-                          <span className="font-medium">{ex.name}</span>
-                          <span className="mt-0.5 block text-xs text-zinc-500">
-                            {ex.primaryMuscle} · {ex.category}
+                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                            {ex.name}
+                          </span>
+                          <span className="mt-0.5 block text-xs text-zinc-500 dark:text-zinc-400">
+                            {translateMuscleLabel(ex.primaryMuscle, tExercises)}{" "}
+                            ·{" "}
+                            {translateCategoryLabel(ex.category, tExercises)}
                           </span>
                         </span>
-                        <span className="text-xs text-zinc-500">Add</span>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                          {t("add")}
+                        </span>
                       </button>
                     </li>
                   ))}
                   {results.length === 0 ? (
-                    <li className="px-3 py-6 text-center text-sm text-zinc-500">
-                      No exercises found.
+                    <li className="px-3 py-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                      {t("noExercisesFound")}
                     </li>
                   ) : null}
                 </ul>
@@ -192,7 +217,7 @@ export function ExercisePickerModal({
           ) : (
             <form className="space-y-3" onSubmit={(e) => void createCustom(e)}>
               <label className={labelClass}>
-                <span>Name</span>
+                <span>{t("name")}</span>
                 <input
                   className={inputClass}
                   required
@@ -203,7 +228,7 @@ export function ExercisePickerModal({
                 />
               </label>
               <label className={labelClass}>
-                <span>Primary muscle</span>
+                <span>{t("primaryMuscle")}</span>
                 <input
                   className={inputClass}
                   required
@@ -214,7 +239,7 @@ export function ExercisePickerModal({
                 />
               </label>
               <label className={labelClass}>
-                <span>Category</span>
+                <span>{t("category")}</span>
                 <input
                   className={inputClass}
                   value={custom.category}
@@ -224,7 +249,7 @@ export function ExercisePickerModal({
                 />
               </label>
               <label className={labelClass}>
-                <span>Equipment</span>
+                <span>{t("equipment")}</span>
                 <input
                   className={inputClass}
                   value={custom.equipment}
@@ -234,7 +259,7 @@ export function ExercisePickerModal({
                 />
               </label>
               <button type="submit" className={btnPrimary} disabled={busy}>
-                {busy ? "Creating…" : "Create & add"}
+                {busy ? t("creating") : t("createAndAdd")}
               </button>
             </form>
           )}

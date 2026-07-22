@@ -3,12 +3,14 @@
 @tailwind utilities;
 
 body {
-  @apply bg-zinc-50 text-zinc-900 antialiased;
+  @apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
 }
 
 @media print {
+  /* Beat dark: body tokens when html has class "dark". */
+  html.dark body,
   body {
-    @apply bg-white text-black;
+    @apply bg-white text-black !important;
   }
 
   .no-print {

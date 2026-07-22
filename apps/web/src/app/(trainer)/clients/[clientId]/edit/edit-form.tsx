@@ -2,6 +2,7 @@
 
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { ClientDto, CreateClientInput } from "@trainflow/shared-types";
 import { ClientForm } from "@/components/client-form";
 import { browserApiFetch } from "@/lib/browser-api";
@@ -9,6 +10,7 @@ import { browserApiFetch } from "@/lib/browser-api";
 export function EditClientForm({ client }: { client: ClientDto }) {
   const { getToken } = useAuth();
   const router = useRouter();
+  const t = useTranslations("clients");
 
   async function onSubmit(data: CreateClientInput) {
     const token = await getToken();
@@ -25,7 +27,7 @@ export function EditClientForm({ client }: { client: ClientDto }) {
       mode="edit"
       defaultValues={client}
       onSubmit={onSubmit}
-      submitLabel="Save changes"
+      submitLabel={t("saveChanges")}
     />
   );
 }
