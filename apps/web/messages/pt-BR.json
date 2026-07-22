@@ -32,7 +32,9 @@
     "clients": "Clientes",
     "workouts": "Treinos",
     "templates": "Modelos",
-    "exercises": "Exercícios"
+    "exercises": "Exercícios",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu"
   },
   "auth": {
     "signIn": "Entrar",
