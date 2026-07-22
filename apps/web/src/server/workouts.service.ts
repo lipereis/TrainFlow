@@ -312,6 +312,16 @@ export class WorkoutsService {
     return rows.map((r) => this.toProgramListDto(r as ProgramRow));
   }
 
+  /** Active programs for a linked client (portal read). */
+  async listActiveForClient(clientId: string) {
+    const rows = await prisma.workoutProgram.findMany({
+      where: { clientId, status: "ACTIVE" },
+      orderBy: [{ updatedAt: "desc" }],
+      include: nestedInclude,
+    });
+    return rows.map((r) => this.toProgramDto(r as ProgramRow));
+  }
+
   async get(trainerId: string, programId: string) {
     const row = await this.requireOwnedProgram(trainerId, programId, true);
     return this.toProgramDto(row);

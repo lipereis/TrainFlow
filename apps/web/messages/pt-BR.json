@@ -367,6 +367,25 @@
   },
   "portal": {
     "title": "Seu portal",
-    "description": "Treinos e progresso entram aqui em uma fase posterior. Conta ativa."
+    "description": "Treinos e progresso entram aqui em uma fase posterior. Conta ativa.",
+    "greeting": "Olá, {name}",
+    "subtitle": "Seus programas de treino ativos, preparados pelo seu treinador.",
+    "emptyTitle": "Nenhum treino ativo ainda",
+    "emptyDescription": "Quando seu treinador publicar um treino, ele aparecerá aqui.",
+    "activePrograms": "Programas ativos",
+    "statusActive": "Ativo",
+    "goal": "Objetivo",
+    "schedule": "{days} dias/semana · início {start}",
+    "duration": "~{min} min",
+    "warmup": "Aquecimento",
+    "cooldown": "Volta à calma",
+    "colExercise": "Exercício",
+    "colSets": "Séries",
+    "colReps": "Reps",
+    "colWeight": "Carga",
+    "colRest": "Descanso",
+    "restSeconds": "{sec}s",
+    "unnamedExercise": "Exercício",
+    "noExercises": "Nenhum exercício neste dia ainda."
   }
 }

@@ -68,3 +68,40 @@ export async function requireTrainerId(): Promise<{
 
   return { clerkUserId: session.userId, trainerId: trainer.id, role };
 }
+
+/** Resolve authenticated CLIENT and ensure Client row is linked. */
+export async function requireClientId(): Promise<{
+  clerkUserId: string;
+  clientId: string;
+  role: Role;
+}> {
+  const session = await auth();
+  if (!session.userId) {
+    throw unauthorized("UNAUTHORIZED", "Missing session");
+  }
+
+  const claims = session.sessionClaims as Record<string, unknown> | null;
+  let role =
+    roleFromMeta(claims?.metadata) ?? roleFromMeta(claims?.publicMetadata);
+
+  if (!role) {
+    const clerk = createClerkClient({
+      secretKey: process.env.CLERK_SECRET_KEY!,
+    });
+    const user = await clerk.users.getUser(session.userId);
+    role = roleFromMeta(user.publicMetadata);
+  }
+
+  if (role !== "CLIENT") {
+    throw forbidden("FORBIDDEN", "Insufficient role");
+  }
+
+  const client = await prisma.client.findUnique({
+    where: { clerkUserId: session.userId },
+  });
+  if (!client) {
+    throw unauthorized("UNAUTHORIZED", "Client profile not linked");
+  }
+
+  return { clerkUserId: session.userId, clientId: client.id, role };
+}

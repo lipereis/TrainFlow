@@ -367,6 +367,25 @@
   },
   "portal": {
     "title": "Your portal",
-    "description": "Workouts and progress land here in a later phase. Account active."
+    "description": "Workouts and progress land here in a later phase. Account active.",
+    "greeting": "Hi, {name}",
+    "subtitle": "Your active workout programs from your trainer.",
+    "emptyTitle": "No active program yet",
+    "emptyDescription": "When your trainer publishes a workout, it will show up here.",
+    "activePrograms": "Active programs",
+    "statusActive": "Active",
+    "goal": "Goal",
+    "schedule": "{days} days/week · started {start}",
+    "duration": "~{min} min",
+    "warmup": "Warm-up",
+    "cooldown": "Cool-down",
+    "colExercise": "Exercise",
+    "colSets": "Sets",
+    "colReps": "Reps",
+    "colWeight": "Weight",
+    "colRest": "Rest",
+    "restSeconds": "{sec}s",
+    "unnamedExercise": "Exercise",
+    "noExercises": "No exercises in this day yet."
   }
 }
