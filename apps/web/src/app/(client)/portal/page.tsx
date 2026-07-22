@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { PortalExportButtons } from "@/components/portal-export-buttons";
 import { requireClientId } from "@/server/auth";
 import { workoutsService } from "@/server/workouts.service";
 import { prisma } from "@/server/prisma";
@@ -87,6 +88,9 @@ export default async function ClientPortalPage() {
                     {program.observations}
                   </p>
                 ) : null}
+                <div className="pt-2">
+                  <PortalExportButtons workoutId={program.id} />
+                </div>
               </header>
 
               <div className="space-y-6">

@@ -386,6 +386,8 @@
     "colRest": "Descanso",
     "restSeconds": "{sec}s",
     "unnamedExercise": "Exercício",
-    "noExercises": "Nenhum exercício neste dia ainda."
+    "noExercises": "Nenhum exercício neste dia ainda.",
+    "downloadPdf": "Baixar PDF",
+    "downloadExcel": "Baixar Excel"
   }
 }
