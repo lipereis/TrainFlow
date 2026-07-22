@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 type BrandLogoProps = {
@@ -9,11 +8,14 @@ type BrandLogoProps = {
   priority?: boolean;
 };
 
+/** Display height in px — trimmed asset is 374×317 */
 const sizes = {
-  sm: { width: 120, height: 80, className: "h-10 w-auto" },
-  md: { width: 160, height: 106, className: "h-14 w-auto" },
-  lg: { width: 280, height: 186, className: "h-28 w-auto sm:h-36" },
+  sm: { height: 112 },
+  md: { height: 144 },
+  lg: { height: 220 },
 } as const;
+
+const ASPECT = 374 / 317;
 
 /** TrainFlow mark + wordmark with transparent background. */
 export function BrandLogo({
@@ -22,21 +24,25 @@ export function BrandLogo({
   className = "",
   priority = false,
 }: BrandLogoProps) {
-  const s = sizes[size];
+  const height = sizes[size].height;
+  const width = Math.round(height * ASPECT);
   const image = (
-    <Image
+    // Plain img so display size always wins (next/image CSS can clamp height).
+    <img
       src="/trainflow-logo.png"
       alt="TrainFlow"
-      width={s.width}
-      height={s.height}
-      className={`${s.className} ${className}`.trim()}
-      priority={priority}
+      width={width}
+      height={height}
+      style={{ width, height, maxWidth: "none", display: "block" }}
+      className={className}
+      decoding="async"
+      {...(priority ? { fetchPriority: "high" as const } : {})}
     />
   );
 
   if (!href) return image;
   return (
-    <Link href={href} className="inline-flex shrink-0" aria-label="TrainFlow">
+    <Link href={href} className="inline-flex shrink-0 items-center" aria-label="TrainFlow">
       {image}
     </Link>
   );
