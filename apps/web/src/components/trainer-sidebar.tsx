@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { BrandLogo } from "@/components/brand-logo";
 
 const links = [
   { href: "/dashboard", labelKey: "dashboard" },
@@ -26,10 +27,8 @@ export function TrainerSidebar() {
 
   return (
     <aside className="flex w-56 shrink-0 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-      <div className="border-b border-zinc-200 px-5 py-4 dark:border-zinc-800">
-        <Link href="/dashboard" className="font-semibold tracking-tight">
-          {t("brand")}
-        </Link>
+      <div className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+        <BrandLogo href="/dashboard" size="sm" />
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-3 text-sm">
         {links.map((link) => {

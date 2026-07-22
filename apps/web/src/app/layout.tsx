@@ -9,6 +9,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "TrainFlow",
     description: t("appDescription"),
+    icons: {
+      icon: "/favicon.png",
+      apple: "/favicon.png",
+    },
   };
 }
 
