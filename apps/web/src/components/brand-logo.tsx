@@ -3,13 +3,14 @@ import Link from "next/link";
 type BrandLogoProps = {
   href?: string;
   /** Visual size preset */
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   className?: string;
   priority?: boolean;
 };
 
 /** Display height in px — trimmed asset is 374×317 */
 const sizes = {
+  xs: { height: 36 },
   sm: { height: 72 },
   md: { height: 96 },
   lg: { height: 160 },
