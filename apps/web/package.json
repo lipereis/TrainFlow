@@ -6,7 +6,8 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "jest"
   },
   "dependencies": {
     "@clerk/backend": "^1.21.0",
@@ -33,13 +34,16 @@
   },
   "devDependencies": {
     "@prisma/nextjs-monorepo-workaround-plugin": "^7.9.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.10.2",
     "@types/pdfkit": "^0.17.6",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",
+    "jest": "^29.7.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.7.2"
   }
 }
