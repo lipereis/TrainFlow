@@ -3,7 +3,7 @@ import Link from "next/link";
 type BrandLogoProps = {
   href?: string;
   /** Visual size preset */
-  size?: "xs" | "sm" | "md" | "lg";
+  size?: "xs" | "nav" | "sm" | "md" | "lg";
   className?: string;
   priority?: boolean;
 };
@@ -11,6 +11,8 @@ type BrandLogoProps = {
 /** Display height in px — trimmed asset is 374×317 */
 const sizes = {
   xs: { height: 36 },
+  /** Compact chrome / marketing nav */
+  nav: { height: 52 },
   sm: { height: 72 },
   md: { height: 96 },
   lg: { height: 160 },

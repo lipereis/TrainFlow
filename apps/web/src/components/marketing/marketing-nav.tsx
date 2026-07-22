@@ -10,8 +10,8 @@ export async function MarketingNav() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <Container className="flex h-16 items-center justify-between gap-4">
-        <BrandLogo href="/" size="xs" priority />
+      <Container className="flex h-20 items-center justify-between gap-4">
+        <BrandLogo href="/" size="nav" priority />
 
         <div className="flex items-center gap-1.5 sm:gap-3">
           <AppearanceControls />
