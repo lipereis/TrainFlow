@@ -49,3 +49,4 @@ jobs:
       - run: pnpm --filter @trainflow/api test:e2e
       - run: pnpm --filter @trainflow/api build
       - run: pnpm --filter @trainflow/web exec tsc --noEmit
+      - run: pnpm --filter @trainflow/web test

@@ -1,3 +1,4 @@
+import { createClerkClient } from "@clerk/backend";
 import { auth } from "@clerk/nextjs/server";
 import type { Role } from "@trainflow/shared-types";
 import { requireClientId, requireTrainerId } from "@/server/auth";
@@ -44,8 +45,16 @@ export async function authorizeWorkoutExport(
   }
 
   const claims = session.sessionClaims as Record<string, unknown> | null;
-  const role =
+  let role =
     roleFromMeta(claims?.metadata) ?? roleFromMeta(claims?.publicMetadata);
+
+  if (!role) {
+    const clerk = createClerkClient({
+      secretKey: process.env.CLERK_SECRET_KEY!,
+    });
+    const user = await clerk.users.getUser(session.userId);
+    role = roleFromMeta(user.publicMetadata);
+  }
 
   if (role === "CLIENT") {
     const { clientId } = await requireClientId();
@@ -65,8 +74,11 @@ export async function authorizeWorkoutExport(
     return { trainerId };
   }
 
-  // Default / TRAINER path (also covers trainers whose claim role is TRAINER)
-  const { trainerId } = await requireTrainerId();
-  await workoutsService.get(trainerId, programId);
-  return { trainerId };
+  if (role === "TRAINER") {
+    const { trainerId } = await requireTrainerId();
+    await workoutsService.get(trainerId, programId);
+    return { trainerId };
+  }
+
+  throw forbidden("FORBIDDEN", "Insufficient role");
 }
