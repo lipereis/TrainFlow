@@ -46,10 +46,10 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             key={link.href}
             href={link.href}
             onClick={onNavigate}
-            className={`rounded px-3 py-2 ${
+            className={`rounded-xl px-3 py-2 transition-colors ${
               active
-                ? "bg-zinc-100 font-medium text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
-                : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                ? "bg-muted font-medium text-foreground"
+                : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
             }`}
           >
             {t(link.labelKey)}
@@ -77,10 +77,10 @@ const SidebarPanel = forwardRef<
       ref={ref}
       id={id}
       aria-labelledby={labelledBy}
-      className={`flex w-56 shrink-0 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 ${className}`}
+      className={`flex w-56 shrink-0 flex-col border-r border-border bg-card text-card-foreground ${className}`}
     >
-      <div className="border-b border-zinc-200 px-3 py-4 dark:border-zinc-800">
-        <BrandLogo href="/dashboard" size="sm" />
+      <div className="border-b border-border px-3 py-4">
+        <BrandLogo href="/dashboard" size="nav" />
       </div>
       <NavLinks onNavigate={onNavigate} />
     </aside>
@@ -193,7 +193,7 @@ export function TrainerShell({ children }: { children: ReactNode }) {
   }, [open]);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background text-foreground">
       <SidebarPanel className="hidden md:flex" />
 
       {open ? (
@@ -219,11 +219,11 @@ export function TrainerShell({ children }: { children: ReactNode }) {
       ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between gap-3 border-b border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900 sm:px-6">
+        <header className="flex h-16 items-center justify-between gap-3 border-b border-border bg-card/80 px-4 backdrop-blur-md sm:px-6 md:h-auto md:py-3">
           <button
             ref={menuButtonRef}
             type="button"
-            className="inline-flex items-center justify-center rounded border border-zinc-300 p-2 text-zinc-700 hover:bg-zinc-50 md:hidden dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            className="inline-flex items-center justify-center rounded-xl border border-border p-2 text-foreground hover:bg-muted md:hidden"
             aria-expanded={open}
             aria-controls={DRAWER_ID}
             aria-label={open ? t("closeMenu") : t("openMenu")}
@@ -236,7 +236,7 @@ export function TrainerShell({ children }: { children: ReactNode }) {
             <UserButton />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-[90rem] flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        <main className="mx-auto w-full max-w-[90rem] flex-1 bg-background px-4 py-6 sm:px-6 sm:py-8">
           {children}
         </main>
       </div>
