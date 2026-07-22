@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ClientDto } from "@trainflow/shared-types";
+import { Badge } from "@/components/ui/badge";
+import { buttonClassName } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { apiFetch } from "@/lib/api";
 
 type WorkoutListItem = {
@@ -57,31 +60,23 @@ export default async function DashboardPage() {
   return (
     <section className="space-y-8">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <h1 className="text-2xl font-semibold text-foreground">
           {t("title")}
         </h1>
         <div className="flex gap-2 text-sm">
-          <Link
-            href="/clients/new"
-            className="rounded bg-zinc-900 px-3 py-2 text-white dark:bg-zinc-100 dark:text-zinc-900"
-          >
+          <Link href="/clients/new" className={buttonClassName("primary", "sm")}>
             {t("newClient")}
           </Link>
-          <Link
-            href="/workouts/new"
-            className="rounded border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-          >
+          <Link href="/workouts/new" className={buttonClassName("secondary", "sm")}>
             {t("newWorkout")}
           </Link>
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            {t("clients")}
-          </p>
-          <p className="mt-1 text-3xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <Card className="p-5">
+          <p className="text-sm text-muted-foreground">{t("clients")}</p>
+          <p className="mt-1 text-3xl font-semibold text-foreground">
             {clientsError ? "—" : clients.length}
           </p>
           {clientsError ? (
@@ -89,105 +84,103 @@ export default async function DashboardPage() {
               {clientsError}
             </p>
           ) : null}
-        </div>
-        <div className="rounded border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            {t("programs")}
-          </p>
-          <p className="mt-1 text-3xl font-semibold text-zinc-900 dark:text-zinc-100">
+        </Card>
+        <Card className="p-5">
+          <p className="text-sm text-muted-foreground">{t("programs")}</p>
+          <p className="mt-1 text-3xl font-semibold text-foreground">
             {workouts.length}
           </p>
-        </div>
-        <div className="rounded border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        </Card>
+        <Card className="p-5">
+          <p className="text-sm text-muted-foreground">
             {t("activePrograms")}
           </p>
-          <p className="mt-1 text-3xl font-semibold text-zinc-900 dark:text-zinc-100">
+          <p className="mt-1 text-3xl font-semibold text-foreground">
             {activeCount}
           </p>
-        </div>
+        </Card>
       </div>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+          <h2 className="text-lg font-medium text-foreground">
             {t("recentPrograms")}
           </h2>
           <Link
             href="/clients"
-            className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+            className="text-sm text-muted-foreground hover:underline"
           >
             {t("viewClients")}
           </Link>
         </div>
-        <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-          {recent.map((w) => {
-            const statusLabel = programStatusLabel(w.status, t);
-            return (
-              <li
-                key={w.id}
-                className="flex items-center justify-between gap-3 px-4 py-3"
-              >
-                <div className="min-w-0">
+        <Card className="overflow-hidden divide-y divide-border">
+          <ul className="divide-y divide-border">
+            {recent.map((w) => {
+              const statusLabel = programStatusLabel(w.status, t);
+              return (
+                <li
+                  key={w.id}
+                  className="flex items-center justify-between gap-3 px-4 py-3"
+                >
+                  <div className="min-w-0">
+                    <Link
+                      href={`/workouts/${w.id}`}
+                      className="font-medium text-foreground hover:underline"
+                    >
+                      {w.name}
+                    </Link>
+                    {statusLabel ? (
+                      <div className="mt-1">
+                        <Badge>{statusLabel}</Badge>
+                      </div>
+                    ) : null}
+                  </div>
                   <Link
                     href={`/workouts/${w.id}`}
-                    className="font-medium text-zinc-900 hover:underline dark:text-zinc-100"
+                    className="shrink-0 text-sm text-muted-foreground hover:underline"
                   >
-                    {w.name}
+                    {t("open")}
                   </Link>
-                  {statusLabel ? (
-                    <p className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                      {statusLabel}
-                    </p>
-                  ) : null}
-                </div>
-                <Link
-                  href={`/workouts/${w.id}`}
-                  className="shrink-0 text-sm text-zinc-600 hover:underline dark:text-zinc-400"
-                >
-                  {t("open")}
+                </li>
+              );
+            })}
+            {recent.length === 0 ? (
+              <li className="px-4 py-8 text-center text-muted-foreground">
+                {t("noPrograms")}{" "}
+                <Link href="/workouts/new" className="underline">
+                  {t("createOne")}
                 </Link>
               </li>
-            );
-          })}
-          {recent.length === 0 ? (
-            <li className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
-              {t("noPrograms")}{" "}
-              <Link href="/workouts/new" className="underline">
-                {t("createOne")}
-              </Link>
-            </li>
-          ) : null}
-        </ul>
+            ) : null}
+          </ul>
+        </Card>
       </div>
 
       <div className="space-y-3">
-        <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
-          {t("clients")}
-        </h2>
-        <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-          {clients.slice(0, 8).map((c) => (
-            <li
-              key={c.id}
-              className="flex items-center justify-between px-4 py-3"
-            >
-              <Link
-                href={`/clients/${c.id}`}
-                className="font-medium text-zinc-900 hover:underline dark:text-zinc-100"
+        <h2 className="text-lg font-medium text-foreground">{t("clients")}</h2>
+        <Card className="overflow-hidden divide-y divide-border">
+          <ul className="divide-y divide-border">
+            {clients.slice(0, 8).map((c) => (
+              <li
+                key={c.id}
+                className="flex items-center justify-between px-4 py-3"
               >
-                {c.name}
-              </Link>
-              <span className="text-xs uppercase text-zinc-500 dark:text-zinc-400">
-                {clientStatusLabel(c.status, tClients)}
-              </span>
-            </li>
-          ))}
-          {clients.length === 0 && !clientsError ? (
-            <li className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
-              {t("noClients")}
-            </li>
-          ) : null}
-        </ul>
+                <Link
+                  href={`/clients/${c.id}`}
+                  className="font-medium text-foreground hover:underline"
+                >
+                  {c.name}
+                </Link>
+                <Badge>{clientStatusLabel(c.status, tClients)}</Badge>
+              </li>
+            ))}
+            {clients.length === 0 && !clientsError ? (
+              <li className="px-4 py-8 text-center text-muted-foreground">
+                {t("noClients")}
+              </li>
+            ) : null}
+          </ul>
+        </Card>
       </div>
     </section>
   );
