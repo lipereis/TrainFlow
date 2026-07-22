@@ -45,8 +45,5 @@ jobs:
       - run: pnpm --filter @trainflow/workout-math build
       - run: pnpm lint
       - run: pnpm --filter @trainflow/workout-math test
-      - run: pnpm --filter @trainflow/api test
-      - run: pnpm --filter @trainflow/api test:e2e
-      - run: pnpm --filter @trainflow/api build
       - run: pnpm --filter @trainflow/web exec tsc --noEmit
       - run: pnpm --filter @trainflow/web test

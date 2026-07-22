@@ -10,7 +10,7 @@ Target architecture:
 | Database | **Supabase** PostgreSQL |
 | Auth + webhooks | **Clerk** |
 
-Do **not** use Railway. The legacy Nest app under `apps/api` remains in the repo for reference until retired; production traffic goes through Next.js `/api/*`.
+Do **not** use Railway. All HTTP traffic (UI + API) is served by the Next.js app on Vercel (`apps/web`). Route Handlers live under `apps/web/src/app/api/**`.
 
 ---
 
@@ -127,4 +127,3 @@ Same-origin browser calls use `/api/...` — **no** `NEXT_PUBLIC_API_URL`.
 | Trainer webhook | `POST /api/webhooks/clerk/trainer` |
 | Invite webhook | `POST /api/webhooks/clerk/invite` |
 | Vercel build | `apps/web/vercel.json` |
-| Legacy Nest (not for prod) | `apps/api` |

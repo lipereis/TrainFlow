@@ -4,7 +4,7 @@ AI-powered operating system for personal trainers.
 
 ## Foundation (this phase)
 
-- Turborepo monorepo (`apps/web`, `apps/api`, `packages/*`)
+- Turborepo monorepo (`apps/web`, `packages/*`)
 - Clerk auth (`TRAINER` / `CLIENT`)
 - Core DB: Trainer, Client, InviteToken
 - Trainer invite flow + client list
@@ -19,7 +19,7 @@ AI-powered operating system for personal trainers.
 ## Setup
 
 1. Copy env templates (placeholders only — see comments inside):
-   - `.env.example` → `.env` (root / API)
+   - `.env.example` → `.env` (root (shared DB + Clerk secrets))
    - `apps/web/.env.example` → `apps/web/.env.local`
    - `packages/db/.env.example` → `packages/db/.env`  
    Set **both** `DATABASE_URL` and `DIRECT_URL` (same value locally; pooler + direct on Supabase).
@@ -37,21 +37,18 @@ App + API (Route Handlers): http://localhost:3000 · Health: http://localhost:30
 
 ## Production deploy
 
-See **[docs/deploy.md](docs/deploy.md)** for the Vercel + Clerk + Supabase matrix (env vars, webhooks, session claims, build settings). **No Railway.**
+See **[docs/deploy.md](docs/deploy.md)** for the Vercel + Clerk + Supabase matrix (env vars, webhooks, session claims, build settings).
 
 | Layer | Host |
 |-------|------|
-| Frontend + backend | Vercel (`apps/web` Root Directory) |
+| Frontend + backend (Route Handlers) | Vercel (`apps/web` Root Directory) |
 | DB | Supabase PostgreSQL |
 | Auth | Clerk |
 
-Legacy Nest (`apps/api`) stays in the repo until retired; production uses Next.js `/api/*` only.
-
 ## Scripts
 
-- `pnpm dev` — turbo (web; api package still present for local comparison)
-- `pnpm test` — unit tests (turbo: includes `@trainflow/api` + `@trainflow/workout-math`)
-- `pnpm --filter @trainflow/api test:e2e` — legacy Nest e2e (needs Postgres)
+- `pnpm dev` — turbo (Next.js web on port 3000)
+- `pnpm test` — package tests via turbo (`@trainflow/workout-math`, `@trainflow/web`, etc.)
 - `pnpm db:seed` — seed exercises + sample workout templates
 - `pnpm db:migrate:deploy` — apply migrations (CI / production)
 
@@ -83,8 +80,8 @@ pnpm --filter @trainflow/web dev
 ```bash
 pnpm test
 # or targeted:
-pnpm --filter @trainflow/api test
 pnpm --filter @trainflow/workout-math test
+pnpm --filter @trainflow/web test
 pnpm --filter @trainflow/web exec tsc --noEmit
 ```
 
