@@ -1,8 +1,15 @@
 import { auth } from "@clerk/nextjs/server";
+import type { Role } from "@trainflow/shared-types";
 import { requireClientId, requireTrainerId } from "@/server/auth";
 import { forbidden, notFound, unauthorized } from "@/server/errors";
 import { prisma } from "@/server/prisma";
 import { workoutsService } from "@/server/workouts.service";
+
+function roleFromMeta(meta: unknown): Role | null {
+  const role = (meta as { role?: string } | null | undefined)?.role;
+  if (role === "TRAINER" || role === "CLIENT") return role;
+  return null;
+}
 
 export type ExportProgramRow = {
   id: string;
@@ -37,11 +44,8 @@ export async function authorizeWorkoutExport(
   }
 
   const claims = session.sessionClaims as Record<string, unknown> | null;
-  const meta = (claims?.metadata ?? claims?.publicMetadata) as
-    | { role?: string }
-    | null
-    | undefined;
-  const role = meta?.role;
+  const role =
+    roleFromMeta(claims?.metadata) ?? roleFromMeta(claims?.publicMetadata);
 
   if (role === "CLIENT") {
     const { clientId } = await requireClientId();
