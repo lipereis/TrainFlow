@@ -2,8 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: 210 20% 98%;
+  --foreground: 222 47% 11%;
+  --muted: 210 16% 93%;
+  --muted-foreground: 215 16% 40%;
+  --border: 214 20% 88%;
+  --ring: 160 84% 30%;
+  --primary: 160 84% 30%;
+  --primary-foreground: 0 0% 100%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --radius: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.06), 0 8px 24px rgb(15 23 42 / 0.06);
+}
+
+.dark {
+  --background: 222 47% 7%;
+  --foreground: 210 20% 96%;
+  --muted: 217 25% 14%;
+  --muted-foreground: 215 16% 65%;
+  --border: 217 20% 18%;
+  --ring: 160 70% 45%;
+  --primary: 160 70% 40%;
+  --primary-foreground: 0 0% 100%;
+  --card: 222 47% 9%;
+  --card-foreground: 210 20% 96%;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+}
+
 body {
-  @apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+  @apply bg-background text-foreground antialiased;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 @media print {
