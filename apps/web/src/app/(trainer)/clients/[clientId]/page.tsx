@@ -2,8 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { ClientDto } from "@trainflow/shared-types";
-import { apiFetch } from "@/lib/api";
 import { DeleteClientButton } from "@/components/delete-client-button";
+import { Badge } from "@/components/ui/badge";
+import { buttonClassName } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { apiFetch } from "@/lib/api";
 
 type WorkoutListItem = {
   id: string;
@@ -25,10 +28,10 @@ function Field({
 }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+      <dt className="text-xs uppercase tracking-wide text-muted-foreground">
         {label}
       </dt>
-      <dd className="mt-0.5 whitespace-pre-wrap text-sm text-zinc-900 dark:text-zinc-100">
+      <dd className="mt-0.5 whitespace-pre-wrap text-sm text-foreground">
         {value?.trim() ? value : empty}
       </dd>
     </div>
@@ -96,30 +99,28 @@ export default async function ClientProfilePage({
     <section className="space-y-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             <Link href="/clients" className="hover:underline">
               {t("title")}
             </Link>
             <span className="mx-1">/</span>
             {client.name}
           </p>
-          <h1 className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+          <h1 className="mt-1 text-2xl font-semibold text-foreground">
             {client.name}
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            {client.email}
-          </p>
+          <p className="text-sm text-muted-foreground">{client.email}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/workouts/new?clientId=${client.id}`}
-            className="rounded bg-zinc-900 px-3 py-2 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900"
+            className={buttonClassName("primary", "sm")}
           >
             {t("newWorkout")}
           </Link>
           <Link
             href={`/clients/${client.id}/edit`}
-            className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className={buttonClassName("secondary", "sm")}
           >
             {t("edit")}
           </Link>
@@ -127,105 +128,116 @@ export default async function ClientProfilePage({
         </div>
       </div>
 
-      <dl className="grid gap-4 rounded border border-zinc-200 bg-white p-6 sm:grid-cols-2 dark:border-zinc-800 dark:bg-zinc-900">
-        <Field
-          label={t("status")}
-          value={clientStatusLabel(client.status, t)}
-          empty={empty}
-        />
-        <Field label={t("phone")} value={client.phone} empty={empty} />
-        <Field
-          label={t("birthDate")}
-          value={client.birthDate ? client.birthDate.slice(0, 10) : null}
-          empty={empty}
-        />
-        <Field
-          label={t("experience")}
-          value={experienceLabel(client.experienceLevel, t)}
-          empty={empty}
-        />
-        <Field
-          label={t("height")}
-          value={
-            client.heightCm != null
-              ? t("heightValue", { value: client.heightCm })
-              : null
-          }
-          empty={empty}
-        />
-        <Field
-          label={t("weight")}
-          value={
-            client.weightKg != null
-              ? t("weightValue", { value: client.weightKg })
-              : null
-          }
-          empty={empty}
-        />
-        <Field label={t("goal")} value={client.goal} empty={empty} />
-        <Field
-          label={t("weeklyAvailability")}
-          value={client.weeklyAvailability}
-          empty={empty}
-        />
-        <Field label={t("injuries")} value={client.injuries} empty={empty} />
-        <Field
-          label={t("restrictions")}
-          value={client.restrictions}
-          empty={empty}
-        />
-        <Field label={t("equipment")} value={client.equipment} empty={empty} />
-        <Field
-          label={t("observations")}
-          value={client.observations}
-          empty={empty}
-        />
-      </dl>
+      <Card className="p-6">
+        <dl className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              {t("status")}
+            </dt>
+            <dd className="mt-1">
+              <Badge>{clientStatusLabel(client.status, t)}</Badge>
+            </dd>
+          </div>
+          <Field label={t("phone")} value={client.phone} empty={empty} />
+          <Field
+            label={t("birthDate")}
+            value={client.birthDate ? client.birthDate.slice(0, 10) : null}
+            empty={empty}
+          />
+          <Field
+            label={t("experience")}
+            value={experienceLabel(client.experienceLevel, t)}
+            empty={empty}
+          />
+          <Field
+            label={t("height")}
+            value={
+              client.heightCm != null
+                ? t("heightValue", { value: client.heightCm })
+                : null
+            }
+            empty={empty}
+          />
+          <Field
+            label={t("weight")}
+            value={
+              client.weightKg != null
+                ? t("weightValue", { value: client.weightKg })
+                : null
+            }
+            empty={empty}
+          />
+          <Field label={t("goal")} value={client.goal} empty={empty} />
+          <Field
+            label={t("weeklyAvailability")}
+            value={client.weeklyAvailability}
+            empty={empty}
+          />
+          <Field label={t("injuries")} value={client.injuries} empty={empty} />
+          <Field
+            label={t("restrictions")}
+            value={client.restrictions}
+            empty={empty}
+          />
+          <Field label={t("equipment")} value={client.equipment} empty={empty} />
+          <Field
+            label={t("observations")}
+            value={client.observations}
+            empty={empty}
+          />
+        </dl>
+      </Card>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+          <h2 className="text-lg font-medium text-foreground">
             {t("workoutPrograms")}
           </h2>
           <Link
             href={`/workouts/new?clientId=${client.id}`}
-            className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+            className={buttonClassName("ghost", "sm")}
           >
             {t("createProgram")}
           </Link>
         </div>
-        <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-          {programs.map((p) => (
-            <li
-              key={p.id}
-              className="flex flex-wrap items-center justify-between gap-2 px-4 py-3"
-            >
-              <div className="min-w-0">
+        <Card className="overflow-hidden divide-y divide-border">
+          <ul className="divide-y divide-border">
+            {programs.map((p) => (
+              <li
+                key={p.id}
+                className="flex flex-wrap items-center justify-between gap-2 px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <Link
+                    href={`/workouts/${p.id}`}
+                    className="font-medium text-foreground hover:underline"
+                  >
+                    {p.name}
+                  </Link>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <Badge>{programStatusLabel(p.status, t)}</Badge>
+                    {p.goal ? (
+                      <span className="text-xs text-muted-foreground">
+                        {p.goal}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
                 <Link
                   href={`/workouts/${p.id}`}
-                  className="font-medium text-zinc-900 hover:underline dark:text-zinc-100"
+                  className={buttonClassName("ghost", "sm")}
                 >
-                  {p.name}
+                  {t("openSpreadsheet")}
                 </Link>
-                <p className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                  {programStatusLabel(p.status, t)}
-                  {p.goal ? ` · ${p.goal}` : ""}
-                </p>
-              </div>
-              <Link
-                href={`/workouts/${p.id}`}
-                className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
-              >
-                {t("openSpreadsheet")}
-              </Link>
-            </li>
-          ))}
-          {programs.length === 0 ? (
-            <li className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
-              {t("noPrograms")}
-            </li>
-          ) : null}
-        </ul>
+              </li>
+            ))}
+            {programs.length === 0 ? (
+              <li className="px-4 py-8 text-center text-muted-foreground">
+                {t("noPrograms")}
+              </li>
+            ) : null}
+          </ul>
+        </Card>
       </div>
     </section>
   );

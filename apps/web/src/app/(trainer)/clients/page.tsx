@@ -2,6 +2,10 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ClientDto } from "@trainflow/shared-types";
 import { DeleteClientButton } from "@/components/delete-client-button";
+import { Badge } from "@/components/ui/badge";
+import { buttonClassName } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { apiFetch } from "@/lib/api";
 
 function clientStatusLabel(
@@ -36,42 +40,31 @@ export default async function ClientsPage({
   return (
     <section className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          {t("title")}
-        </h1>
+        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
         <div className="flex gap-2 text-sm">
-          <Link
-            href="/clients/new"
-            className="rounded bg-zinc-900 px-3 py-2 text-white dark:bg-zinc-100 dark:text-zinc-900"
-          >
+          <Link href="/clients/new" className={buttonClassName("primary", "sm")}>
             {t("newClient")}
           </Link>
-          <Link
-            href="/clients/invite"
-            className="rounded border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-          >
+          <Link href="/clients/invite" className={buttonClassName("secondary", "sm")}>
             {t("invite")}
           </Link>
         </div>
       </div>
 
       <form method="get" className="flex gap-2">
-        <input
+        <Input
           name="q"
           defaultValue={q}
           placeholder={t("searchPlaceholder")}
-          className="w-full max-w-sm rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="max-w-sm"
         />
-        <button
-          type="submit"
-          className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-        >
+        <button type="submit" className={buttonClassName("secondary", "sm")}>
           {tCommon("search")}
         </button>
         {q ? (
           <Link
             href="/clients"
-            className="rounded px-3 py-2 text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+            className="self-center px-3 py-2 text-sm text-muted-foreground hover:underline"
           >
             {tCommon("clear")}
           </Link>
@@ -82,47 +75,45 @@ export default async function ClientsPage({
         <p className="text-red-600 dark:text-red-400">{error}</p>
       ) : null}
 
-      <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-        {clients.map((c) => (
-          <li
-            key={c.id}
-            className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
-          >
-            <div>
-              <Link
-                href={`/clients/${c.id}`}
-                className="font-medium text-zinc-900 hover:underline dark:text-zinc-100"
-              >
-                {c.name}
-              </Link>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                {c.email}
-              </p>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <span className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                {clientStatusLabel(c.status, t)}
-              </span>
-              <Link
-                href={`/clients/${c.id}/edit`}
-                className="text-zinc-700 hover:underline dark:text-zinc-300"
-              >
-                {t("edit")}
-              </Link>
-              <DeleteClientButton
-                clientId={c.id}
-                clientName={c.name}
-                variant="link"
-              />
-            </div>
-          </li>
-        ))}
-        {clients.length === 0 && !error ? (
-          <li className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
-            {q ? t("noMatch") : t("noClients")}
-          </li>
-        ) : null}
-      </ul>
+      <Card className="overflow-hidden divide-y divide-border">
+        <ul className="divide-y divide-border">
+          {clients.map((c) => (
+            <li
+              key={c.id}
+              className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
+            >
+              <div>
+                <Link
+                  href={`/clients/${c.id}`}
+                  className="font-medium text-foreground hover:underline"
+                >
+                  {c.name}
+                </Link>
+                <p className="text-sm text-muted-foreground">{c.email}</p>
+              </div>
+              <div className="flex items-center gap-3 text-sm">
+                <Badge>{clientStatusLabel(c.status, t)}</Badge>
+                <Link
+                  href={`/clients/${c.id}/edit`}
+                  className="text-muted-foreground hover:underline"
+                >
+                  {t("edit")}
+                </Link>
+                <DeleteClientButton
+                  clientId={c.id}
+                  clientName={c.name}
+                  variant="link"
+                />
+              </div>
+            </li>
+          ))}
+          {clients.length === 0 && !error ? (
+            <li className="px-4 py-8 text-center text-muted-foreground">
+              {q ? t("noMatch") : t("noClients")}
+            </li>
+          ) : null}
+        </ul>
+      </Card>
     </section>
   );
 }
