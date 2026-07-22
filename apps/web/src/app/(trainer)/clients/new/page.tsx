@@ -26,12 +26,12 @@ export default function NewClientPage() {
   return (
     <section className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <h1 className="text-2xl font-semibold text-foreground">
           {t("newClient")}
         </h1>
         <Link
           href="/clients"
-          className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+          className="text-sm text-muted-foreground hover:underline"
         >
           {t("back")}
         </Link>

@@ -25,20 +25,20 @@ export default async function EditClientPage({
     <section className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             <Link href={`/clients/${client.id}`} className="hover:underline">
               {client.name}
             </Link>
             <span className="mx-1">/</span>
             {t("edit")}
           </p>
-          <h1 className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+          <h1 className="mt-1 text-2xl font-semibold text-foreground">
             {t("editClient")}
           </h1>
         </div>
         <Link
           href={`/clients/${client.id}`}
-          className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+          className="text-sm text-muted-foreground hover:underline"
         >
           {tCommon("cancel")}
         </Link>
