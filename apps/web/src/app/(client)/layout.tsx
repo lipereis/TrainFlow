@@ -15,9 +15,9 @@ export default async function ClientLayout({ children }: { children: React.React
   }
 
   return (
-    <div className="min-h-screen">
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <BrandLogo href="/portal" size="sm" />
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="flex items-center justify-between border-b border-border bg-card/80 px-6 py-3 backdrop-blur-md">
+        <BrandLogo href="/portal" size="nav" />
         <div className="flex items-center gap-3">
           <AppearanceControls />
           <UserButton />

@@ -14,11 +14,11 @@ const options: { value: ThemeValue; key: "themeLight" | "themeDark" | "themeSyst
   ];
 
 const segmentBase =
-  "px-2.5 py-1 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500";
+  "px-2.5 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 const segmentIdle =
-  "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100";
+  "text-muted-foreground hover:bg-muted hover:text-foreground";
 const segmentActive =
-  "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900";
+  "bg-foreground text-background";
 
 export function ThemeToggle() {
   const t = useTranslations("common");
@@ -35,7 +35,7 @@ export function ThemeToggle() {
     <div
       role="group"
       aria-label={t("theme")}
-      className="inline-flex overflow-hidden rounded border border-zinc-300 dark:border-zinc-700"
+      className="inline-flex overflow-hidden rounded-xl border border-border"
     >
       {options.map((opt) => {
         const isActive = active === opt.value;
