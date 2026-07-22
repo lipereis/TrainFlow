@@ -10,9 +10,9 @@ type BrandLogoProps = {
 
 /** Display height in px — trimmed asset is 374×317 */
 const sizes = {
-  sm: { height: 112 },
-  md: { height: 144 },
-  lg: { height: 220 },
+  sm: { height: 88 },
+  md: { height: 112 },
+  lg: { height: 180 },
 } as const;
 
 const ASPECT = 374 / 317;
