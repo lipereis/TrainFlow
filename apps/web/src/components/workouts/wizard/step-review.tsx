@@ -57,64 +57,64 @@ export function StepReview({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-foreground">
           {t("reviewTitle")}
         </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm text-muted-foreground">
           {t("reviewDesc")}
         </p>
       </div>
 
-      <div className="space-y-4 rounded border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="space-y-4 rounded-xl border border-border bg-card p-6">
         <dl className="grid gap-3 text-sm sm:grid-cols-2">
           <div>
-            <dt className="text-zinc-500 dark:text-zinc-400">{t("client")}</dt>
-            <dd className="font-medium text-zinc-900 dark:text-zinc-100">
+            <dt className="text-muted-foreground">{t("client")}</dt>
+            <dd className="font-medium text-foreground">
               {clientName}
             </dd>
           </div>
           <div>
-            <dt className="text-zinc-500 dark:text-zinc-400">{t("program")}</dt>
-            <dd className="font-medium text-zinc-900 dark:text-zinc-100">
+            <dt className="text-muted-foreground">{t("program")}</dt>
+            <dd className="font-medium text-foreground">
               {program.name}
             </dd>
           </div>
           <div>
-            <dt className="text-zinc-500 dark:text-zinc-400">{t("goal")}</dt>
-            <dd className="text-zinc-900 dark:text-zinc-100">
+            <dt className="text-muted-foreground">{t("goal")}</dt>
+            <dd className="text-foreground">
               {program.goal ?? tCommon("emDash")}
             </dd>
           </div>
           <div>
-            <dt className="text-zinc-500 dark:text-zinc-400">
+            <dt className="text-muted-foreground">
               {t("frequency")}
             </dt>
-            <dd className="text-zinc-900 dark:text-zinc-100">
+            <dd className="text-foreground">
               {t("frequencyValue", { count: program.daysPerWeek })}
             </dd>
           </div>
           <div>
-            <dt className="text-zinc-500 dark:text-zinc-400">{t("dates")}</dt>
-            <dd className="text-zinc-900 dark:text-zinc-100">
+            <dt className="text-muted-foreground">{t("dates")}</dt>
+            <dd className="text-foreground">
               {program.startDate.slice(0, 10)}
               {program.endDate ? ` → ${program.endDate.slice(0, 10)}` : ""}
             </dd>
           </div>
           <div>
-            <dt className="text-zinc-500 dark:text-zinc-400">{t("level")}</dt>
-            <dd className="text-zinc-900 dark:text-zinc-100">
+            <dt className="text-muted-foreground">{t("level")}</dt>
+            <dd className="text-foreground">
               {levelLabel(program.level, t, tCommon("emDash"))}
             </dd>
           </div>
           <div>
-            <dt className="text-zinc-500 dark:text-zinc-400">{t("status")}</dt>
-            <dd className="text-zinc-900 dark:text-zinc-100">
+            <dt className="text-muted-foreground">{t("status")}</dt>
+            <dd className="text-foreground">
               {statusLabel(program.status, t)}
             </dd>
           </div>
           <div>
-            <dt className="text-zinc-500 dark:text-zinc-400">{t("totals")}</dt>
-            <dd className="text-zinc-900 dark:text-zinc-100">
+            <dt className="text-muted-foreground">{t("totals")}</dt>
+            <dd className="text-foreground">
               {t("totalsValue", {
                 days: program.days.length,
                 exercises: totalExercises,
@@ -125,37 +125,37 @@ export function StepReview({
 
         {program.observations ? (
           <div className="text-sm">
-            <p className="text-zinc-500 dark:text-zinc-400">
+            <p className="text-muted-foreground">
               {t("observations")}
             </p>
-            <p className="mt-1 whitespace-pre-wrap text-zinc-900 dark:text-zinc-100">
+            <p className="mt-1 whitespace-pre-wrap text-foreground">
               {program.observations}
             </p>
           </div>
         ) : null}
 
-        <div className="space-y-4 border-t border-zinc-100 pt-4 dark:border-zinc-800">
+        <div className="space-y-4 border-t border-border pt-4">
           {program.days.map((day) => (
             <div key={day.id}>
-              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <h3 className="text-sm font-semibold text-foreground">
                 {day.name}
                 {day.focus ? (
-                  <span className="font-normal text-zinc-500 dark:text-zinc-400">
+                  <span className="font-normal text-muted-foreground">
                     {" "}
                     · {day.focus}
                   </span>
                 ) : null}
               </h3>
               {day.exercises.length === 0 ? (
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {t("noExercises")}
                 </p>
               ) : (
-                <ol className="mt-1 list-decimal space-y-0.5 pl-5 text-sm text-zinc-700 dark:text-zinc-300">
+                <ol className="mt-1 list-decimal space-y-0.5 pl-5 text-sm text-foreground">
                   {day.exercises.map((ex) => (
                     <li key={ex.id}>
                       {exerciseDisplayName(ex, t("exerciseFallback"))}{" "}
-                      <span className="text-zinc-500 dark:text-zinc-400">
+                      <span className="text-muted-foreground">
                         ({ex.sets}×{ex.repsMin}–{ex.repsMax},{" "}
                         {translateMuscleLabel(ex.muscleGroup, tExercises)})
                       </span>

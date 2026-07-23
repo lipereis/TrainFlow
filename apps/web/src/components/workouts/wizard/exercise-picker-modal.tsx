@@ -118,22 +118,22 @@ export function ExercisePickerModal({
         role="dialog"
         aria-modal="true"
         aria-label={t("pickerAria")}
-        className="flex max-h-[90vh] w-full max-w-lg flex-col rounded border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+        className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-xl border border-border bg-card shadow-lg"
       >
-        <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <h3 className="font-semibold text-foreground">
             {t("pickerTitle")}
           </h3>
           <button
             type="button"
-            className="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="text-sm text-muted-foreground hover:text-foreground"
             onClick={onClose}
           >
             {t("close")}
           </button>
         </div>
 
-        <div className="flex gap-2 border-b border-zinc-100 px-4 py-2 text-sm dark:border-zinc-800">
+        <div className="flex gap-2 border-b border-border px-4 py-2 text-sm">
           <button
             type="button"
             className={tab === "library" ? btnPrimary : btnSecondary}
@@ -177,37 +177,37 @@ export function ExercisePickerModal({
                 </button>
               </form>
               {loading ? (
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                <p className="text-sm text-muted-foreground">
                   {t("searching")}
                 </p>
               ) : (
-                <ul className="divide-y divide-zinc-100 rounded border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+                <ul className="divide-y divide-border rounded-xl border border-border">
                   {results.map((ex) => (
                     <li key={ex.id}>
                       <button
                         type="button"
                         disabled={busy}
                         onClick={() => void pick(ex)}
-                        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-zinc-50 disabled:opacity-50 dark:hover:bg-zinc-800"
+                        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-muted disabled:opacity-50"
                       >
                         <span>
-                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                          <span className="font-medium text-foreground">
                             {ex.name}
                           </span>
-                          <span className="mt-0.5 block text-xs text-zinc-500 dark:text-zinc-400">
+                          <span className="mt-0.5 block text-xs text-muted-foreground">
                             {translateMuscleLabel(ex.primaryMuscle, tExercises)}{" "}
                             ·{" "}
                             {translateCategoryLabel(ex.category, tExercises)}
                           </span>
                         </span>
-                        <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                        <span className="text-xs text-muted-foreground">
                           {t("add")}
                         </span>
                       </button>
                     </li>
                   ))}
                   {results.length === 0 ? (
-                    <li className="px-3 py-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                    <li className="px-3 py-6 text-center text-sm text-muted-foreground">
                       {t("noExercisesFound")}
                     </li>
                   ) : null}

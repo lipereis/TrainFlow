@@ -74,11 +74,11 @@ function SortableDayRow({
     <li
       ref={setNodeRef}
       style={style}
-      className="flex flex-wrap items-end gap-3 border-b border-zinc-100 px-4 py-3 last:border-0 dark:border-zinc-800"
+      className="flex flex-wrap items-end gap-3 border-b border-border px-4 py-3 last:border-0"
     >
       <button
         type="button"
-        className="cursor-grab touch-none rounded border border-zinc-200 px-2 py-2 text-xs text-zinc-500 active:cursor-grabbing dark:border-zinc-700 dark:text-zinc-400"
+        className="cursor-grab touch-none rounded border border-border px-2 py-2 text-xs text-muted-foreground active:cursor-grabbing"
         aria-label={t("dragReorder")}
         disabled={busy}
         {...attributes}
@@ -115,7 +115,7 @@ function SortableDayRow({
           }}
         />
       </label>
-      <span className="pb-2 text-xs text-zinc-500 dark:text-zinc-400">
+      <span className="pb-2 text-xs text-muted-foreground">
         {t("exerciseCount", { count: day.exercises.length })}
       </span>
       <button
@@ -178,17 +178,17 @@ export function StepDays({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-foreground">
           {t("daysTitle")}
         </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm text-muted-foreground">
           {t("daysDesc", { count: daysPerWeek })}
         </p>
       </div>
 
       {days.length === 0 ? (
-        <div className="rounded border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center dark:border-zinc-700 dark:bg-zinc-900">
-          <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-300">
+        <div className="rounded-xl border border-dashed border-border bg-muted p-6 text-center">
+          <p className="mb-3 text-sm text-muted-foreground">
             {t("noDaysYet")}
           </p>
           <button
@@ -213,7 +213,7 @@ export function StepDays({
             items={days.map((d) => d.id)}
             strategy={verticalListSortingStrategy}
           >
-            <ul className="rounded border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+            <ul className="rounded-xl border border-border bg-card">
               {days.map((day) => (
                 <SortableDayRow
                   key={day.id}
@@ -230,7 +230,7 @@ export function StepDays({
       )}
 
       <form
-        className="flex flex-wrap items-end gap-3 rounded border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+        className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-card p-4"
         onSubmit={(e) => {
           e.preventDefault();
           const name = newName.trim() || dayLetterName(days.length);

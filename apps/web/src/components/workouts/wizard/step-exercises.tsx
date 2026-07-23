@@ -84,11 +84,11 @@ function SortableExerciseRow({
     <li
       ref={setNodeRef}
       style={style}
-      className="flex flex-wrap items-center gap-2 border-b border-zinc-100 px-3 py-2 last:border-0 dark:border-zinc-800"
+      className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2 last:border-0"
     >
       <button
         type="button"
-        className="cursor-grab touch-none rounded border border-zinc-200 px-2 py-1 text-xs text-zinc-500 active:cursor-grabbing dark:border-zinc-700 dark:text-zinc-400"
+        className="cursor-grab touch-none rounded border border-border px-2 py-1 text-xs text-muted-foreground active:cursor-grabbing"
         aria-label={t("dragReorder")}
         disabled={busy}
         {...attributes}
@@ -97,17 +97,17 @@ function SortableExerciseRow({
         ⋮⋮
       </button>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+        <p className="truncate text-sm font-medium text-foreground">
           {exerciseDisplayName(exercise, t("exerciseFallback"))}
         </p>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-muted-foreground">
           {translateMuscleLabel(exercise.muscleGroup, tExercises)} ·{" "}
           {exercise.sets}×{exercise.repsMin}–{exercise.repsMax}
         </p>
       </div>
       {otherDays.length > 0 ? (
         <select
-          className="rounded border border-zinc-300 bg-white px-2 py-1 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+          className="rounded border border-border bg-card px-2 py-1 text-xs text-foreground"
           disabled={busy}
           defaultValue=""
           onChange={(e) => {
@@ -191,10 +191,10 @@ export function StepExercises({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-foreground">
           {t("exercisesTitle")}
         </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm text-muted-foreground">
           {t("exercisesDesc")}
         </p>
       </div>
@@ -218,13 +218,13 @@ export function StepExercises({
       </div>
 
       {!activeDay ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm text-muted-foreground">
           {t("addDaysFirst")}
         </p>
       ) : (
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="font-medium text-zinc-900 dark:text-zinc-100">
+            <h3 className="font-medium text-foreground">
               {activeDay.name}
             </h3>
             <button
@@ -238,7 +238,7 @@ export function StepExercises({
           </div>
 
           {exercises.length === 0 ? (
-            <p className="rounded border border-dashed border-zinc-300 bg-zinc-50 px-4 py-8 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400">
+            <p className="rounded-xl border border-dashed border-border bg-muted px-4 py-8 text-center text-sm text-muted-foreground">
               {t("noExercisesOnDay")}
             </p>
           ) : (
@@ -251,7 +251,7 @@ export function StepExercises({
                 items={exercises.map((e) => e.id)}
                 strategy={verticalListSortingStrategy}
               >
-                <ul className="rounded border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                <ul className="rounded-xl border border-border bg-card">
                   {exercises.map((ex) => (
                     <SortableExerciseRow
                       key={ex.id}

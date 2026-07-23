@@ -71,18 +71,18 @@ export function StepClient({
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          <h2 className="text-lg font-semibold text-foreground">
             {t("stepClient")}
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             {t("clientLockedDesc")}
           </p>
         </div>
-        <div className="rounded border border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <div className="rounded-xl border border-border bg-muted px-4 py-3">
+          <p className="text-sm text-muted-foreground">
             {t("selectedClient")}
           </p>
-          <p className="font-medium text-zinc-900 dark:text-zinc-100">
+          <p className="font-medium text-foreground">
             {selectedName ?? tCommon("emDash")}
           </p>
         </div>
@@ -98,10 +98,10 @@ export function StepClient({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-foreground">
           {t("selectOrCreateTitle")}
         </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm text-muted-foreground">
           {t("selectOrCreateDesc")}
         </p>
       </div>
@@ -153,11 +153,11 @@ export function StepClient({
             <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           ) : null}
           {loading ? (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               {tCommon("loading")}
             </p>
           ) : (
-            <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+            <ul className="divide-y divide-border rounded-xl border border-border bg-card">
               {clients.map((c) => {
                 const selected = c.id === selectedId;
                 return (
@@ -165,20 +165,20 @@ export function StepClient({
                     <button
                       type="button"
                       onClick={() => onSelect({ id: c.id, name: c.name })}
-                      className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800 ${
-                        selected ? "bg-zinc-100 dark:bg-zinc-800" : ""
+                      className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-muted ${
+                        selected ? "bg-muted" : ""
                       }`}
                     >
                       <span>
-                        <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                        <span className="font-medium text-foreground">
                           {c.name}
                         </span>
-                        <span className="mt-0.5 block text-sm text-zinc-500 dark:text-zinc-400">
+                        <span className="mt-0.5 block text-sm text-muted-foreground">
                           {c.email}
                         </span>
                       </span>
                       {selected ? (
-                        <span className="text-xs font-medium uppercase tracking-wide text-zinc-700 dark:text-zinc-300">
+                        <span className="text-xs font-medium uppercase tracking-wide text-foreground">
                           {t("selected")}
                         </span>
                       ) : null}
@@ -187,7 +187,7 @@ export function StepClient({
                 );
               })}
               {clients.length === 0 ? (
-                <li className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
+                <li className="px-4 py-8 text-center text-muted-foreground">
                   {t("noClientsFound")}
                 </li>
               ) : null}
@@ -195,7 +195,7 @@ export function StepClient({
           )}
 
           {selectedId ? (
-            <p className="text-sm text-zinc-600 dark:text-zinc-300">
+            <p className="text-sm text-muted-foreground">
               {t("selectedNamed", { name: selectedName ?? "" })}
             </p>
           ) : null}

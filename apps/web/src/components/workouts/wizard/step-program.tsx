@@ -111,14 +111,14 @@ export function StepProgram({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-foreground">
           {t("programTitle")}
         </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm text-muted-foreground">
           {t.rich("programDesc", {
             clientName,
             name: (chunks) => (
-              <span className="font-medium text-zinc-700 dark:text-zinc-200">
+              <span className="font-medium text-foreground">
                 {chunks}
               </span>
             ),
@@ -128,7 +128,7 @@ export function StepProgram({
 
       <form
         onSubmit={handleSubmit(submit)}
-        className="space-y-4 rounded border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
+        className="space-y-4 rounded-xl border border-border bg-card p-6"
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <label className={`${labelClass} sm:col-span-2`}>

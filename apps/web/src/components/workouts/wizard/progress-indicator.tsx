@@ -22,24 +22,24 @@ export function WizardProgress({ step }: { step: WizardStep }) {
         return (
           <li key={s.n} className="flex items-center gap-2">
             {i > 0 ? (
-              <span className="text-zinc-300 dark:text-zinc-600">/</span>
+              <span className="text-muted-foreground">/</span>
             ) : null}
             <span
               className={
                 current
-                  ? "font-medium text-zinc-900 dark:text-zinc-100"
+                  ? "font-medium text-foreground"
                   : done
-                    ? "text-zinc-600 dark:text-zinc-300"
-                    : "text-zinc-400 dark:text-zinc-500"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
               }
             >
               <span
                 className={`mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full text-xs ${
                   current
-                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                    ? "bg-primary text-primary-foreground"
                     : done
-                      ? "bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200"
-                      : "bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500"
+                      ? "bg-muted text-foreground"
+                      : "bg-muted text-muted-foreground"
                 }`}
               >
                 {s.n}
