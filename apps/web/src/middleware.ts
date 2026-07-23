@@ -8,6 +8,11 @@ import {
   isAppLocale,
   LOCALE_COOKIE,
 } from "@/i18n/config";
+import {
+  applySecurityHeaders,
+  CSP_DIRECTIVE_EXTRAS,
+  forwardCspToRequest,
+} from "@/lib/security-headers";
 
 /**
  * Public routes — everything else requires a signed-in Clerk session.
@@ -29,12 +34,25 @@ const isApi = createRouteMatcher(["/api(.*)"]);
 
 const isClearClerk = createRouteMatcher(["/dev/clear-clerk(.*)"]);
 
-const clerk = clerkMiddleware(async (auth, req) => {
-  if (isPublic(req) || isApi(req)) {
-    return;
-  }
-  await auth.protect();
-});
+/**
+ * Strict CSP: per-request nonce + `strict-dynamic` (Clerk).
+ * FAPI host comes from the publishable key; `*.protect.clerk.com` + Stripe
+ * Checkout/Portal extras are in `@/lib/security-headers`.
+ */
+const clerk = clerkMiddleware(
+  async (auth, req) => {
+    if (isPublic(req) || isApi(req)) {
+      return;
+    }
+    await auth.protect();
+  },
+  {
+    contentSecurityPolicy: {
+      strict: true,
+      directives: CSP_DIRECTIVE_EXTRAS,
+    },
+  },
+);
 
 /** Only clear cookies for a different Clerk *instance* (JWKS kid mismatch). */
 function isClerkInstanceMismatch(err: unknown): boolean {
@@ -120,7 +138,10 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
     res = recoverFromMismatch(req);
   }
 
-  return ensureLocaleCookie(req, asNextResponse(res));
+  const next = ensureLocaleCookie(req, asNextResponse(res));
+  forwardCspToRequest(req, next);
+  applySecurityHeaders(next.headers);
+  return next;
 }
 
 export const config = {

@@ -143,6 +143,29 @@ See `docs/superpowers/specs/2026-07-22-stripe-billing-client-cap-design.md` for 
 
 ---
 
+## Security headers (production)
+
+Configured in `apps/web` (no app behavior change beyond HTTP response headers):
+
+| Header | Where | Value / notes |
+|--------|--------|----------------|
+| `Content-Security-Policy` | `middleware.ts` via Clerk `contentSecurityPolicy.strict` | Per-request **nonce** + `strict-dynamic`. Production does not rely on `script-src 'unsafe-inline'` / `'unsafe-eval'` (Clerk still lists `unsafe-inline` for legacy browsers; ignored when nonce/`strict-dynamic` apply). `style-src 'unsafe-inline'` only (Clerk CSS-in-JS). |
+| `Strict-Transport-Security` | `next.config.mjs` + middleware | `max-age=63072000; includeSubDomains; preload` |
+| `X-Content-Type-Options` | same | `nosniff` |
+| `Referrer-Policy` | same | `strict-origin-when-cross-origin` |
+| `Permissions-Policy` | same | camera/mic/geo/payment/etc. disabled |
+| `X-Frame-Options` | same | `DENY` (with CSP `frame-ancestors 'none'`) |
+
+**Allowed external origins** (full inventory): `apps/web/src/lib/security-headers.ts`.
+
+**Notes**
+- Supabase is **server-only** (Prisma) — not in browser CSP.
+- PDF/Excel exports are same-origin `/api/.../export.*` + `blob:` object URLs for download.
+- Stripe Checkout / Customer Portal origins are allowlisted for `frame-src` / `form-action`.
+- Root layout uses `<ClerkProvider dynamic>` so strict CSP nonces work with Clerk.
+
+---
+
 ## Smoke checklist (production)
 
 - [ ] `GET https://<vercel>/api/health` → `{ "ok": true }`

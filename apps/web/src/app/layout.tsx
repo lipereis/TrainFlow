@@ -30,6 +30,7 @@ export default async function RootLayout({
       <body className="font-sans">
         <AppProviders locale={locale} messages={messages}>
           <ClerkProvider
+            dynamic
             signInUrl="/sign-in"
             signUpUrl="/sign-up"
             signInFallbackRedirectUrl="/post-auth"
