@@ -4,6 +4,8 @@ export {
   ExperienceLevel,
   ProgramStatus,
   WeightUnit,
+  TrainerPlan,
+  TrainerPlanStatus,
   Prisma,
 } from "@prisma/client";
 export type {

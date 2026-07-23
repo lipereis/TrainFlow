@@ -35,16 +35,33 @@ enum WeightUnit {
   LB
 }
 
+enum TrainerPlan {
+  FREE
+  PRO
+}
+
+enum TrainerPlanStatus {
+  NONE
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
 model Trainer {
-  id          String            @id @default(uuid())
-  clerkUserId String            @unique
-  name        String
-  email       String            @unique
-  createdAt   DateTime          @default(now())
-  clients     Client[]
-  exercises   Exercise[]
-  programs    WorkoutProgram[]
-  templates   WorkoutTemplate[]
+  id                   String             @id @default(uuid())
+  clerkUserId          String             @unique
+  name                 String
+  email                String             @unique
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?
+  plan                 TrainerPlan        @default(FREE)
+  planStatus           TrainerPlanStatus  @default(NONE)
+  createdAt            DateTime           @default(now())
+  clients              Client[]
+  exercises            Exercise[]
+  programs             WorkoutProgram[]
+  templates            WorkoutTemplate[]
 }
 
 model Client {
