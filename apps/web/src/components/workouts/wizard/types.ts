@@ -1,3 +1,5 @@
+import { buttonClassName } from "@/components/ui/button";
+
 export type WizardStep = 1 | 2 | 3 | 4 | 5;
 
 export type WorkoutExerciseDto = {
@@ -108,10 +110,7 @@ export function translateCategoryLabel(
 }
 
 export const inputClass =
-  "w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 disabled:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:disabled:bg-zinc-900";
-export const labelClass =
-  "block space-y-1 text-sm text-zinc-900 dark:text-zinc-100";
-export const btnPrimary =
-  "rounded bg-zinc-900 px-4 py-2 text-sm text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900";
-export const btnSecondary =
-  "rounded border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-800 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100";
+  "w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
+export const labelClass = "block space-y-1 text-sm text-foreground";
+export const btnPrimary = buttonClassName("primary", "sm");
+export const btnSecondary = buttonClassName("secondary", "sm");
