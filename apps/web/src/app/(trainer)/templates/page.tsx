@@ -2,6 +2,10 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ClientDto } from "@trainflow/shared-types";
 import { UseTemplateButton } from "@/components/templates/use-template-button";
+import { Badge } from "@/components/ui/badge";
+import { buttonClassName } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { apiFetch } from "@/lib/api";
 
 type TemplateListItem = {
@@ -53,55 +57,46 @@ export default async function TemplatesPage({
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          {t("description")}
-        </p>
+        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
       <form method="get" className="flex flex-wrap items-end gap-2">
-        <label className="flex flex-col gap-1 text-sm text-zinc-900 dark:text-zinc-100">
-          <span className="text-zinc-600 dark:text-zinc-400">{t("search")}</span>
-          <input
+        <label className="flex flex-col gap-1 text-sm text-foreground">
+          <span className="text-muted-foreground">{t("search")}</span>
+          <Input
             name="q"
             defaultValue={q}
             placeholder={t("namePlaceholder")}
-            className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className="w-auto min-w-[12rem]"
           />
         </label>
-        <label className="flex flex-col gap-1 text-sm text-zinc-900 dark:text-zinc-100">
-          <span className="text-zinc-600 dark:text-zinc-400">{t("goal")}</span>
-          <input
+        <label className="flex flex-col gap-1 text-sm text-foreground">
+          <span className="text-muted-foreground">{t("goal")}</span>
+          <Input
             name="goal"
             defaultValue={goal}
             placeholder={t("goalPlaceholder")}
-            className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className="w-auto min-w-[10rem]"
           />
         </label>
-        <label className="flex flex-col gap-1 text-sm text-zinc-900 dark:text-zinc-100">
-          <span className="text-zinc-600 dark:text-zinc-400">
-            {t("daysPerWeek")}
-          </span>
-          <input
+        <label className="flex flex-col gap-1 text-sm text-foreground">
+          <span className="text-muted-foreground">{t("daysPerWeek")}</span>
+          <Input
             name="daysPerWeek"
             defaultValue={daysPerWeek}
             placeholder="3"
             inputMode="numeric"
-            className="w-24 rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className="w-24"
           />
         </label>
-        <button
-          type="submit"
-          className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-        >
+        <button type="submit" className={buttonClassName("secondary", "sm")}>
           {t("filter")}
         </button>
         {q || goal || daysPerWeek ? (
           <Link
             href="/templates"
-            className="rounded px-3 py-2 text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+            className="px-3 py-2 text-sm text-muted-foreground hover:underline"
           >
             {tCommon("clear")}
           </Link>
@@ -122,49 +117,43 @@ export default async function TemplatesPage({
         </p>
       ) : null}
 
-      <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-        {templates.map((item) => (
-          <li
-            key={item.id}
-            className="flex flex-wrap items-start justify-between gap-3 px-4 py-3"
-          >
-            <div className="min-w-0 space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                  {item.name}
-                </p>
-                {item.isSample ? (
-                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs uppercase tracking-wide text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                    {t("sample")}
-                  </span>
+      <Card className="overflow-hidden divide-y divide-border">
+        <ul className="divide-y divide-border">
+          {templates.map((item) => (
+            <li
+              key={item.id}
+              className="flex flex-wrap items-start justify-between gap-3 px-4 py-3"
+            >
+              <div className="min-w-0 space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-medium text-foreground">{item.name}</p>
+                  {item.isSample ? <Badge>{t("sample")}</Badge> : null}
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                  <Badge>{item.goal ?? t("noGoal")}</Badge>
+                  {item.daysPerWeek != null ? (
+                    <span>
+                      {t("daysPerWeekValue", { count: item.daysPerWeek })}
+                    </span>
+                  ) : null}
+                  {item.level ? <Badge>{item.level}</Badge> : null}
+                </div>
+                {item.observations ? (
+                  <p className="text-sm text-muted-foreground">
+                    {item.observations}
+                  </p>
                 ) : null}
               </div>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                {[
-                  item.goal ?? t("noGoal"),
-                  item.daysPerWeek != null
-                    ? t("daysPerWeekValue", { count: item.daysPerWeek })
-                    : null,
-                  item.level,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
-              {item.observations ? (
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                  {item.observations}
-                </p>
-              ) : null}
-            </div>
-            <UseTemplateButton template={item} clients={clients} />
-          </li>
-        ))}
-        {templates.length === 0 && !error ? (
-          <li className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
-            {t("noMatch")}
-          </li>
-        ) : null}
-      </ul>
+              <UseTemplateButton template={item} clients={clients} />
+            </li>
+          ))}
+          {templates.length === 0 && !error ? (
+            <li className="px-4 py-8 text-center text-muted-foreground">
+              {t("noMatch")}
+            </li>
+          ) : null}
+        </ul>
+      </Card>
     </section>
   );
 }

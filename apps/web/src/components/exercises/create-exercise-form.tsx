@@ -5,11 +5,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 import type { CreateExerciseInput, ExerciseDto } from "@trainflow/shared-types";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { browserApiFetch } from "@/lib/browser-api";
 
-const inputClass =
-  "w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 disabled:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:disabled:bg-zinc-900";
-const labelClass = "block space-y-1 text-sm text-zinc-900 dark:text-zinc-100";
+const labelClass = "block space-y-1 text-sm text-foreground";
+const fieldClassName =
+  "w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground";
 
 const emptyForm = {
   name: "",
@@ -64,120 +67,104 @@ export function CreateExerciseForm() {
   return (
     <div className="space-y-3">
       {!open ? (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="rounded bg-zinc-900 px-3 py-2 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900"
-        >
+        <Button type="button" size="sm" onClick={() => setOpen(true)}>
           {t("newCustom")}
-        </button>
+        </Button>
       ) : null}
 
       {open ? (
-        <form
-          onSubmit={(e) => void onSubmit(e)}
-          className="space-y-3 rounded border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
-        >
-          <div className="flex items-center justify-between gap-2">
-            <h2 className="font-medium text-zinc-900 dark:text-zinc-100">
-              {t("createTitle")}
-            </h2>
-            <button
-              type="button"
-              className="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-              onClick={() => {
-                setOpen(false);
-                setError(null);
-              }}
-            >
-              {tCommon("cancel")}
-            </button>
-          </div>
+        <Card className="space-y-3 p-4">
+          <form onSubmit={(e) => void onSubmit(e)} className="space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-medium text-foreground">{t("createTitle")}</h2>
+              <button
+                type="button"
+                className="text-sm text-muted-foreground hover:text-foreground"
+                onClick={() => {
+                  setOpen(false);
+                  setError(null);
+                }}
+              >
+                {tCommon("cancel")}
+              </button>
+            </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className={`${labelClass} sm:col-span-2`}>
-              <span>{t("name")}</span>
-              <input
-                className={inputClass}
-                required
-                value={form.name}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, name: e.target.value }))
-                }
-              />
-            </label>
-            <label className={labelClass}>
-              <span>{t("primaryMuscle")}</span>
-              <input
-                className={inputClass}
-                required
-                value={form.primaryMuscle}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, primaryMuscle: e.target.value }))
-                }
-                placeholder={t("primaryMusclePlaceholder")}
-              />
-            </label>
-            <label className={labelClass}>
-              <span>{t("category")}</span>
-              <input
-                className={inputClass}
-                required
-                value={form.category}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, category: e.target.value }))
-                }
-                placeholder={t("categoryPlaceholder")}
-              />
-            </label>
-            <label className={labelClass}>
-              <span>{t("equipment")}</span>
-              <input
-                className={inputClass}
-                required
-                value={form.equipment}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, equipment: e.target.value }))
-                }
-              />
-            </label>
-            <label className={labelClass}>
-              <span>{t("videoUrl")}</span>
-              <input
-                className={inputClass}
-                type="url"
-                value={form.videoUrl}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, videoUrl: e.target.value }))
-                }
-                placeholder="https://"
-              />
-            </label>
-            <label className={`${labelClass} sm:col-span-2`}>
-              <span>{t("instructions")}</span>
-              <textarea
-                className={inputClass}
-                rows={3}
-                value={form.instructions}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, instructions: e.target.value }))
-                }
-              />
-            </label>
-          </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className={`${labelClass} sm:col-span-2`}>
+                <span>{t("name")}</span>
+                <Input
+                  required
+                  value={form.name}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, name: e.target.value }))
+                  }
+                />
+              </label>
+              <label className={labelClass}>
+                <span>{t("primaryMuscle")}</span>
+                <Input
+                  required
+                  value={form.primaryMuscle}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, primaryMuscle: e.target.value }))
+                  }
+                  placeholder={t("primaryMusclePlaceholder")}
+                />
+              </label>
+              <label className={labelClass}>
+                <span>{t("category")}</span>
+                <Input
+                  required
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, category: e.target.value }))
+                  }
+                  placeholder={t("categoryPlaceholder")}
+                />
+              </label>
+              <label className={labelClass}>
+                <span>{t("equipment")}</span>
+                <Input
+                  required
+                  value={form.equipment}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, equipment: e.target.value }))
+                  }
+                />
+              </label>
+              <label className={labelClass}>
+                <span>{t("videoUrl")}</span>
+                <Input
+                  type="url"
+                  value={form.videoUrl}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, videoUrl: e.target.value }))
+                  }
+                  placeholder="https://"
+                />
+              </label>
+              <label className={`${labelClass} sm:col-span-2`}>
+                <span>{t("instructions")}</span>
+                <textarea
+                  className={fieldClassName}
+                  rows={3}
+                  value={form.instructions}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, instructions: e.target.value }))
+                  }
+                />
+              </label>
+            </div>
 
-          {error ? (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-          ) : null}
+            {error ? (
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            ) : null}
 
-          <button
-            type="submit"
-            disabled={busy}
-            className="rounded bg-zinc-900 px-3 py-2 text-sm text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
-          >
-            {busy ? t("creating") : t("createExercise")}
-          </button>
-        </form>
+            <Button type="submit" size="sm" disabled={busy}>
+              {busy ? t("creating") : t("createExercise")}
+            </Button>
+          </form>
+        </Card>
       ) : null}
     </div>
   );

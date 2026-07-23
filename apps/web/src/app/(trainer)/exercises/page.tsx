@@ -2,6 +2,10 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ExerciseDto } from "@trainflow/shared-types";
 import { CreateExerciseForm } from "@/components/exercises/create-exercise-form";
+import { Badge } from "@/components/ui/badge";
+import { buttonClassName } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { apiFetch } from "@/lib/api";
 
 const MUSCLE_OPTIONS = [
@@ -47,6 +51,9 @@ const CATEGORY_LABEL_KEYS: Record<(typeof CATEGORY_OPTIONS)[number], string> = {
   Isometric: "categoryIsometric",
   Cardio: "categoryCardio",
 };
+
+const selectClassName =
+  "rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground";
 
 function muscleLabel(
   value: string,
@@ -98,32 +105,28 @@ export default async function ExercisesPage({
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          {t("description")}
-        </p>
+        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
       <CreateExerciseForm />
 
       <form method="get" className="flex flex-wrap items-end gap-2">
-        <label className="flex flex-col gap-1 text-sm text-zinc-900 dark:text-zinc-100">
-          <span className="text-zinc-600 dark:text-zinc-400">{t("search")}</span>
-          <input
+        <label className="flex flex-col gap-1 text-sm text-foreground">
+          <span className="text-muted-foreground">{t("search")}</span>
+          <Input
             name="q"
             defaultValue={q}
             placeholder={t("namePlaceholder")}
-            className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className="w-auto min-w-[12rem]"
           />
         </label>
-        <label className="flex flex-col gap-1 text-sm text-zinc-900 dark:text-zinc-100">
-          <span className="text-zinc-600 dark:text-zinc-400">{t("muscle")}</span>
+        <label className="flex flex-col gap-1 text-sm text-foreground">
+          <span className="text-muted-foreground">{t("muscle")}</span>
           <select
             name="muscle"
             defaultValue={muscle}
-            className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className={selectClassName}
           >
             <option value="">{t("all")}</option>
             {MUSCLE_OPTIONS.map((m) => (
@@ -133,14 +136,12 @@ export default async function ExercisesPage({
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-sm text-zinc-900 dark:text-zinc-100">
-          <span className="text-zinc-600 dark:text-zinc-400">
-            {t("category")}
-          </span>
+        <label className="flex flex-col gap-1 text-sm text-foreground">
+          <span className="text-muted-foreground">{t("category")}</span>
           <select
             name="category"
             defaultValue={category}
-            className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className={selectClassName}
           >
             <option value="">{t("all")}</option>
             {CATEGORY_OPTIONS.map((c) => (
@@ -150,16 +151,13 @@ export default async function ExercisesPage({
             ))}
           </select>
         </label>
-        <button
-          type="submit"
-          className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-        >
+        <button type="submit" className={buttonClassName("secondary", "sm")}>
           {t("filter")}
         </button>
         {q || muscle || category ? (
           <Link
             href="/exercises"
-            className="rounded px-3 py-2 text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+            className="px-3 py-2 text-sm text-muted-foreground hover:underline"
           >
             {tCommon("clear")}
           </Link>
@@ -170,61 +168,55 @@ export default async function ExercisesPage({
         <p className="text-red-600 dark:text-red-400">{error}</p>
       ) : null}
 
-      <ul className="divide-y divide-zinc-200 rounded border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-        {exercises.map((ex) => (
-          <li key={ex.id} className="px-4 py-3">
-            <div className="flex flex-wrap items-start justify-between gap-2">
-              <div className="min-w-0 space-y-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                    {ex.name}
-                  </p>
-                  {ex.trainerId ? (
-                    <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs uppercase tracking-wide text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                      {t("custom")}
-                    </span>
-                  ) : (
-                    <span className="rounded bg-zinc-50 px-1.5 py-0.5 text-xs uppercase tracking-wide text-zinc-500 dark:bg-zinc-800/60 dark:text-zinc-500">
-                      {t("library")}
-                    </span>
-                  )}
+      <Card className="overflow-hidden divide-y divide-border">
+        <ul className="divide-y divide-border">
+          {exercises.map((ex) => (
+            <li key={ex.id} className="px-4 py-3">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="min-w-0 space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-medium text-foreground">{ex.name}</p>
+                    {ex.trainerId ? (
+                      <Badge>{t("custom")}</Badge>
+                    ) : (
+                      <Badge>{t("library")}</Badge>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                    {ex.primaryMuscle ? (
+                      <Badge>{muscleLabel(ex.primaryMuscle, t)}</Badge>
+                    ) : null}
+                    {ex.category ? (
+                      <span>{categoryLabel(ex.category, t)}</span>
+                    ) : null}
+                    {ex.equipment ? <Badge>{ex.equipment}</Badge> : null}
+                  </div>
+                  {ex.defaultInstructions ? (
+                    <p className="line-clamp-2 text-sm text-muted-foreground">
+                      {ex.defaultInstructions}
+                    </p>
+                  ) : null}
+                  {ex.videoUrl ? (
+                    <a
+                      href={ex.videoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm text-foreground underline"
+                    >
+                      {t("video")}
+                    </a>
+                  ) : null}
                 </div>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                  {[
-                    ex.primaryMuscle
-                      ? muscleLabel(ex.primaryMuscle, t)
-                      : null,
-                    ex.category ? categoryLabel(ex.category, t) : null,
-                    ex.equipment,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </p>
-                {ex.defaultInstructions ? (
-                  <p className="line-clamp-2 text-sm text-zinc-500 dark:text-zinc-400">
-                    {ex.defaultInstructions}
-                  </p>
-                ) : null}
-                {ex.videoUrl ? (
-                  <a
-                    href={ex.videoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm text-zinc-700 underline dark:text-zinc-300"
-                  >
-                    {t("video")}
-                  </a>
-                ) : null}
               </div>
-            </div>
-          </li>
-        ))}
-        {exercises.length === 0 && !error ? (
-          <li className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
-            {t("noMatch")}
-          </li>
-        ) : null}
-      </ul>
+            </li>
+          ))}
+          {exercises.length === 0 && !error ? (
+            <li className="px-4 py-8 text-center text-muted-foreground">
+              {t("noMatch")}
+            </li>
+          ) : null}
+        </ul>
+      </Card>
     </section>
   );
 }
