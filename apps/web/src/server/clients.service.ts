@@ -1,3 +1,4 @@
+import { assertCanCreateClient } from "@/server/billing/entitlements";
 import { notFound, forbidden } from "./errors";
 import { appOrigin } from "./http";
 
@@ -124,6 +125,8 @@ export class ClientsService {
   }
 
   async invite(trainerId: string, input: InviteClientInput): Promise<ClientDto> {
+    await assertCanCreateClient(trainerId);
+
     const token = this.newToken();
     const expiresAt = new Date(Date.now() + INVITE_TTL_MS);
 
@@ -186,6 +189,8 @@ export class ClientsService {
   }
 
   async create(trainerId: string, input: CreateClientInput): Promise<ClientDto> {
+    await assertCanCreateClient(trainerId);
+
     const client = await prisma.client.create({
       data: {
         trainerId,
