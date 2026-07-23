@@ -60,7 +60,7 @@ export function DaySection({
   }
 
   return (
-    <section className="workout-day space-y-4 border-b border-zinc-200 py-6 dark:border-zinc-800 print:break-inside-avoid">
+    <section className="workout-day space-y-4 border-b border-border py-6 print:break-inside-avoid">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="grid flex-1 gap-3 sm:grid-cols-2">
           <label className={labelClass}>

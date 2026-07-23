@@ -57,23 +57,23 @@ export function ProgramHeader({
   const emDash = tCommon("emDash");
 
   return (
-    <header className="space-y-4 border-b border-zinc-200 pb-6 dark:border-zinc-800">
+    <header className="space-y-4 border-b border-border pb-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {t("client")}
           </p>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             {clientName}
           </h1>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
-            <span className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-sm text-foreground">
+            <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {t("trainer")}
             </span>{" "}
             {trainerName}
           </p>
         </div>
-        <span className="rounded border border-zinc-200 bg-zinc-50 px-2 py-1 text-xs uppercase tracking-wide text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+        <span className="rounded-lg border border-border bg-muted px-2 py-1 text-xs uppercase tracking-wide text-muted-foreground">
           {statusLabel(program.status, t)}
         </span>
       </div>
@@ -138,7 +138,7 @@ export function ProgramHeader({
         </label>
         <div className={labelClass}>
           <span>{t("levelLocation")}</span>
-          <p className="rounded border border-transparent px-1 py-2 text-sm text-zinc-700 dark:text-zinc-300">
+          <p className="rounded border border-transparent px-1 py-2 text-sm text-foreground">
             {levelLabel(program.level, t, emDash)} ·{" "}
             {program.location?.trim() || emDash}
           </p>

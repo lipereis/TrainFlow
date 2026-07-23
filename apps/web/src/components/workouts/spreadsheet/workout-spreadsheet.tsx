@@ -492,7 +492,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
   if (loading) {
     return (
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("loading")}</p>
+      <p className="text-sm text-muted-foreground">{t("loading")}</p>
     );
   }
 
@@ -576,7 +576,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
       <div className="space-y-2">
         <div className="no-print flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("days")}
           </h2>
           <button
@@ -589,7 +589,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
           </button>
         </div>
         {program.days.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             {t("noDays")}
           </p>
         ) : (

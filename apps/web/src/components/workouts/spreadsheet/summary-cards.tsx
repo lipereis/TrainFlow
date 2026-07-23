@@ -41,29 +41,29 @@ export function DayTotalsCard({ totals }: { totals: DayTotals }) {
   const emDash = tCommon("emDash");
 
   return (
-    <div className="grid gap-2 rounded border border-zinc-200 bg-zinc-50 p-3 text-sm dark:border-zinc-800 dark:bg-zinc-900/60 sm:grid-cols-3">
+    <div className="grid gap-2 rounded-xl border border-border bg-muted p-3 text-sm sm:grid-cols-3">
       <div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-muted-foreground">
           {t("exercisesSets")}
         </p>
-        <p className="font-medium text-zinc-900 dark:text-zinc-100">
+        <p className="font-medium text-foreground">
           {totals.exerciseCount} / {totals.totalSets}
         </p>
       </div>
       <div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-muted-foreground">
           {t("repsVolume")}
         </p>
-        <p className="font-medium text-zinc-900 dark:text-zinc-100">
+        <p className="font-medium text-foreground">
           {totals.minReps}–{totals.maxReps} /{" "}
           {fmtVolume(totals.minVolume, totals.maxVolume, emDash)}
         </p>
       </div>
       <div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-muted-foreground">
           {t("estDuration")}
         </p>
-        <p className="font-medium text-zinc-900 dark:text-zinc-100">
+        <p className="font-medium text-foreground">
           {t("minutes", {
             value:
               totals.estimatedDurationMin == null
@@ -100,7 +100,7 @@ export function WeeklySummaryCards({
 
   return (
     <section className="space-y-3" aria-label={t("summaryAria")}>
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         {t("summary")}
       </h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -121,17 +121,17 @@ export function WeeklySummaryCards({
         />
       </div>
       {muscles.length > 0 ? (
-        <div className="rounded border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+        <div className="rounded-xl border border-border bg-card p-3">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {t("setsByMuscle")}
           </p>
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
             {muscles.map(([muscle, sets]) => (
               <li key={muscle}>
-                <span className="text-zinc-500 dark:text-zinc-400">
+                <span className="text-muted-foreground">
                   {muscle}:
                 </span>{" "}
-                <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                <span className="font-medium text-foreground">
                   {sets}
                 </span>
               </li>
@@ -145,9 +145,9 @@ export function WeeklySummaryCards({
 
 function SummaryTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
-      <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+    <div className="rounded-xl border border-border bg-card p-3">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-foreground">
         {value}
       </p>
     </div>
