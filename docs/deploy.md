@@ -108,6 +108,40 @@ Same-origin browser calls use `/api/...` — **no** `NEXT_PUBLIC_API_URL`.
 
 ---
 
+## Stripe (billing)
+
+Free tier: **2 clients** by default (`FREE_CLIENT_LIMIT`). Pro = unlimited via Stripe Checkout + Customer Portal. Currency **BRL**; price is owned by a Stripe Price id (not hardcoded in code).
+
+### Environment variables
+
+| Variable | Notes |
+|----------|--------|
+| `STRIPE_SECRET_KEY` | `sk_test_…` / `sk_live_…` — server only |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_…` — signing secret for `POST /api/webhooks/stripe` |
+| `STRIPE_PRICE_ID_PRO` | BRL monthly Price id (`price_…`) from Stripe Dashboard |
+| `FREE_CLIENT_LIMIT` | Optional; default `2` |
+
+Missing Stripe secrets → **runtime 503** on billing routes / webhook only; first Vercel build still succeeds (same pattern as Clerk webhooks).
+
+### Operator checklist
+
+1. **Stripe Dashboard** → create a **Product** + recurring **Price** in **BRL** (monthly) → copy Price id → `STRIPE_PRICE_ID_PRO`.
+2. **Customer Portal** → enable (cancel subscription, update payment method).
+3. **Webhook** → endpoint `https://<vercel-host>/api/webhooks/stripe` (local: Stripe CLI `stripe listen --forward-to localhost:3000/api/webhooks/stripe`).
+4. Subscribe to at least:
+   - `checkout.session.completed`
+   - `customer.subscription.created`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
+   - `invoice.payment_failed`
+5. Paste endpoint signing secret → `STRIPE_WEBHOOK_SECRET`; set `STRIPE_SECRET_KEY` and `STRIPE_PRICE_ID_PRO` on Vercel → **redeploy**.
+6. From a machine with prod DB URLs: `pnpm db:migrate:deploy` (billing fields on `Trainer`).
+7. Smoke: free trainer blocked at 3rd client; checkout → webhook → Pro → create succeeds; Portal cancel → free again (existing clients kept).
+
+See `docs/superpowers/specs/2026-07-22-stripe-billing-client-cap-design.md` for entitlement rules (`past_due` grace, etc.).
+
+---
+
 ## Smoke checklist (production)
 
 - [ ] `GET https://<vercel>/api/health` → `{ "ok": true }`
@@ -115,6 +149,9 @@ Same-origin browser calls use `/api/...` — **no** `NEXT_PUBLIC_API_URL`.
 - [ ] Same-origin `/api/*` calls succeed
 - [ ] Clerk webhooks deliver after secrets are set
 - [ ] Client → workout → Excel/PDF
+- [ ] Free trainer: 3rd client create blocked (`CLIENT_LIMIT_REACHED`)
+- [ ] `/settings/billing` → Checkout → Stripe webhook updates plan
+- [ ] Customer Portal cancel → webhook → free cap enforced again
 
 ---
 
@@ -126,4 +163,6 @@ Same-origin browser calls use `/api/...` — **no** `NEXT_PUBLIC_API_URL`.
 | `appOrigin()` | `apps/web/src/server/http.ts` |
 | Trainer webhook | `POST /api/webhooks/clerk/trainer` |
 | Invite webhook | `POST /api/webhooks/clerk/invite` |
+| Stripe webhook | `POST /api/webhooks/stripe` |
+| Billing / entitlements | `apps/web/src/server/billing/**` |
 | Vercel build | `apps/web/vercel.json` |
