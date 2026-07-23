@@ -74,9 +74,7 @@ function categoryLabel(
 export default async function ExercisesPage({
   searchParams,
 }: {
-  searchParams:
-    | Promise<{ q?: string; muscle?: string; category?: string }>
-    | { q?: string; muscle?: string; category?: string };
+  searchParams: Promise<{ q?: string; muscle?: string; category?: string }>;
 }) {
   const t = await getTranslations("exercises");
   const tCommon = await getTranslations("common");

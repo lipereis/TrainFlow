@@ -5,13 +5,13 @@ import { jsonOk, withHandler } from "@/server/http";
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }>; };
 
 export async function POST(_req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
     const { trainerId } = await requireTrainerId();
     return jsonOk(
-      await workoutsService.duplicateProgram(trainerId, ctx.params.id),
+      await workoutsService.duplicateProgram(trainerId, (await ctx.params).id),
       201,
     );
   });

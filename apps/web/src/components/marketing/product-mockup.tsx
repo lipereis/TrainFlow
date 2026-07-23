@@ -50,24 +50,34 @@ export async function ProductMockup() {
           <Badge className="border-primary/20 bg-primary/10 text-primary">Active</Badge>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-border">
-          <div className="grid grid-cols-4 gap-px bg-border text-[10px] font-medium uppercase tracking-wide text-muted-foreground sm:text-xs">
-            <div className="bg-muted/60 px-2 py-2 sm:px-3">Exercise</div>
-            <div className="bg-muted/60 px-2 py-2 text-center">Sets</div>
-            <div className="bg-muted/60 px-2 py-2 text-center">Reps</div>
-            <div className="bg-muted/60 px-2 py-2 text-center">Weight</div>
-          </div>
-          {rows.map(([exercise, sets, reps, weight]) => (
-            <div
-              key={exercise}
-              className="grid grid-cols-4 gap-px border-t border-border bg-card text-[11px] sm:text-xs"
-            >
-              <div className="px-2 py-2.5 font-medium text-foreground sm:px-3">{exercise}</div>
-              <div className="px-2 py-2.5 text-center tabular-nums text-muted-foreground">{sets}</div>
-              <div className="px-2 py-2.5 text-center tabular-nums text-muted-foreground">{reps}</div>
-              <div className="px-2 py-2.5 text-center tabular-nums text-muted-foreground">{weight}</div>
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <div className="min-w-[18rem]">
+            <div className="grid grid-cols-4 gap-px bg-border text-[10px] font-medium uppercase tracking-wide text-muted-foreground sm:text-xs">
+              <div className="bg-muted/60 px-2 py-2 sm:px-3">Exercise</div>
+              <div className="bg-muted/60 px-2 py-2 text-center">Sets</div>
+              <div className="bg-muted/60 px-2 py-2 text-center">Reps</div>
+              <div className="bg-muted/60 px-2 py-2 text-center">Weight</div>
             </div>
-          ))}
+            {rows.map(([exercise, sets, reps, weight]) => (
+              <div
+                key={exercise}
+                className="grid grid-cols-4 gap-px border-t border-border bg-card text-[11px] sm:text-xs"
+              >
+                <div className="px-2 py-2.5 font-medium text-foreground sm:px-3">
+                  {exercise}
+                </div>
+                <div className="px-2 py-2.5 text-center tabular-nums text-muted-foreground">
+                  {sets}
+                </div>
+                <div className="px-2 py-2.5 text-center tabular-nums text-muted-foreground">
+                  {reps}
+                </div>
+                <div className="px-2 py-2.5 text-center tabular-nums text-muted-foreground">
+                  {weight}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </Card>

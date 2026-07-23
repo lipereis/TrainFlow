@@ -4,9 +4,9 @@ import { WorkoutWizard } from "@/components/workouts/wizard/workout-wizard";
 export default async function NewWorkoutPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ clientId?: string }> | { clientId?: string };
+  searchParams: Promise<{ clientId?: string }>;
 }) {
-  const params = await Promise.resolve(searchParams ?? {});
+  const params = await searchParams;
   const clientId = params.clientId?.trim() || null;
 
   let clientName: string | null = null;

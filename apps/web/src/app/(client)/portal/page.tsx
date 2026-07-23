@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { PortalExportButtons } from "@/components/portal-export-buttons";
+import { Badge } from "@/components/ui/badge";
 import { requireClientId } from "@/server/auth";
 import { workoutsService } from "@/server/workouts.service";
 import { prisma } from "@/server/prisma";
@@ -38,53 +39,51 @@ export default async function ClientPortalPage() {
   return (
     <section className="space-y-8">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <h1 className="text-2xl font-semibold text-foreground">
           {t("greeting", { name: client.name })}
         </h1>
-        <p className="text-zinc-600 dark:text-zinc-400">{t("subtitle")}</p>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       {programs.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-zinc-300 px-5 py-10 text-center dark:border-zinc-700">
-          <p className="font-medium text-zinc-900 dark:text-zinc-100">
-            {t("emptyTitle")}
-          </p>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="rounded-xl border border-dashed border-border px-5 py-10 text-center">
+          <p className="font-medium text-foreground">{t("emptyTitle")}</p>
+          <p className="mt-2 text-sm text-muted-foreground">
             {t("emptyDescription")}
           </p>
         </div>
       ) : (
         <div className="space-y-8">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          <h2 className="text-lg font-semibold text-foreground">
             {t("activePrograms")}
           </h2>
           {programs.map((program) => (
             <article
               key={program.id}
-              className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
+              className="space-y-4 rounded-xl border border-border bg-card p-4 text-card-foreground shadow-card sm:p-5"
             >
               <header className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+                  <h3 className="text-xl font-semibold text-foreground">
                     {program.name}
                   </h3>
-                  <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200">
+                  <Badge className="border-primary/20 bg-primary/10 text-primary">
                     {t("statusActive")}
-                  </span>
+                  </Badge>
                 </div>
                 {program.goal ? (
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="text-sm text-muted-foreground">
                     {t("goal")}: {program.goal}
                   </p>
                 ) : null}
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                <p className="text-xs text-muted-foreground">
                   {t("schedule", {
                     days: program.daysPerWeek,
                     start: formatDate(program.startDate, locale),
                   })}
                 </p>
                 {program.observations ? (
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="text-sm text-muted-foreground">
                     {program.observations}
                   </p>
                 ) : null}
@@ -97,27 +96,27 @@ export default async function ClientPortalPage() {
                 {(program.days ?? []).map((day) => (
                   <div key={day.id} className="space-y-3">
                     <div>
-                      <h4 className="font-medium text-zinc-900 dark:text-zinc-100">
+                      <h4 className="font-medium text-foreground">
                         {day.name}
                         {day.focus ? (
-                          <span className="font-normal text-zinc-500">
+                          <span className="font-normal text-muted-foreground">
                             {" "}
                             · {day.focus}
                           </span>
                         ) : null}
                       </h4>
                       {day.estimatedDurationMin != null ? (
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs text-muted-foreground">
                           {t("duration", { min: day.estimatedDurationMin })}
                         </p>
                       ) : null}
                     </div>
 
                     {(day.warmup || day.cooldown) && (
-                      <div className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                      <div className="space-y-1 text-sm text-muted-foreground">
                         {day.warmup ? (
                           <p>
-                            <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                            <span className="font-medium text-foreground">
                               {t("warmup")}:
                             </span>{" "}
                             {day.warmup}
@@ -125,7 +124,7 @@ export default async function ClientPortalPage() {
                         ) : null}
                         {day.cooldown ? (
                           <p>
-                            <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                            <span className="font-medium text-foreground">
                               {t("cooldown")}:
                             </span>{" "}
                             {day.cooldown}
@@ -134,9 +133,9 @@ export default async function ClientPortalPage() {
                       </div>
                     )}
 
-                    <div className="overflow-x-auto rounded border border-zinc-200 dark:border-zinc-800">
-                      <table className="min-w-full text-left text-sm">
-                        <thead className="bg-zinc-50 text-xs uppercase text-zinc-500 dark:bg-zinc-950 dark:text-zinc-400">
+                    <div className="overflow-x-auto rounded-xl border border-border">
+                      <table className="min-w-[32rem] w-full text-left text-sm">
+                        <thead className="bg-muted/60 text-xs uppercase text-muted-foreground">
                           <tr>
                             <th className="px-3 py-2">{t("colExercise")}</th>
                             <th className="px-3 py-2">{t("colSets")}</th>
@@ -145,7 +144,7 @@ export default async function ClientPortalPage() {
                             <th className="px-3 py-2">{t("colRest")}</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                        <tbody className="divide-y divide-border">
                           {(day.exercises ?? []).map((ex) => {
                             const name =
                               ex.customName?.trim() || t("unnamedExercise");
@@ -163,25 +162,25 @@ export default async function ClientPortalPage() {
                                 : "—";
                             return (
                               <tr key={ex.id}>
-                                <td className="px-3 py-2 text-zinc-900 dark:text-zinc-100">
+                                <td className="px-3 py-2 text-foreground">
                                   <div>{name}</div>
-                                  <div className="text-xs text-zinc-500">
+                                  <div className="text-xs text-muted-foreground">
                                     {ex.muscleGroup}
                                     {ex.observation
                                       ? ` · ${ex.observation}`
                                       : ""}
                                   </div>
                                 </td>
-                                <td className="px-3 py-2 tabular-nums text-zinc-700 dark:text-zinc-300">
+                                <td className="px-3 py-2 tabular-nums text-muted-foreground">
                                   {ex.sets}
                                 </td>
-                                <td className="px-3 py-2 tabular-nums text-zinc-700 dark:text-zinc-300">
+                                <td className="px-3 py-2 tabular-nums text-muted-foreground">
                                   {reps}
                                 </td>
-                                <td className="px-3 py-2 tabular-nums text-zinc-700 dark:text-zinc-300">
+                                <td className="px-3 py-2 tabular-nums text-muted-foreground">
                                   {weight}
                                 </td>
-                                <td className="px-3 py-2 tabular-nums text-zinc-700 dark:text-zinc-300">
+                                <td className="px-3 py-2 tabular-nums text-muted-foreground">
                                   {rest}
                                 </td>
                               </tr>
@@ -191,7 +190,7 @@ export default async function ClientPortalPage() {
                             <tr>
                               <td
                                 colSpan={5}
-                                className="px-3 py-4 text-zinc-500"
+                                className="px-3 py-4 text-muted-foreground"
                               >
                                 {t("noExercises")}
                               </td>

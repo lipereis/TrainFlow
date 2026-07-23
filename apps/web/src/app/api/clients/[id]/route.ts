@@ -6,12 +6,12 @@ import { jsonNoContent, jsonOk, parseOrThrow, withHandler } from "@/server/http"
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }>; };
 
 export async function GET(_req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
     const { trainerId } = await requireTrainerId();
-    return jsonOk(await clientsService.get(trainerId, ctx.params.id));
+    return jsonOk(await clientsService.get(trainerId, (await ctx.params).id));
   });
 }
 
@@ -19,14 +19,14 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
     const { trainerId } = await requireTrainerId();
     const body = parseOrThrow(updateClientSchema, await req.json());
-    return jsonOk(await clientsService.update(trainerId, ctx.params.id, body));
+    return jsonOk(await clientsService.update(trainerId, (await ctx.params).id, body));
   });
 }
 
 export async function DELETE(_req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
     const { trainerId } = await requireTrainerId();
-    await clientsService.remove(trainerId, ctx.params.id);
+    await clientsService.remove(trainerId, (await ctx.params).id);
     return jsonNoContent();
   });
 }

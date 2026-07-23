@@ -5,7 +5,7 @@ import { jsonOk, withHandler } from "@/server/http";
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string; dayId: string } };
+type Ctx = { params: Promise<{ id: string; dayId: string }>; };
 
 export async function POST(_req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
@@ -13,8 +13,8 @@ export async function POST(_req: NextRequest, ctx: Ctx) {
     return jsonOk(
       await workoutsService.duplicateDay(
         trainerId,
-        ctx.params.id,
-        ctx.params.dayId,
+        (await ctx.params).id,
+        (await ctx.params).dayId,
       ),
       201,
     );

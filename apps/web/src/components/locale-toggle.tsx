@@ -12,7 +12,7 @@ const options: { value: AppLocale; label: string }[] = [
 ];
 
 const segmentBase =
-  "px-2.5 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "px-1.5 py-1 text-[10px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-2.5 sm:text-xs";
 const segmentIdle =
   "text-muted-foreground hover:bg-muted hover:text-foreground";
 const segmentActive =

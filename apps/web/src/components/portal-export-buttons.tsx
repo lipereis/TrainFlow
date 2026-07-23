@@ -6,7 +6,7 @@ import { useState } from "react";
 import { downloadWorkoutExport } from "@/lib/api-download";
 
 const btnSecondary =
-  "rounded border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-800 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800";
+  "rounded-xl border border-border bg-card px-3 py-1.5 text-sm text-foreground hover:bg-muted disabled:opacity-50";
 
 export function PortalExportButtons({ workoutId }: { workoutId: string }) {
   const t = useTranslations("portal");

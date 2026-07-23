@@ -6,7 +6,7 @@ import { jsonOk, parseOrThrow, withHandler } from "@/server/http";
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string; dayId: string; exId: string } };
+type Ctx = { params: Promise<{ id: string; dayId: string; exId: string }>; };
 
 export async function POST(req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
@@ -15,9 +15,9 @@ export async function POST(req: NextRequest, ctx: Ctx) {
     return jsonOk(
       await workoutsService.moveExercise(
         trainerId,
-        ctx.params.id,
-        ctx.params.dayId,
-        ctx.params.exId,
+        (await ctx.params).id,
+        (await ctx.params).dayId,
+        (await ctx.params).exId,
         body.targetDayId,
         body.sortOrder,
       ),

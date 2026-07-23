@@ -59,11 +59,11 @@ export default async function DashboardPage() {
 
   return (
     <section className="space-y-8">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-foreground">
           {t("title")}
         </h1>
-        <div className="flex gap-2 text-sm">
+        <div className="flex flex-wrap gap-2 text-sm">
           <Link href="/clients/new" className={buttonClassName("primary", "sm")}>
             {t("newClient")}
           </Link>

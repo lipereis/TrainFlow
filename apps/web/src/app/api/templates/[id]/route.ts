@@ -5,11 +5,11 @@ import { jsonOk, withHandler } from "@/server/http";
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }>; };
 
 export async function GET(_req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
     const { trainerId } = await requireTrainerId();
-    return jsonOk(await templatesService.get(trainerId, ctx.params.id));
+    return jsonOk(await templatesService.get(trainerId, (await ctx.params).id));
   });
 }

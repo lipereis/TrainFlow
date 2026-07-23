@@ -10,15 +10,26 @@ export async function MarketingNav() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <Container className="flex h-20 items-center justify-between gap-4">
-        <BrandLogo href="/" size="nav" priority />
+      <Container className="flex h-14 items-center justify-between gap-2 sm:h-16 sm:gap-4">
+        <span className="sm:hidden">
+          <BrandLogo href="/" size="xs" priority />
+        </span>
+        <span className="hidden sm:inline-flex">
+          <BrandLogo href="/" size="nav" priority />
+        </span>
 
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-3">
           <AppearanceControls />
-          <Link href="/sign-in" className={buttonClassName("ghost", "sm")}>
+          <Link
+            href="/sign-in"
+            className={buttonClassName("ghost", "sm", "hidden sm:inline-flex")}
+          >
             {t("navSignIn")}
           </Link>
-          <Link href="/sign-up" className={buttonClassName("primary", "sm")}>
+          <Link
+            href="/sign-up"
+            className={buttonClassName("primary", "sm", "shrink-0")}
+          >
             {t("navTrial")}
           </Link>
         </div>

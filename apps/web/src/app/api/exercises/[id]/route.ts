@@ -8,20 +8,20 @@ export const runtime = "nodejs";
 
 const updateExerciseSchema = createExerciseSchema.partial();
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }>; };
 
 export async function PATCH(req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
     const { trainerId } = await requireTrainerId();
     const body = parseOrThrow(updateExerciseSchema, await req.json());
-    return jsonOk(await exercisesService.update(trainerId, ctx.params.id, body));
+    return jsonOk(await exercisesService.update(trainerId, (await ctx.params).id, body));
   });
 }
 
 export async function DELETE(_req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
     const { trainerId } = await requireTrainerId();
-    await exercisesService.remove(trainerId, ctx.params.id);
+    await exercisesService.remove(trainerId, (await ctx.params).id);
     return jsonNoContent();
   });
 }

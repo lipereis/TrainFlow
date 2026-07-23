@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 export function AppearanceControls() {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-1 sm:gap-2">
       <LocaleToggle />
       <ThemeToggle />
     </div>

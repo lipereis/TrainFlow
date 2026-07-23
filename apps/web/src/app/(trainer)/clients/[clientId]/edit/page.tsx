@@ -8,7 +8,7 @@ import { EditClientForm } from "./edit-form";
 export default async function EditClientPage({
   params,
 }: {
-  params: Promise<{ clientId: string }> | { clientId: string };
+  params: Promise<{ clientId: string }>;
 }) {
   const t = await getTranslations("clients");
   const tCommon = await getTranslations("common");

@@ -6,7 +6,7 @@ import { jsonOk, parseOrThrow, withHandler } from "@/server/http";
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { workoutId: string } };
+type Ctx = { params: Promise<{ workoutId: string }>; };
 
 export async function POST(req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest, ctx: Ctx) {
     return jsonOk(
       await templatesService.createFromWorkout(
         trainerId,
-        ctx.params.workoutId,
+        (await ctx.params).workoutId,
         body,
       ),
       201,

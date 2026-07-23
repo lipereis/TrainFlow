@@ -71,7 +71,7 @@ function programStatusLabel(
 export default async function ClientProfilePage({
   params,
 }: {
-  params: Promise<{ clientId: string }> | { clientId: string };
+  params: Promise<{ clientId: string }>;
 }) {
   const t = await getTranslations("clients");
   const tCommon = await getTranslations("common");

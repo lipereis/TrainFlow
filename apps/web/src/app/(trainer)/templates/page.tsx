@@ -22,9 +22,7 @@ type TemplateListItem = {
 export default async function TemplatesPage({
   searchParams,
 }: {
-  searchParams:
-    | Promise<{ q?: string; goal?: string; daysPerWeek?: string }>
-    | { q?: string; goal?: string; daysPerWeek?: string };
+  searchParams: Promise<{ q?: string; goal?: string; daysPerWeek?: string }>;
 }) {
   const t = await getTranslations("templates");
   const tCommon = await getTranslations("common");

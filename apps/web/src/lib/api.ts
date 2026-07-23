@@ -9,8 +9,9 @@ function apiBase(): string {
   return appOrigin();
 }
 
-function cookieHeader(): string {
-  return cookies()
+async function cookieHeader(): Promise<string> {
+  const jar = await cookies();
+  return jar
     .getAll()
     .map((c) => `${c.name}=${c.value}`)
     .join("; ");
@@ -19,7 +20,7 @@ function cookieHeader(): string {
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const { getToken } = await auth();
   const token = await getToken();
-  const cookie = cookieHeader();
+  const cookie = await cookieHeader();
   const res = await fetch(`${apiBase()}/api${path}`, {
     ...init,
     headers: {

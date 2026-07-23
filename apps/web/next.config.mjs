@@ -17,9 +17,7 @@ const nextConfig = {
     "@trainflow/workout-math",
     "@trainflow/db",
   ],
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client", "pdfkit", "exceljs"],
-  },
+  serverExternalPackages: ["@prisma/client", "pdfkit", "exceljs"],
   webpack: (config, { isServer }) => {
     if (isServer) {
       config.plugins = [...config.plugins, new PrismaPlugin()];

@@ -6,14 +6,14 @@ import { jsonOk, parseOrThrow, withHandler } from "@/server/http";
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }>; };
 
 export async function PUT(req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
     const { trainerId } = await requireTrainerId();
     const body = parseOrThrow(reorderBodySchema, await req.json());
     return jsonOk(
-      await workoutsService.reorderDays(trainerId, ctx.params.id, body.ids),
+      await workoutsService.reorderDays(trainerId, (await ctx.params).id, body.ids),
     );
   });
 }

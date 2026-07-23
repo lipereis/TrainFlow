@@ -6,18 +6,18 @@ import { toErrorResponse } from "@/server/http";
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }>; };
 
 export async function GET(_req: NextRequest, ctx: Ctx) {
   try {
-    const { trainerId } = await authorizeWorkoutExport(ctx.params.id);
-    const payload = await loadExportPayload(trainerId, ctx.params.id);
+    const { trainerId } = await authorizeWorkoutExport((await ctx.params).id);
+    const payload = await loadExportPayload(trainerId, (await ctx.params).id);
     const buffer = await pdfService.build(payload);
     return new NextResponse(new Uint8Array(buffer), {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="workout-${ctx.params.id}.pdf"`,
+        "Content-Disposition": `attachment; filename="workout-${(await ctx.params).id}.pdf"`,
       },
     });
   } catch (err) {

@@ -506,7 +506,7 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
 
   return (
     <div className="workout-spreadsheet space-y-6">
-      <div className="no-print flex flex-wrap items-center justify-between gap-3">
+      <div className="no-print flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <AutosaveBadge status={status} onRetry={retry} />
         <div className="flex flex-wrap gap-2">
           <button
@@ -551,6 +551,10 @@ export function WorkoutSpreadsheet({ workoutId }: Props) {
           </button>
         </div>
       </div>
+
+      <p className="no-print text-xs text-muted-foreground md:hidden">
+        {t("scrollHint")}
+      </p>
 
       {error ? (
         <p className="no-print rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300">

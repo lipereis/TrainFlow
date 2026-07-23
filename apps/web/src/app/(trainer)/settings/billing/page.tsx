@@ -25,9 +25,7 @@ function statusLabelKey(status: TrainerPlanStatus) {
 export default async function BillingSettingsPage({
   searchParams,
 }: {
-  searchParams:
-    | Promise<{ success?: string; canceled?: string }>
-    | { success?: string; canceled?: string };
+  searchParams: Promise<{ success?: string; canceled?: string }>;
 }) {
   const t = await getTranslations("billing");
   const params = await Promise.resolve(searchParams);

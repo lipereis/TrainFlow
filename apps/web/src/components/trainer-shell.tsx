@@ -220,11 +220,11 @@ export function TrainerShell({ children }: { children: ReactNode }) {
       ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between gap-3 border-b border-border bg-card/80 px-4 backdrop-blur-md sm:px-6 md:h-auto md:py-3">
+        <header className="flex h-14 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur-md sm:h-16 sm:gap-3 sm:px-6 md:h-auto md:py-3">
           <button
             ref={menuButtonRef}
             type="button"
-            className="inline-flex items-center justify-center rounded-xl border border-border p-2 text-foreground hover:bg-muted md:hidden"
+            className="inline-flex shrink-0 items-center justify-center rounded-xl border border-border p-2 text-foreground hover:bg-muted md:hidden"
             aria-expanded={open}
             aria-controls={DRAWER_ID}
             aria-label={open ? t("closeMenu") : t("openMenu")}
@@ -232,7 +232,10 @@ export function TrainerShell({ children }: { children: ReactNode }) {
           >
             <MenuIcon open={open} />
           </button>
-          <div className="ml-auto flex items-center gap-3">
+          <div className="min-w-0 flex-1 md:hidden">
+            <BrandLogo href="/dashboard" size="xs" />
+          </div>
+          <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-3">
             <AppearanceControls />
             <UserButton />
           </div>

@@ -26,7 +26,7 @@ function clientStatusLabel(
 export default async function ClientsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }> | { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }) {
   const t = await getTranslations("clients");
   const tCommon = await getTranslations("common");
@@ -104,24 +104,26 @@ export default async function ClientsPage({
         </p>
       ) : null}
 
-      <form method="get" className="flex gap-2">
+      <form method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <Input
           name="q"
           defaultValue={q}
           placeholder={t("searchPlaceholder")}
-          className="max-w-sm"
+          className="w-full sm:max-w-sm"
         />
-        <button type="submit" className={buttonClassName("secondary", "sm")}>
-          {tCommon("search")}
-        </button>
-        {q ? (
-          <Link
-            href="/clients"
-            className="self-center px-3 py-2 text-sm text-muted-foreground hover:underline"
-          >
-            {tCommon("clear")}
-          </Link>
-        ) : null}
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="submit" className={buttonClassName("secondary", "sm")}>
+            {tCommon("search")}
+          </button>
+          {q ? (
+            <Link
+              href="/clients"
+              className="px-3 py-2 text-sm text-muted-foreground hover:underline"
+            >
+              {tCommon("clear")}
+            </Link>
+          ) : null}
+        </div>
       </form>
 
       {error ? (

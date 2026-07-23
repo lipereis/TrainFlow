@@ -6,7 +6,7 @@ import { jsonNoContent, jsonOk, parseOrThrow, withHandler } from "@/server/http"
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string; dayId: string } };
+type Ctx = { params: Promise<{ id: string; dayId: string }>; };
 
 export async function PATCH(req: NextRequest, ctx: Ctx) {
   return withHandler(async () => {
@@ -15,8 +15,8 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
     return jsonOk(
       await workoutsService.updateDay(
         trainerId,
-        ctx.params.id,
-        ctx.params.dayId,
+        (await ctx.params).id,
+        (await ctx.params).dayId,
         body,
       ),
     );
@@ -28,8 +28,8 @@ export async function DELETE(_req: NextRequest, ctx: Ctx) {
     const { trainerId } = await requireTrainerId();
     await workoutsService.removeDay(
       trainerId,
-      ctx.params.id,
-      ctx.params.dayId,
+      (await ctx.params).id,
+      (await ctx.params).dayId,
     );
     return jsonNoContent();
   });
