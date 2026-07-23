@@ -432,7 +432,7 @@ Also export a small unit-testable `mapStripeStatus` — add `sync-subscription.s
 ```ts
 import { NextRequest } from "next/server";
 import { requireTrainerId } from "@/server/auth";
-import { prisma } from "@/server/db";
+import { prisma } from "@/server/prisma";
 import { appOrigin, jsonOk, withHandler } from "@/server/http";
 import { getStripe, proPriceId } from "@/server/billing/stripe";
 import { badRequest } from "@/server/errors";
