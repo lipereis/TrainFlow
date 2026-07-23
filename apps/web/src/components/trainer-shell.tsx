@@ -21,6 +21,7 @@ const links = [
   { href: "/workouts/new", labelKey: "workouts" },
   { href: "/templates", labelKey: "templates" },
   { href: "/exercises", labelKey: "exercises" },
+  { href: "/settings/billing", labelKey: "billing" },
 ] as const;
 
 const DRAWER_ID = "trainer-nav-drawer";
