@@ -34,8 +34,8 @@ type Props = {
   onMoveToDay?: (exerciseId: string, targetDayId: string) => void;
 };
 
-const cellInput =
-  "w-full min-w-[3.5rem] rounded border border-transparent bg-transparent px-1 py-0.5 text-sm text-zinc-900 hover:border-zinc-300 focus:border-zinc-400 focus:outline-none dark:text-zinc-100 dark:hover:border-zinc-600 dark:focus:border-zinc-500";
+const cellInputClass =
+  "w-full min-w-[3.5rem] rounded border border-transparent bg-transparent px-1 py-0.5 text-sm text-foreground hover:border-border focus:border-ring focus:outline-none";
 
 const METHOD_LABEL_KEYS: Record<string, string> = {
   "Standard sets": "methodStandardSets",
@@ -68,7 +68,7 @@ function VideoUrlCell({
 
   return (
     <input
-      className={`${cellInput} min-w-[6rem]`}
+      className={`${cellInputClass} min-w-[6rem]`}
       value={draft}
       placeholder={placeholder}
       disabled={disabled}
@@ -103,13 +103,13 @@ export function ExerciseTable({
         header: "#",
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
-            <span className="w-5 text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="w-5 text-xs text-muted-foreground">
               {row.index + 1}
             </span>
             <div className="no-print flex flex-col">
               <button
                 type="button"
-                className="px-1 text-[10px] text-zinc-500 disabled:opacity-30 dark:text-zinc-400"
+                className="px-1 text-[10px] text-muted-foreground disabled:opacity-30"
                 disabled={busy || row.index === 0}
                 aria-label={t("moveUp")}
                 onClick={() => onMoveUp(row.original.id)}
@@ -118,7 +118,7 @@ export function ExerciseTable({
               </button>
               <button
                 type="button"
-                className="px-1 text-[10px] text-zinc-500 disabled:opacity-30 dark:text-zinc-400"
+                className="px-1 text-[10px] text-muted-foreground disabled:opacity-30"
                 disabled={busy || row.index === exercises.length - 1}
                 aria-label={t("moveDown")}
                 onClick={() => onMoveDown(row.original.id)}
@@ -134,7 +134,7 @@ export function ExerciseTable({
         header: t("colExercise"),
         cell: ({ row }) => (
           <input
-            className={`${cellInput} min-w-[8rem] font-medium`}
+            className={`${cellInputClass} min-w-[8rem] font-medium`}
             value={exerciseDisplayName(row.original, t("exerciseFallback"))}
             disabled={busy}
             onChange={(e) =>
@@ -148,7 +148,7 @@ export function ExerciseTable({
         header: t("colMuscle"),
         cell: ({ row }) => (
           <input
-            className={`${cellInput} min-w-[5rem]`}
+            className={`${cellInputClass} min-w-[5rem]`}
             value={row.original.muscleGroup}
             disabled={busy}
             onChange={(e) =>
@@ -164,7 +164,7 @@ export function ExerciseTable({
           <input
             type="number"
             min={1}
-            className={`${cellInput} w-14`}
+            className={`${cellInputClass} w-14`}
             value={row.original.sets}
             disabled={busy}
             onChange={(e) =>
@@ -183,7 +183,7 @@ export function ExerciseTable({
             <input
               type="number"
               min={1}
-              className={`${cellInput} w-12`}
+              className={`${cellInputClass} w-12`}
               value={row.original.repsMin}
               disabled={busy}
               aria-label={t("minReps")}
@@ -193,11 +193,11 @@ export function ExerciseTable({
                 })
               }
             />
-            <span className="text-xs text-zinc-400">–</span>
+            <span className="text-xs text-muted-foreground">–</span>
             <input
               type="number"
               min={1}
-              className={`${cellInput} w-12`}
+              className={`${cellInputClass} w-12`}
               value={row.original.repsMax}
               disabled={busy}
               aria-label={t("maxReps")}
@@ -222,7 +222,7 @@ export function ExerciseTable({
               type="number"
               min={0}
               step="0.5"
-              className={`${cellInput} w-16`}
+              className={`${cellInputClass} w-16`}
               value={row.original.weight ?? ""}
               placeholder={emDash}
               disabled={busy}
@@ -234,7 +234,7 @@ export function ExerciseTable({
               }}
             />
             <select
-              className={`${cellInput} w-14`}
+              className="w-14 rounded border border-border bg-card px-1 py-0.5 text-sm text-foreground"
               value={row.original.weightUnit}
               disabled={busy}
               aria-label={t("weightUnit")}
@@ -261,7 +261,7 @@ export function ExerciseTable({
             <input
               type="number"
               min={0}
-              className={`${cellInput} w-16`}
+              className={`${cellInputClass} w-16`}
               value={row.original.restSec ?? ""}
               placeholder={emDash}
               disabled={busy}
@@ -283,7 +283,7 @@ export function ExerciseTable({
         header: t("colTempo"),
         cell: ({ row }) => (
           <input
-            className={`${cellInput} w-16`}
+            className={`${cellInputClass} w-16`}
             value={row.original.tempo ?? ""}
             placeholder={emDash}
             disabled={busy}
@@ -302,7 +302,7 @@ export function ExerciseTable({
             min={1}
             max={10}
             step="0.5"
-            className={`${cellInput} w-14`}
+            className={`${cellInputClass} w-14`}
             value={row.original.rpe ?? ""}
             placeholder={emDash}
             disabled={busy}
@@ -323,7 +323,7 @@ export function ExerciseTable({
             type="number"
             min={0}
             step="0.5"
-            className={`${cellInput} w-14`}
+            className={`${cellInputClass} w-14`}
             value={row.original.rir ?? ""}
             placeholder={emDash}
             disabled={busy}
@@ -341,7 +341,7 @@ export function ExerciseTable({
         header: t("colMethod"),
         cell: ({ row }) => (
           <select
-            className={`${cellInput} min-w-[7rem]`}
+            className="min-w-[7rem] rounded border border-border bg-card px-1 py-0.5 text-sm text-foreground"
             value={row.original.method}
             disabled={busy}
             onChange={(e) =>
@@ -371,13 +371,13 @@ export function ExerciseTable({
                 disabled={busy}
                 truncateAt={40}
                 placeholder={t("templateShort")}
-                className={`${cellInput} no-print max-w-[10rem] text-xs`}
+                className={`${cellInputClass} no-print max-w-[10rem] text-xs`}
                 onInsert={(next) =>
                   onPatch(row.original.id, { observation: next || null })
                 }
               />
               <input
-                className={`${cellInput} min-w-[8rem]`}
+                className={`${cellInputClass} min-w-[8rem]`}
                 value={value}
                 placeholder={emDash}
                 disabled={busy}
@@ -396,7 +396,7 @@ export function ExerciseTable({
         header: t("colAlternative"),
         cell: ({ row }) => (
           <input
-            className={`${cellInput} min-w-[6rem]`}
+            className={`${cellInputClass} min-w-[6rem]`}
             value={row.original.alternativeText ?? ""}
             placeholder={emDash}
             disabled={busy}
@@ -427,7 +427,7 @@ export function ExerciseTable({
           <div className="no-print flex flex-col gap-1">
             {otherDays.length > 0 && onMoveToDay ? (
               <select
-                className="max-w-[8rem] rounded border border-zinc-300 bg-white px-1 py-0.5 text-xs dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+                className="max-w-[8rem] rounded border border-border bg-card px-1 py-0.5 text-xs text-foreground"
                 defaultValue=""
                 disabled={busy}
                 aria-label={t("moveToDayAria")}
@@ -481,22 +481,22 @@ export function ExerciseTable({
 
   if (exercises.length === 0) {
     return (
-      <p className="rounded border border-dashed border-zinc-300 px-3 py-6 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+      <p className="rounded border border-dashed border-border px-3 py-6 text-center text-sm text-muted-foreground">
         {t("noExercises")}
       </p>
     );
   }
 
   return (
-    <div className="workout-table-scroll overflow-x-auto rounded border border-zinc-200 dark:border-zinc-800">
+    <div className="workout-table-scroll overflow-x-auto rounded-xl border border-border">
       <table className="w-full min-w-[72rem] border-collapse text-left text-sm">
-        <thead className="bg-zinc-100 dark:bg-zinc-900">
+        <thead className="bg-muted">
           {table.getHeaderGroups().map((hg) => (
             <tr key={hg.id}>
               {hg.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="whitespace-nowrap border-b border-zinc-200 px-2 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
+                  className="whitespace-nowrap border-b border-border px-2 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
                 >
                   {header.isPlaceholder
                     ? null
@@ -513,7 +513,7 @@ export function ExerciseTable({
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
-              className="border-b border-zinc-100 last:border-0 dark:border-zinc-800/80"
+              className="border-b border-border last:border-0"
             >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="px-1 py-1 align-middle">
