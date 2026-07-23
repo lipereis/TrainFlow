@@ -7,6 +7,11 @@ import { buttonClassName } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { apiFetch } from "@/lib/api";
+import { requireTrainerId } from "@/server/auth";
+import {
+  getBillingSummary,
+  isAtClientCap,
+} from "@/server/billing/get-billing-summary";
 
 function clientStatusLabel(
   status: string,
@@ -27,6 +32,9 @@ export default async function ClientsPage({
   const tCommon = await getTranslations("common");
   const params = await Promise.resolve(searchParams);
   const q = params.q?.trim() ?? "";
+  const { trainerId } = await requireTrainerId();
+  const summary = await getBillingSummary(trainerId);
+  const atCap = isAtClientCap(summary);
 
   let clients: ClientDto[] = [];
   let error: string | null = null;
@@ -41,15 +49,60 @@ export default async function ClientsPage({
     <section className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-        <div className="flex gap-2 text-sm">
-          <Link href="/clients/new" className={buttonClassName("primary", "sm")}>
-            {t("newClient")}
-          </Link>
-          <Link href="/clients/invite" className={buttonClassName("secondary", "sm")}>
-            {t("invite")}
-          </Link>
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          {atCap ? (
+            <>
+              <span
+                className={buttonClassName(
+                  "primary",
+                  "sm",
+                  "pointer-events-none opacity-50",
+                )}
+                aria-disabled="true"
+              >
+                {t("newClient")}
+              </span>
+              <span
+                className={buttonClassName(
+                  "secondary",
+                  "sm",
+                  "pointer-events-none opacity-50",
+                )}
+                aria-disabled="true"
+              >
+                {t("invite")}
+              </span>
+              <Link
+                href="/settings/billing"
+                className={buttonClassName("primary", "sm")}
+              >
+                {t("upgradeBilling")}
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/clients/new"
+                className={buttonClassName("primary", "sm")}
+              >
+                {t("newClient")}
+              </Link>
+              <Link
+                href="/clients/invite"
+                className={buttonClassName("secondary", "sm")}
+              >
+                {t("invite")}
+              </Link>
+            </>
+          )}
         </div>
       </div>
+
+      {atCap ? (
+        <p className="text-sm text-muted-foreground">
+          {t("limitReached", { limit: summary.limit })}
+        </p>
+      ) : null}
 
       <form method="get" className="flex gap-2">
         <Input

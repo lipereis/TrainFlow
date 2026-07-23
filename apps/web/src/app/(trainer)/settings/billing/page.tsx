@@ -2,11 +2,8 @@ import { getTranslations } from "next-intl/server";
 import type { TrainerPlanStatus } from "@trainflow/db";
 import { BillingActions } from "@/components/billing-actions";
 import { Card } from "@/components/ui/card";
-import {
-  freeClientLimit,
-  isProEntitled,
-} from "@/server/billing/entitlements";
 import { requireTrainerId } from "@/server/auth";
+import { getBillingSummary } from "@/server/billing/get-billing-summary";
 import { prisma } from "@/server/prisma";
 
 function statusLabelKey(status: TrainerPlanStatus) {
@@ -36,24 +33,18 @@ export default async function BillingSettingsPage({
   const params = await Promise.resolve(searchParams);
   const { trainerId } = await requireTrainerId();
 
-  const [trainer, clientCount] = await Promise.all([
+  const [summary, trainer] = await Promise.all([
+    getBillingSummary(trainerId),
     prisma.trainer.findUniqueOrThrow({
       where: { id: trainerId },
-      select: {
-        plan: true,
-        planStatus: true,
-        stripeCustomerId: true,
-      },
+      select: { stripeCustomerId: true },
     }),
-    prisma.client.count({ where: { trainerId } }),
   ]);
 
-  const entitled = isProEntitled(trainer);
-  const limit = freeClientLimit();
-  const planLabel = trainer.plan === "PRO" ? t("planPro") : t("planFree");
-  const usageLabel = entitled
+  const planLabel = summary.plan === "PRO" ? t("planPro") : t("planFree");
+  const usageLabel = summary.entitled
     ? t("unlimited")
-    : t("usageValue", { count: clientCount, limit });
+    : t("usageValue", { count: summary.clientCount, limit: summary.limit });
 
   return (
     <section className="mx-auto max-w-lg space-y-6">
@@ -79,7 +70,7 @@ export default async function BillingSettingsPage({
           <div className="flex items-center justify-between gap-4">
             <dt className="text-muted-foreground">{t("status")}</dt>
             <dd className="font-medium text-foreground">
-              {t(statusLabelKey(trainer.planStatus))}
+              {t(statusLabelKey(summary.planStatus))}
             </dd>
           </div>
           <div className="flex items-center justify-between gap-4">
@@ -88,15 +79,15 @@ export default async function BillingSettingsPage({
           </div>
         </dl>
 
-        {!entitled ? (
+        {!summary.entitled ? (
           <p className="text-sm text-muted-foreground">
-            {t("limitHint", { limit })}
+            {t("limitHint", { limit: summary.limit })}
           </p>
         ) : null}
 
         <BillingActions
           hasCustomer={!!trainer.stripeCustomerId}
-          isPro={entitled}
+          isPro={summary.entitled}
         />
       </Card>
     </section>

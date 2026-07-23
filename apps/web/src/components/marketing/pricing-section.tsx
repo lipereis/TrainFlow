@@ -23,15 +23,6 @@ const PLANS = [
     featured: true,
     showPeriod: true,
   },
-  {
-    name: "planEnt",
-    price: "planEntPrice",
-    desc: "planEntDesc",
-    cta: "planEntCta",
-    href: "mailto:hello@trainflow.app",
-    featured: false,
-    showPeriod: false,
-  },
 ] as const;
 
 export async function PricingSection() {
@@ -47,7 +38,7 @@ export async function PricingSection() {
           <p className="mt-4 text-lg text-muted-foreground">{t("pricingSubtitle")}</p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
           {PLANS.map((plan) => (
             <Card
               key={plan.name}

@@ -1,27 +1,18 @@
-"use client";
-
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
-import type { ClientDto, CreateClientInput } from "@trainflow/shared-types";
-import { ClientForm } from "@/components/client-form";
-import { browserApiFetch } from "@/lib/browser-api";
+import { getTranslations } from "next-intl/server";
+import { ClientLimitNotice } from "@/app/(trainer)/clients/client-limit-notice";
+import { NewClientForm } from "@/app/(trainer)/clients/new/new-client-form";
+import { requireTrainerId } from "@/server/auth";
+import {
+  getBillingSummary,
+  isAtClientCap,
+} from "@/server/billing/get-billing-summary";
 
-export default function NewClientPage() {
-  const { getToken } = useAuth();
-  const router = useRouter();
-  const t = useTranslations("clients");
-
-  async function onSubmit(data: CreateClientInput) {
-    const token = await getToken();
-    const created = await browserApiFetch<ClientDto>("/clients", token, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-    router.push(`/clients/${created.id}`);
-    router.refresh();
-  }
+export default async function NewClientPage() {
+  const t = await getTranslations("clients");
+  const { trainerId } = await requireTrainerId();
+  const summary = await getBillingSummary(trainerId);
+  const atCap = isAtClientCap(summary);
 
   return (
     <section className="mx-auto max-w-2xl space-y-6">
@@ -36,11 +27,11 @@ export default function NewClientPage() {
           {t("back")}
         </Link>
       </div>
-      <ClientForm
-        mode="create"
-        onSubmit={onSubmit}
-        submitLabel={t("createClient")}
-      />
+      {atCap ? (
+        <ClientLimitNotice limit={summary.limit} />
+      ) : (
+        <NewClientForm />
+      )}
     </section>
   );
 }
