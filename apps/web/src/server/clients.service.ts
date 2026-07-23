@@ -125,13 +125,12 @@ export class ClientsService {
   }
 
   async invite(trainerId: string, input: InviteClientInput): Promise<ClientDto> {
-    await assertCanCreateClient(trainerId);
-
     const token = this.newToken();
     const expiresAt = new Date(Date.now() + INVITE_TTL_MS);
 
     const client = await prisma.$transaction(async (tx) => {
-      const created = await tx.client.create({
+      await assertCanCreateClient(trainerId, tx);
+      return tx.client.create({
         data: {
           trainerId,
           name: input.name,
@@ -142,7 +141,6 @@ export class ClientsService {
           },
         },
       });
-      return created;
     });
 
     const webOrigin = appOrigin();
@@ -189,16 +187,17 @@ export class ClientsService {
   }
 
   async create(trainerId: string, input: CreateClientInput): Promise<ClientDto> {
-    await assertCanCreateClient(trainerId);
-
-    const client = await prisma.client.create({
-      data: {
-        trainerId,
-        name: input.name,
-        email: input.email,
-        status: input.status ?? "ACTIVE",
-        ...this.profileData(input),
-      },
+    const client = await prisma.$transaction(async (tx) => {
+      await assertCanCreateClient(trainerId, tx);
+      return tx.client.create({
+        data: {
+          trainerId,
+          name: input.name,
+          email: input.email,
+          status: input.status ?? "ACTIVE",
+          ...this.profileData(input),
+        },
+      });
     });
     return this.toDto(client as ClientRow);
   }

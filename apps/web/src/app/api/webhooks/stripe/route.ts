@@ -4,7 +4,10 @@ import { jsonOk, withHandler } from "@/server/http";
 import { misconfigured, unauthorized } from "@/server/errors";
 import { prisma } from "@/server/prisma";
 import { getStripe } from "@/server/billing/stripe";
-import { applyStripeSubscription } from "@/server/billing/sync-subscription";
+import {
+  applyStripeSubscription,
+  resolveInvoiceSubscriptionId,
+} from "@/server/billing/sync-subscription";
 
 export const runtime = "nodejs";
 
@@ -66,16 +69,23 @@ export async function POST(req: NextRequest) {
       }
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
-        const customerId =
-          typeof invoice.customer === "string"
-            ? invoice.customer
-            : invoice.customer?.id;
-        if (customerId) {
-          await prisma.trainer.updateMany({
-            where: { stripeCustomerId: customerId },
-            data: { planStatus: "PAST_DUE", plan: "PRO" },
-          });
-        }
+        const subId = resolveInvoiceSubscriptionId(invoice);
+        if (!subId) break;
+        const sub = await stripe.subscriptions.retrieve(subId);
+        const trainerId =
+          sub.metadata?.trainerId ??
+          (
+            await prisma.trainer.findFirst({
+              where: {
+                stripeCustomerId:
+                  typeof sub.customer === "string"
+                    ? sub.customer
+                    : sub.customer.id,
+              },
+              select: { id: true },
+            })
+          )?.id;
+        if (trainerId) await applyStripeSubscription(trainerId, sub);
         break;
       }
       default:

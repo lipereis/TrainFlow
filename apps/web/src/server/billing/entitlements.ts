@@ -1,6 +1,8 @@
-import type { TrainerPlan, TrainerPlanStatus } from "@trainflow/db";
+import type { Prisma, TrainerPlan, TrainerPlanStatus } from "@trainflow/db";
 import { prisma } from "@/server/prisma";
 import { forbidden } from "@/server/errors";
+
+type DbClient = Prisma.TransactionClient | typeof prisma;
 
 export function freeClientLimit(): number {
   const raw = process.env.FREE_CLIENT_LIMIT;
@@ -18,14 +20,17 @@ export function isProEntitled(trainer: {
   );
 }
 
-export async function assertCanCreateClient(trainerId: string): Promise<void> {
-  const trainer = await prisma.trainer.findUniqueOrThrow({
+export async function assertCanCreateClient(
+  trainerId: string,
+  db: DbClient = prisma,
+): Promise<void> {
+  const trainer = await db.trainer.findUniqueOrThrow({
     where: { id: trainerId },
     select: { plan: true, planStatus: true },
   });
   if (isProEntitled(trainer)) return;
 
-  const count = await prisma.client.count({ where: { trainerId } });
+  const count = await db.client.count({ where: { trainerId } });
   if (count >= freeClientLimit()) {
     throw forbidden(
       "CLIENT_LIMIT_REACHED",

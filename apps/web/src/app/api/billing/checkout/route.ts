@@ -3,6 +3,7 @@ import { requireTrainerId } from "@/server/auth";
 import { prisma } from "@/server/prisma";
 import { appOrigin, jsonOk, withHandler } from "@/server/http";
 import { getStripe, proPriceId } from "@/server/billing/stripe";
+import { isProEntitled } from "@/server/billing/entitlements";
 import { badRequest } from "@/server/errors";
 
 export const runtime = "nodejs";
@@ -13,6 +14,13 @@ export async function POST(req: NextRequest) {
     const trainer = await prisma.trainer.findUniqueOrThrow({
       where: { id: trainerId },
     });
+
+    if (isProEntitled(trainer)) {
+      throw badRequest(
+        "ALREADY_PRO",
+        "You already have an active Pro subscription",
+      );
+    }
 
     const stripe = getStripe();
     let customerId = trainer.stripeCustomerId;

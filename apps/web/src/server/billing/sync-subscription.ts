@@ -20,6 +20,23 @@ export function mapStripeStatus(
   }
 }
 
+/** Resolve subscription id from Invoice (legacy `subscription` or `parent.subscription_details`). */
+export function resolveInvoiceSubscriptionId(
+  invoice: Stripe.Invoice,
+): string | null {
+  const fromParent = invoice.parent?.subscription_details?.subscription;
+  if (fromParent) {
+    return typeof fromParent === "string" ? fromParent : fromParent.id;
+  }
+  const legacy = (
+    invoice as Stripe.Invoice & {
+      subscription?: string | Stripe.Subscription | null;
+    }
+  ).subscription;
+  if (!legacy) return null;
+  return typeof legacy === "string" ? legacy : legacy.id;
+}
+
 export async function applyStripeSubscription(
   trainerId: string,
   sub: Stripe.Subscription,
