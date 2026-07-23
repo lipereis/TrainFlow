@@ -38,10 +38,14 @@ export async function POST(req: NextRequest) {
     }
 
     const origin = appOrigin();
+    // automatic_tax requires active Tax Registrations in the Dashboard
+    // (Tax → Registrations). Without them Stripe calculates R$0 tax (no error).
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: customerId,
       line_items: [{ price: proPriceId(), quantity: 1 }],
+      automatic_tax: { enabled: true },
+      customer_update: { address: "auto" },
       success_url: `${origin}/settings/billing?success=1`,
       cancel_url: `${origin}/settings/billing?canceled=1`,
       client_reference_id: trainer.id,

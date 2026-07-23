@@ -125,18 +125,19 @@ Missing Stripe secrets → **runtime 503** on billing routes / webhook only; fir
 
 ### Operator checklist
 
-1. **Stripe Dashboard** → create a **Product** + recurring **Price** in **BRL** (monthly) → copy Price id → `STRIPE_PRICE_ID_PRO`.
-2. **Customer Portal** → enable (cancel subscription, update payment method).
-3. **Webhook** → endpoint `https://<vercel-host>/api/webhooks/stripe` (local: Stripe CLI `stripe listen --forward-to localhost:3000/api/webhooks/stripe`).
-4. Subscribe to at least:
+1. **Stripe Dashboard** → create a **Product** + recurring **Price** in **BRL** (monthly) → copy Price id → `STRIPE_PRICE_ID_PRO`. Set a SaaS/digital **tax code** on the Product and **tax behavior** on the Price ([tax codes](https://docs.stripe.com/tax/tax-codes)).
+2. **Tax** → [Registrations](https://dashboard.stripe.com/tax/registrations): add each jurisdiction where you must collect tax (status **Collecting**). Checkout already sends `automatic_tax: { enabled: true }`; without registrations Stripe calculates **R$0 tax** (no error). Confirm with a tax advisor for Brazil/ISS obligations.
+3. **Customer Portal** → enable (cancel subscription, update payment method). Optional: brand invoices under Settings → Branding.
+4. **Webhook** → endpoint `https://<vercel-host>/api/webhooks/stripe` (local: Stripe CLI `stripe listen --forward-to localhost:3000/api/webhooks/stripe`).
+5. Subscribe to at least:
    - `checkout.session.completed`
    - `customer.subscription.created`
    - `customer.subscription.updated`
    - `customer.subscription.deleted`
    - `invoice.payment_failed`
-5. Paste endpoint signing secret → `STRIPE_WEBHOOK_SECRET`; set `STRIPE_SECRET_KEY` and `STRIPE_PRICE_ID_PRO` on Vercel → **redeploy**.
-6. From a machine with prod DB URLs: `pnpm db:migrate:deploy` (billing fields on `Trainer`).
-7. Smoke: free trainer blocked at 3rd client; checkout → webhook → Pro → create succeeds; Portal cancel → free again (existing clients kept).
+6. Paste endpoint signing secret → `STRIPE_WEBHOOK_SECRET`; set `STRIPE_SECRET_KEY` and `STRIPE_PRICE_ID_PRO` on Vercel → **redeploy**. Prefer a [restricted key](https://docs.stripe.com/keys/restricted-api-keys) in production.
+7. From a machine with prod DB URLs: `pnpm db:migrate:deploy` (billing fields on `Trainer`).
+8. Smoke: free trainer blocked at 3rd client; checkout → webhook → Pro → create succeeds; Portal cancel → free again (existing clients kept).
 
 See `docs/superpowers/specs/2026-07-22-stripe-billing-client-cap-design.md` for entitlement rules (`past_due` grace, etc.).
 
