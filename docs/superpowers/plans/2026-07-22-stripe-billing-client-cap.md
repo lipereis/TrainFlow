@@ -138,14 +138,14 @@ import {
   assertCanCreateClient,
 } from "./entitlements";
 
-jest.mock("@/server/db", () => ({
+jest.mock("@/server/prisma", () => ({
   prisma: {
     trainer: { findUniqueOrThrow: jest.fn() },
     client: { count: jest.fn() },
   },
 }));
 
-import { prisma } from "@/server/db";
+import { prisma } from "@/server/prisma";
 
 const mockedPrisma = prisma as unknown as {
   trainer: { findUniqueOrThrow: jest.Mock };
@@ -225,8 +225,6 @@ describe("assertCanCreateClient", () => {
 });
 ```
 
-Adjust the prisma import path to match the real module (`@/server/db` or wherever `prisma` is exported — find with `rg "export const prisma" apps/web/src`).
-
 - [ ] **Step 2: Run tests — expect FAIL**
 
 ```bash
@@ -239,7 +237,7 @@ Expected: FAIL (module missing).
 
 ```ts
 import type { TrainerPlan, TrainerPlanStatus } from "@trainflow/db";
-import { prisma } from "@/server/db"; // use actual path
+import { prisma } from "@/server/prisma";
 import { forbidden } from "@/server/errors";
 
 export function freeClientLimit(): number {
@@ -368,7 +366,7 @@ export function getStripe(): Stripe {
   if (!key) {
     throw misconfigured("STRIPE_NOT_CONFIGURED", "STRIPE_SECRET_KEY is not set");
   }
-  return new Stripe(key, { apiVersion: "2025-02-24.acacia" }); // use SDK default if this version string fails — pin to installed stripe package’s typed ApiVersion
+  return new Stripe(key);
 }
 
 export function proPriceId(): string {
@@ -387,7 +385,7 @@ If TypeScript rejects `apiVersion`, omit the option or use the version exported 
 ```ts
 import type Stripe from "stripe";
 import type { TrainerPlan, TrainerPlanStatus } from "@trainflow/db";
-import { prisma } from "@/server/db";
+import { prisma } from "@/server/prisma";
 
 export function mapStripeStatus(
   status: Stripe.Subscription.Status,
