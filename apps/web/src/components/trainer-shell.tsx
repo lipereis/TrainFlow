@@ -47,10 +47,10 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             key={link.href}
             href={link.href}
             onClick={onNavigate}
-            className={`rounded-xl px-3 py-2 transition-colors ${
+            className={`rounded-xl border-l-2 px-3 py-2 transition-colors ${
               active
-                ? "bg-muted font-medium text-foreground"
-                : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                ? "border-primary bg-muted font-medium text-primary"
+                : "border-transparent text-muted-foreground hover:bg-muted/70 hover:text-foreground"
             }`}
           >
             {t(link.labelKey)}
@@ -240,7 +240,7 @@ export function TrainerShell({ children }: { children: ReactNode }) {
             <UserButton />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-[90rem] flex-1 bg-background px-4 py-6 sm:px-6 sm:py-8">
+        <main className="mx-auto w-full max-w-[90rem] flex-1 bg-muted/20 px-4 py-6 sm:px-6 sm:py-8">
           {children}
         </main>
       </div>
