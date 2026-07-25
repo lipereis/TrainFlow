@@ -1,5 +1,10 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import {
+  getLocale,
+  getMessages,
+  getTimeZone,
+  getTranslations,
+} from "next-intl/server";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { AppProviders } from "@/components/app-providers";
@@ -24,11 +29,12 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const timeZone = await getTimeZone();
 
   return (
     <html lang={locale} className={GeistSans.variable} suppressHydrationWarning>
       <body className="font-sans">
-        <AppProviders locale={locale} messages={messages}>
+        <AppProviders locale={locale} messages={messages} timeZone={timeZone}>
           <ClerkProvider
             dynamic
             signInUrl="/sign-in"
