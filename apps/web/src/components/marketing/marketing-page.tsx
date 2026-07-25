@@ -15,7 +15,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 
 export async function MarketingPage() {
   return (
-    <div className="marketing-shell min-h-screen bg-mkt-dark text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <MarketingNav />
       <main>
         <Hero />

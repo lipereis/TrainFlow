@@ -11,19 +11,9 @@
 - ~40% athletic energy (dark cinematic bands, restrained motion)
 - Not a gym / influencer / bodybuilding brand
 
-## Accent (marketing-only)
+## Accent (shared with app)
 
-Scoped under `.marketing-shell`:
-
-| Token | Use |
-|-------|-----|
-| `--mkt-accent` | Primary CTAs, metrics, active highlights |
-| `--mkt-accent-foreground` | Text on accent buttons |
-| `--mkt-glow` | Soft glow / lighting only |
-| `--mkt-dark` / `--mkt-dark-surface` | Dark section backgrounds |
-| `--mkt-light` / `--mkt-light-muted` | Light section backgrounds |
-
-Do not replace global `--primary`. Do not use accent as large backgrounds. Avoid neon.
+Landing uses the same theme tokens as the dashboard (`--primary` teal, `background`, `card`, `muted`, `border`). Light/dark follow the global theme toggle — no separate marketing palette.
 
 ## Section map
 

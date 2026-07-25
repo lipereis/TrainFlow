@@ -36,21 +36,6 @@ body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Marketing landing — scoped accent (does not override app --primary) */
-.marketing-shell {
-  --mkt-accent: 92 58% 42%;
-  --mkt-accent-foreground: 100 20% 6%;
-  --mkt-glow: 92 70% 48%;
-  --mkt-dark: 220 22% 5%;
-  --mkt-dark-surface: 220 18% 9%;
-  --mkt-dark-border: 220 14% 16%;
-  --mkt-dark-muted: 215 12% 62%;
-  --mkt-light: 40 12% 97%;
-  --mkt-light-muted: 40 8% 94%;
-  --mkt-light-fg: 222 30% 10%;
-  --mkt-light-muted-fg: 220 10% 40%;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -79,7 +64,7 @@ body {
     background-color: transparent;
   }
   50% {
-    background-color: hsl(var(--mkt-accent) / 0.12);
+    background-color: hsl(var(--primary) / 0.12);
   }
 }
 
@@ -93,8 +78,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marketing-shell .mkt-reveal,
-  .marketing-shell .mkt-parallax {
+  .mkt-reveal,
+  .mkt-parallax {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;

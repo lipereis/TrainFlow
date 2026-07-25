@@ -8,14 +8,14 @@ export async function ProblemSection() {
   const t = await getTranslations("landing");
 
   return (
-    <MarketingSection tone="lightMuted" className="py-20 sm:py-24">
+    <MarketingSection tone="light" className="py-20 sm:py-24">
       <Reveal className="max-w-2xl">
-        <h2 className="text-3xl font-semibold tracking-tight text-mkt-light-fg sm:text-4xl lg:leading-[1.15]">
+        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:leading-[1.15]">
           {t("problemTitleLine1")}
           <br />
           {t("problemTitleLine2")}
         </h2>
-        <p className="mt-5 text-base text-mkt-light-muted-fg sm:text-lg">
+        <p className="mt-5 text-base text-muted-foreground sm:text-lg">
           {t("problemSubtitle")}
         </p>
       </Reveal>
@@ -23,7 +23,7 @@ export async function ProblemSection() {
       <ul className="mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
         {PAIN_KEYS.map((key, i) => (
           <Reveal key={key} delayMs={i * 60}>
-            <li className="rounded-2xl border border-black/8 bg-white px-5 py-4 text-sm text-mkt-light-fg shadow-sm">
+            <li className="rounded-2xl border border-border bg-card px-5 py-4 text-sm text-foreground shadow-sm">
               {t(key)}
             </li>
           </Reveal>

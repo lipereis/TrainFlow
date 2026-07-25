@@ -4,10 +4,11 @@ import type { HTMLAttributes, ReactNode } from "react";
 
 type Tone = "dark" | "light" | "lightMuted";
 
+/** Same palette as dashboard / trainer shell (theme tokens). */
 const toneClass: Record<Tone, string> = {
-  dark: "bg-mkt-dark text-white",
-  light: "bg-mkt-light text-mkt-light-fg",
-  lightMuted: "bg-mkt-light-muted text-mkt-light-fg",
+  dark: "border-y border-border/60 bg-muted text-foreground",
+  light: "bg-background text-foreground",
+  lightMuted: "bg-muted/40 text-foreground",
 };
 
 type MarketingSectionProps = HTMLAttributes<HTMLElement> & {
@@ -27,11 +28,7 @@ export function MarketingSection({
 }: MarketingSectionProps) {
   return (
     <section
-      className={cn(
-        "relative overflow-hidden",
-        toneClass[tone],
-        className,
-      )}
+      className={cn("relative overflow-hidden", toneClass[tone], className)}
       {...props}
     >
       {contained ? (

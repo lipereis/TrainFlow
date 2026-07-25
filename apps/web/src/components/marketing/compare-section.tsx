@@ -12,28 +12,28 @@ export async function CompareSection() {
   return (
     <MarketingSection tone="light" className="py-20 sm:py-28">
       <Reveal className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-semibold tracking-tight text-mkt-light-fg sm:text-4xl">
+        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           {t("compareTitle")}
         </h2>
-        <p className="mt-4 text-base text-mkt-light-muted-fg sm:text-lg">
+        <p className="mt-4 text-base text-muted-foreground sm:text-lg">
           {t("compareSubtitle")}
         </p>
       </Reveal>
 
       <div className="mt-12 grid gap-6 lg:grid-cols-2 lg:gap-8">
         <Reveal>
-          <div className="h-full rounded-3xl border border-black/8 bg-mkt-light-muted/80 p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-mkt-light-muted-fg">
+          <div className="h-full rounded-3xl border border-border bg-muted/50 p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               {t("compareBeforeLabel")}
             </p>
             <ul className="mt-6 space-y-4">
               {BEFORE.map((key) => (
                 <li
                   key={key}
-                  className="flex gap-3 text-sm leading-relaxed text-mkt-light-muted-fg"
+                  className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
                 >
                   <span
-                    className="mt-1.5 size-1.5 shrink-0 rounded-full bg-mkt-light-muted-fg/50"
+                    className="mt-1.5 size-1.5 shrink-0 rounded-full bg-muted-foreground/50"
                     aria-hidden
                   />
                   {t(key)}
@@ -44,18 +44,18 @@ export async function CompareSection() {
         </Reveal>
 
         <Reveal delayMs={80}>
-          <div className="h-full rounded-3xl border border-mkt-accent/25 bg-white p-6 shadow-card sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-mkt-accent">
+          <div className="h-full rounded-3xl border border-primary/25 bg-card p-6 shadow-card sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
               {t("compareAfterLabel")}
             </p>
             <ul className="mt-6 space-y-4">
               {AFTER.map((key) => (
                 <li
                   key={key}
-                  className="flex gap-3 text-sm leading-relaxed text-mkt-light-fg"
+                  className="flex gap-3 text-sm leading-relaxed text-foreground"
                 >
                   <span
-                    className="mt-1.5 size-1.5 shrink-0 rounded-full bg-mkt-accent"
+                    className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary"
                     aria-hidden
                   />
                   {t(key)}

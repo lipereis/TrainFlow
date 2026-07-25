@@ -25,7 +25,7 @@ export async function FeaturesSection() {
       body: t("feat2Body"),
       detail: t("feat2Detail"),
       tone: "dark" as const,
-      mock: <WorkoutEditorMock dark />,
+      mock: <WorkoutEditorMock animate />,
     },
     {
       title: t("feat3Title"),
@@ -46,11 +46,7 @@ export async function FeaturesSection() {
   return (
     <div id="features">
       {features.map((f, i) => (
-        <MarketingSection
-          key={f.title}
-          tone={f.tone}
-          className="py-20 sm:py-24"
-        >
+        <MarketingSection key={f.title} tone={f.tone} className="py-20 sm:py-24">
           <div
             className={cn(
               "grid items-center gap-10 lg:grid-cols-2 lg:gap-16",
@@ -58,30 +54,13 @@ export async function FeaturesSection() {
             )}
           >
             <Reveal>
-              <h2
-                className={cn(
-                  "text-3xl font-semibold tracking-tight sm:text-4xl",
-                  f.tone === "dark" ? "text-white" : "text-mkt-light-fg",
-                )}
-              >
+              <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 {f.title}
               </h2>
-              <p
-                className={cn(
-                  "mt-4 max-w-md text-base leading-relaxed sm:text-lg",
-                  f.tone === "dark" ? "text-mkt-dark-muted" : "text-mkt-light-muted-fg",
-                )}
-              >
+              <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
                 {f.body}
               </p>
-              <p
-                className={cn(
-                  "mt-6 text-sm font-medium",
-                  f.tone === "dark" ? "text-mkt-accent" : "text-mkt-accent",
-                )}
-              >
-                {f.detail}
-              </p>
+              <p className="mt-6 text-sm font-medium text-primary">{f.detail}</p>
             </Reveal>
             <Reveal delayMs={80}>{f.mock}</Reveal>
           </div>
