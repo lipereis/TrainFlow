@@ -4,7 +4,9 @@ import type { ClientDto } from "@trainflow/shared-types";
 import { Badge } from "@/components/ui/badge";
 import { buttonClassName } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/page-header";
 import { apiFetch } from "@/lib/api";
+import { statusBadgeVariant } from "@/lib/status-badge";
 
 type WorkoutListItem = {
   id: string;
@@ -59,24 +61,31 @@ export default async function DashboardPage() {
 
   return (
     <section className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-foreground">
-          {t("title")}
-        </h1>
-        <div className="flex flex-wrap gap-2 text-sm">
-          <Link href="/clients/new" className={buttonClassName("primary", "sm")}>
-            {t("newClient")}
-          </Link>
-          <Link href="/workouts/new" className={buttonClassName("secondary", "sm")}>
-            {t("newWorkout")}
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        actions={
+          <>
+            <Link
+              href="/clients/new"
+              className={buttonClassName("primary", "sm")}
+            >
+              {t("newClient")}
+            </Link>
+            <Link
+              href="/workouts/new"
+              className={buttonClassName("secondary", "sm")}
+            >
+              {t("newWorkout")}
+            </Link>
+          </>
+        }
+      />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="p-5">
+        <Card className="border-l-2 border-l-primary/40 p-5">
           <p className="text-sm text-muted-foreground">{t("clients")}</p>
-          <p className="mt-1 text-3xl font-semibold text-foreground">
+          <p className="mt-1 text-3xl font-semibold tabular-nums text-foreground">
             {clientsError ? "—" : clients.length}
           </p>
           {clientsError ? (
@@ -85,17 +94,17 @@ export default async function DashboardPage() {
             </p>
           ) : null}
         </Card>
-        <Card className="p-5">
+        <Card className="border-l-2 border-l-primary/40 p-5">
           <p className="text-sm text-muted-foreground">{t("programs")}</p>
-          <p className="mt-1 text-3xl font-semibold text-foreground">
+          <p className="mt-1 text-3xl font-semibold tabular-nums text-foreground">
             {workouts.length}
           </p>
         </Card>
-        <Card className="p-5">
+        <Card className="border-l-2 border-l-primary/40 p-5">
           <p className="text-sm text-muted-foreground">
             {t("activePrograms")}
           </p>
-          <p className="mt-1 text-3xl font-semibold text-foreground">
+          <p className="mt-1 text-3xl font-semibold tabular-nums text-foreground">
             {activeCount}
           </p>
         </Card>
@@ -120,7 +129,7 @@ export default async function DashboardPage() {
               return (
                 <li
                   key={w.id}
-                  className="flex items-center justify-between gap-3 px-4 py-3"
+                  className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-muted/40"
                 >
                   <div className="min-w-0">
                     <Link
@@ -131,7 +140,9 @@ export default async function DashboardPage() {
                     </Link>
                     {statusLabel ? (
                       <div className="mt-1">
-                        <Badge>{statusLabel}</Badge>
+                        <Badge variant={statusBadgeVariant(w.status ?? "")}>
+                          {statusLabel}
+                        </Badge>
                       </div>
                     ) : null}
                   </div>
@@ -145,10 +156,17 @@ export default async function DashboardPage() {
               );
             })}
             {recent.length === 0 ? (
-              <li className="px-4 py-8 text-center text-muted-foreground">
-                {t("noPrograms")}{" "}
-                <Link href="/workouts/new" className="underline">
-                  {t("createOne")}
+              <li className="px-4 py-8 text-center">
+                <p className="text-muted-foreground">{t("noPrograms")}</p>
+                <Link
+                  href="/workouts/new"
+                  className={buttonClassName(
+                    "primary",
+                    "sm",
+                    "mt-3 inline-flex",
+                  )}
+                >
+                  {t("emptyProgramsCta")}
                 </Link>
               </li>
             ) : null}
@@ -163,7 +181,7 @@ export default async function DashboardPage() {
             {clients.slice(0, 8).map((c) => (
               <li
                 key={c.id}
-                className="flex items-center justify-between px-4 py-3"
+                className="flex items-center justify-between px-4 py-3 hover:bg-muted/40"
               >
                 <Link
                   href={`/clients/${c.id}`}
@@ -171,12 +189,24 @@ export default async function DashboardPage() {
                 >
                   {c.name}
                 </Link>
-                <Badge>{clientStatusLabel(c.status, tClients)}</Badge>
+                <Badge variant={statusBadgeVariant(c.status)}>
+                  {clientStatusLabel(c.status, tClients)}
+                </Badge>
               </li>
             ))}
             {clients.length === 0 && !clientsError ? (
-              <li className="px-4 py-8 text-center text-muted-foreground">
-                {t("noClients")}
+              <li className="px-4 py-8 text-center">
+                <p className="text-muted-foreground">{t("noClients")}</p>
+                <Link
+                  href="/clients/new"
+                  className={buttonClassName(
+                    "primary",
+                    "sm",
+                    "mt-3 inline-flex",
+                  )}
+                >
+                  {t("emptyClientsCta")}
+                </Link>
               </li>
             ) : null}
           </ul>
