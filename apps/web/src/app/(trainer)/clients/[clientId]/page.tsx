@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonClassName } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { apiFetch } from "@/lib/api";
+import { statusBadgeVariant } from "@/lib/status-badge";
 
 type WorkoutListItem = {
   id: string;
@@ -106,7 +107,7 @@ export default async function ClientProfilePage({
             <span className="mx-1">/</span>
             {client.name}
           </p>
-          <h1 className="mt-1 text-2xl font-semibold text-foreground">
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
             {client.name}
           </h1>
           <p className="text-sm text-muted-foreground">{client.email}</p>
@@ -135,7 +136,9 @@ export default async function ClientProfilePage({
               {t("status")}
             </dt>
             <dd className="mt-1">
-              <Badge>{clientStatusLabel(client.status, t)}</Badge>
+              <Badge variant={statusBadgeVariant(client.status)}>
+                {clientStatusLabel(client.status, t)}
+              </Badge>
             </dd>
           </div>
           <Field label={t("phone")} value={client.phone} empty={empty} />
@@ -215,7 +218,9 @@ export default async function ClientProfilePage({
                     {p.name}
                   </Link>
                   <div className="mt-1 flex flex-wrap items-center gap-2">
-                    <Badge>{programStatusLabel(p.status, t)}</Badge>
+                    <Badge variant={statusBadgeVariant(p.status)}>
+                      {programStatusLabel(p.status, t)}
+                    </Badge>
                     {p.goal ? (
                       <span className="text-xs text-muted-foreground">
                         {p.goal}
