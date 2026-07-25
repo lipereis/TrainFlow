@@ -1,7 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import type { TrainerPlanStatus } from "@trainflow/db";
 import { BillingActions } from "@/components/billing-actions";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/page-header";
 import { requireTrainerId } from "@/server/auth";
 import { getBillingSummary } from "@/server/billing/get-billing-summary";
 import { prisma } from "@/server/prisma";
@@ -46,7 +48,7 @@ export default async function BillingSettingsPage({
 
   return (
     <section className="mx-auto max-w-lg space-y-6">
-      <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       {params.success ? (
         <p className="rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm text-foreground">
@@ -67,8 +69,14 @@ export default async function BillingSettingsPage({
           </div>
           <div className="flex items-center justify-between gap-4">
             <dt className="text-muted-foreground">{t("status")}</dt>
-            <dd className="font-medium text-foreground">
-              {t(statusLabelKey(summary.planStatus))}
+            <dd>
+              <Badge
+                variant={
+                  summary.planStatus === "ACTIVE" ? "success" : "default"
+                }
+              >
+                {t(statusLabelKey(summary.planStatus))}
+              </Badge>
             </dd>
           </div>
           <div className="flex items-center justify-between gap-4">

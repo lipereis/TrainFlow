@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonClassName } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/ui/page-header";
 import { apiFetch } from "@/lib/api";
 
 type TemplateListItem = {
@@ -54,11 +55,9 @@ export default async function TemplatesPage({
 
   return (
     <section className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
-      </div>
+      <PageHeader title={t("title")} subtitle={t("description")} />
 
+      <div className="rounded-xl border border-border bg-muted/30 p-3 sm:p-4">
       <form method="get" className="flex flex-wrap items-end gap-2">
         <label className="flex flex-col gap-1 text-sm text-foreground">
           <span className="text-muted-foreground">{t("search")}</span>
@@ -100,6 +99,7 @@ export default async function TemplatesPage({
           </Link>
         ) : null}
       </form>
+      </div>
 
       {error ? (
         <p className="text-red-600 dark:text-red-400">{error}</p>
@@ -120,7 +120,7 @@ export default async function TemplatesPage({
           {templates.map((item) => (
             <li
               key={item.id}
-              className="flex flex-wrap items-start justify-between gap-3 px-4 py-3"
+              className="flex flex-wrap items-start justify-between gap-3 px-4 py-3 hover:bg-muted/40"
             >
               <div className="min-w-0 space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
