@@ -378,7 +378,7 @@ export function WorkoutWizard({
   return (
     <section className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-2xl font-semibold text-foreground">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           {t("title")}
         </h1>
         <WizardProgress step={step} />

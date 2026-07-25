@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { buttonClassName } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/ui/page-header";
 import { apiFetch } from "@/lib/api";
+import { statusBadgeVariant } from "@/lib/status-badge";
 import { requireTrainerId } from "@/server/auth";
 import {
   getBillingSummary,
@@ -47,10 +49,11 @@ export default async function ClientsPage({
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          {atCap ? (
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        actions={
+          atCap ? (
             <>
               <span
                 className={buttonClassName(
@@ -94,9 +97,9 @@ export default async function ClientsPage({
                 {t("invite")}
               </Link>
             </>
-          )}
-        </div>
-      </div>
+          )
+        }
+      />
 
       {atCap ? (
         <p className="text-sm text-muted-foreground">
@@ -104,27 +107,35 @@ export default async function ClientsPage({
         </p>
       ) : null}
 
-      <form method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <Input
-          name="q"
-          defaultValue={q}
-          placeholder={t("searchPlaceholder")}
-          className="w-full sm:max-w-sm"
-        />
-        <div className="flex flex-wrap items-center gap-2">
-          <button type="submit" className={buttonClassName("secondary", "sm")}>
-            {tCommon("search")}
-          </button>
-          {q ? (
-            <Link
-              href="/clients"
-              className="px-3 py-2 text-sm text-muted-foreground hover:underline"
+      <div className="rounded-xl border border-border bg-muted/30 p-3 sm:p-4">
+        <form
+          method="get"
+          className="flex flex-col gap-2 sm:flex-row sm:items-center"
+        >
+          <Input
+            name="q"
+            defaultValue={q}
+            placeholder={t("searchPlaceholder")}
+            className="w-full sm:max-w-sm"
+          />
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="submit"
+              className={buttonClassName("secondary", "sm")}
             >
-              {tCommon("clear")}
-            </Link>
-          ) : null}
-        </div>
-      </form>
+              {tCommon("search")}
+            </button>
+            {q ? (
+              <Link
+                href="/clients"
+                className="px-3 py-2 text-sm text-muted-foreground hover:underline"
+              >
+                {tCommon("clear")}
+              </Link>
+            ) : null}
+          </div>
+        </form>
+      </div>
 
       {error ? (
         <p className="text-red-600 dark:text-red-400">{error}</p>
@@ -135,7 +146,7 @@ export default async function ClientsPage({
           {clients.map((c) => (
             <li
               key={c.id}
-              className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
+              className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-muted/40"
             >
               <div>
                 <Link
@@ -147,10 +158,12 @@ export default async function ClientsPage({
                 <p className="text-sm text-muted-foreground">{c.email}</p>
               </div>
               <div className="flex items-center gap-3 text-sm">
-                <Badge>{clientStatusLabel(c.status, t)}</Badge>
+                <Badge variant={statusBadgeVariant(c.status)}>
+                  {clientStatusLabel(c.status, t)}
+                </Badge>
                 <Link
                   href={`/clients/${c.id}/edit`}
-                  className="text-muted-foreground hover:underline"
+                  className={buttonClassName("ghost", "sm")}
                 >
                   {t("edit")}
                 </Link>
@@ -163,8 +176,37 @@ export default async function ClientsPage({
             </li>
           ))}
           {clients.length === 0 && !error ? (
-            <li className="px-4 py-8 text-center text-muted-foreground">
-              {q ? t("noMatch") : t("noClients")}
+            <li className="px-4 py-8 text-center">
+              {q ? (
+                <p className="text-muted-foreground">{t("noMatch")}</p>
+              ) : (
+                <>
+                  <p className="text-muted-foreground">{t("noClients")}</p>
+                  {atCap ? (
+                    <Link
+                      href="/settings/billing"
+                      className={buttonClassName(
+                        "primary",
+                        "sm",
+                        "mt-3 inline-flex",
+                      )}
+                    >
+                      {t("upgradeBilling")}
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/clients/new"
+                      className={buttonClassName(
+                        "primary",
+                        "sm",
+                        "mt-3 inline-flex",
+                      )}
+                    >
+                      {t("emptyCta")}
+                    </Link>
+                  )}
+                </>
+              )}
             </li>
           ) : null}
         </ul>
