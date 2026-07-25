@@ -1,50 +1,57 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { buttonClassName } from "@/components/ui/button";
-import { Container } from "@/components/ui/container";
-import { ProductMockup } from "@/components/marketing/product-mockup";
+import { Atmosphere } from "@/components/marketing/atmosphere";
+import { MarketingCta } from "@/components/marketing/marketing-cta";
+import { MarketingSection } from "@/components/marketing/marketing-section";
+import { WorkoutEditorMock } from "@/components/marketing/product-mocks";
+import { Reveal } from "@/components/marketing/reveal";
 
 export async function Hero() {
   const t = await getTranslations("landing");
 
   return (
-    <section className="border-b border-border/60 py-12 sm:py-24 lg:py-28">
-      <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="motion-safe:animate-[fadeIn_0.6s_ease]">
-            <p className="mb-3 text-xs font-medium uppercase tracking-wider text-primary sm:mb-4 sm:text-sm">
-              {t("heroEyebrow")}
-            </p>
-            <h1 className="max-w-xl text-3xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
-              {t("heroTitle")}
-            </h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
-              {t("heroSubtitle")}
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center">
-              <Link
-                href="/sign-up"
-                className={buttonClassName("primary", "lg", "w-full justify-center sm:w-auto")}
-              >
-                {t("navTrial")}
-              </Link>
-              <Link
-                href="/sign-in"
-                className={buttonClassName("secondary", "lg", "w-full justify-center sm:w-auto")}
-              >
-                {t("navSignIn")}
-              </Link>
-            </div>
-            <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground sm:mt-8">
-              {t("heroTrust")}
-            </p>
+    <MarketingSection
+      tone="dark"
+      wide
+      className="pb-16 pt-28 sm:pb-24 sm:pt-32 lg:pb-28 lg:pt-36"
+    >
+      <Atmosphere />
+      <div className="relative grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+        <Reveal>
+          <p className="mb-4 text-xs font-medium uppercase tracking-[0.18em] text-mkt-accent sm:text-sm">
+            {t("heroEyebrow")}
+          </p>
+          <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-[3.75rem] lg:leading-[1.05]">
+            <span className="block">{t("heroTitleLine1")}</span>
+            <span className="block text-white/90">{t("heroTitleLine2")}</span>
+          </h1>
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-mkt-dark-muted sm:mt-6 sm:text-lg">
+            {t("heroSubtitle")}
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <MarketingCta href="/sign-up" variant="accent" size="lg" className="w-full justify-center sm:w-auto">
+              {t("heroCtaPrimary")}
+            </MarketingCta>
+            <MarketingCta
+              href="#how"
+              variant="ghostDark"
+              size="lg"
+              className="w-full justify-center sm:w-auto"
+            >
+              {t("heroCtaSecondary")}
+            </MarketingCta>
           </div>
+        </Reveal>
 
-          <div className="min-w-0 motion-safe:animate-[fadeIn_0.8s_ease_0.1s_both] lg:pl-4">
-            <ProductMockup />
+        <Reveal delayMs={120} className="relative min-w-0">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-6 -z-10 rotate-[-4deg] rounded-[2rem] bg-mkt-accent/20 blur-2xl sm:-inset-10"
+          />
+          <div className="mkt-parallax origin-center scale-[0.98] sm:rotate-[-2deg] sm:scale-100">
+            <WorkoutEditorMock dark />
           </div>
-        </div>
-      </Container>
-    </section>
+        </Reveal>
+      </div>
+    </MarketingSection>
   );
 }

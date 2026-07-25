@@ -1,45 +1,92 @@
 import { getTranslations } from "next-intl/server";
-import { Card } from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
-
-const FEATURES = [
-  { title: "featWorkout", body: "featWorkoutBody" },
-  { title: "featClients", body: "featClientsBody" },
-  { title: "featLibrary", body: "featLibraryBody" },
-  { title: "featTemplates", body: "featTemplatesBody" },
-  { title: "featAi", body: "featAiBody" },
-  { title: "featPdf", body: "featPdfBody" },
-  { title: "featExcel", body: "featExcelBody" },
-  { title: "featNotes", body: "featNotesBody" },
-  { title: "featFast", body: "featFastBody" },
-  { title: "featResponsive", body: "featResponsiveBody" },
-  { title: "featCloud", body: "featCloudBody" },
-] as const;
+import {
+  ClientsMock,
+  ExportDocsMock,
+  TemplatesMock,
+  WorkoutEditorMock,
+} from "@/components/marketing/product-mocks";
+import { MarketingSection } from "@/components/marketing/marketing-section";
+import { Reveal } from "@/components/marketing/reveal";
+import { cn } from "@/lib/cn";
 
 export async function FeaturesSection() {
   const t = await getTranslations("landing");
 
-  return (
-    <section id="features" className="py-20 sm:py-24">
-      <Container>
-        <div className="max-w-2xl">
-          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            {t("featuresTitle")}
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">{t("featuresSubtitle")}</p>
-        </div>
+  const features = [
+    {
+      title: t("feat1Title"),
+      body: t("feat1Body"),
+      detail: t("feat1Detail"),
+      tone: "light" as const,
+      mock: <ClientsMock />,
+    },
+    {
+      title: t("feat2Title"),
+      body: t("feat2Body"),
+      detail: t("feat2Detail"),
+      tone: "dark" as const,
+      mock: <WorkoutEditorMock dark />,
+    },
+    {
+      title: t("feat3Title"),
+      body: t("feat3Body"),
+      detail: t("feat3Detail"),
+      tone: "light" as const,
+      mock: <TemplatesMock />,
+    },
+    {
+      title: t("feat4Title"),
+      body: t("feat4Body"),
+      detail: t("feat4Detail"),
+      tone: "lightMuted" as const,
+      mock: <ExportDocsMock />,
+    },
+  ];
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((feat) => (
-            <Card key={feat.title} className="p-5">
-              <h3 className="font-medium text-foreground">{t(feat.title)}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {t(feat.body)}
+  return (
+    <div id="features">
+      {features.map((f, i) => (
+        <MarketingSection
+          key={f.title}
+          tone={f.tone}
+          className="py-20 sm:py-24"
+        >
+          <div
+            className={cn(
+              "grid items-center gap-10 lg:grid-cols-2 lg:gap-16",
+              i % 2 === 1 && "lg:[&>*:first-child]:order-2",
+            )}
+          >
+            <Reveal>
+              <h2
+                className={cn(
+                  "text-3xl font-semibold tracking-tight sm:text-4xl",
+                  f.tone === "dark" ? "text-white" : "text-mkt-light-fg",
+                )}
+              >
+                {f.title}
+              </h2>
+              <p
+                className={cn(
+                  "mt-4 max-w-md text-base leading-relaxed sm:text-lg",
+                  f.tone === "dark" ? "text-mkt-dark-muted" : "text-mkt-light-muted-fg",
+                )}
+              >
+                {f.body}
               </p>
-            </Card>
-          ))}
-        </div>
-      </Container>
-    </section>
+              <p
+                className={cn(
+                  "mt-6 text-sm font-medium",
+                  f.tone === "dark" ? "text-mkt-accent" : "text-mkt-accent",
+                )}
+              >
+                {f.detail}
+              </p>
+            </Reveal>
+            <Reveal delayMs={80}>{f.mock}</Reveal>
+          </div>
+        </MarketingSection>
+      ))}
+    </div>
   );
 }
