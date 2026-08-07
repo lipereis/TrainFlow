@@ -9,7 +9,7 @@ export async function ProductRevealSection() {
   return (
     <MarketingSection
       id="product"
-      tone="lightMuted"
+      tone="light"
       wide
       className="py-20 sm:py-28 lg:py-32"
     >

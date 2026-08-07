@@ -24,7 +24,7 @@ export async function FeaturesSection() {
       title: t("feat2Title"),
       body: t("feat2Body"),
       detail: t("feat2Detail"),
-      tone: "dark" as const,
+      tone: "light" as const,
       mock: <WorkoutEditorMock animate />,
     },
     {

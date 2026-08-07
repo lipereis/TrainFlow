@@ -8,7 +8,7 @@ export async function Hero() {
   const t = await getTranslations("landing");
 
   return (
-    <MarketingSection tone="light" wide className="pb-16 pt-10 sm:pb-24 sm:pt-16 lg:pb-28">
+    <MarketingSection tone="dark" wide className="pb-16 pt-10 sm:pb-24 sm:pt-16 lg:pb-28">
       <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
         <Reveal>
           <p className="mb-4 font-mono text-xs font-medium uppercase tracking-[0.18em] text-primary sm:text-sm">
