@@ -10,3 +10,7 @@ coverage
 .worktrees
 .superpowers/
 .vercel
+
+# Android release signing keystores (never commit these)
+*.jks
+*.keystore
