@@ -4,6 +4,8 @@ import type { ButtonHTMLAttributes } from "react";
 const variants = {
   primary:
     "bg-primary text-primary-foreground shadow-sm hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  accent:
+    "bg-accent text-accent-foreground shadow-sm hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
   secondary:
     "border border-border bg-card text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
   ghost:
