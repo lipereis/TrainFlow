@@ -2,8 +2,8 @@ import { badgeVariantClass } from "./badge-variants";
 
 describe("badgeVariantClass", () => {
   it("applies success classes", () => {
-    expect(badgeVariantClass.success).toContain("bg-primary/10");
-    expect(badgeVariantClass.success).toContain("text-primary");
+    expect(badgeVariantClass.success).toContain("bg-statusActive/10");
+    expect(badgeVariantClass.success).toContain("text-statusActive");
   });
 
   it("applies quiet classes", () => {
