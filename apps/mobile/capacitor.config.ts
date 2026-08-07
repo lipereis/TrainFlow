@@ -7,6 +7,7 @@ const config: CapacitorConfig = {
   server: {
     url: "https://trainflow-chi.vercel.app",
     cleartext: false,
+    allowNavigation: ["checkout.stripe.com", "billing.stripe.com", "js.stripe.com"],
   },
   android: {
     allowMixedContent: false,
