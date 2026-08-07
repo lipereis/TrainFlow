@@ -2,7 +2,9 @@
   "name": "trainflow",
   "private": true,
   "packageManager": "pnpm@9.15.0",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -14,6 +16,7 @@
     "db:seed": "pnpm --filter @trainflow/db seed"
   },
   "devDependencies": {
+    "sharp": "0.35.3",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
   },
