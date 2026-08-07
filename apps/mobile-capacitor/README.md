@@ -8,7 +8,7 @@ The native `ios/` and `android/` projects reference generated files (`capacitor.
 
 ```bash
 pnpm install
-cd apps/mobile
+cd apps/mobile-capacitor
 npx cap sync
 ```
 
@@ -24,13 +24,13 @@ Re-run `npx cap sync` any time you change `capacitor.config.ts`, or after a fres
 ## To build and submit
 
 **iOS** (requires a Mac with Xcode):
-1. Open `apps/mobile/ios/App/App.xcodeproj` in Xcode (this project uses Swift Package Manager, not CocoaPods — no `pod install` step needed; Xcode resolves the Swift package automatically on first open)
+1. Open `apps/mobile-capacitor/ios/App/App.xcodeproj` in Xcode (this project uses Swift Package Manager, not CocoaPods — no `pod install` step needed; Xcode resolves the Swift package automatically on first open)
 2. Set your Apple Developer team under Signing & Capabilities
 3. Product → Archive, then follow Xcode's App Store Connect submission flow
 4. Requires an active Apple Developer Program membership ($99/yr)
 
 **Android** (requires Android Studio):
-1. Open `apps/mobile/android` in Android Studio and let it sync
+1. Open `apps/mobile-capacitor/android` in Android Studio and let it sync
 2. Build → Generate Signed Bundle/APK
 3. Upload the resulting `.aab` to Google Play Console
 4. Requires a Google Play Console account ($25 one-time)
@@ -45,7 +45,7 @@ Also verify whether social sign-in (e.g. Google) is enabled in the Clerk dashboa
 
 ## Regenerating icons
 
-If the brand mark changes, replace `assets/logo.png` (keep it square, at least 1024×1024, with transparency) and re-run from `apps/mobile`:
+If the brand mark changes, replace `assets/logo.png` (keep it square, at least 1024×1024, with transparency) and re-run from `apps/mobile-capacitor`:
 
 ```bash
 npx capacitor-assets generate --ios --android --iconBackgroundColor "#0c0e0d" --iconBackgroundColorDark "#0c0e0d" --splashBackgroundColor "#0c0e0d" --splashBackgroundColorDark "#0c0e0d"

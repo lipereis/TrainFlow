@@ -14,7 +14,7 @@ importers:
   .:
     devDependencies:
       sharp:
-        specifier: 0.35.3
+        specifier: '>=0.35.0'
         version: 0.35.3(@types/node@22.20.1)
       turbo:
         specifier: ^2.3.3
@@ -23,7 +23,7 @@ importers:
         specifier: ^5.7.2
         version: 5.9.3
 
-  apps/mobile:
+  apps/mobile-capacitor:
     dependencies:
       '@capacitor/android':
         specifier: ^8.0.0

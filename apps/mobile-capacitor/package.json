@@ -1,5 +1,5 @@
 {
-  "name": "@trainflow/mobile",
+  "name": "@trainflow/mobile-capacitor",
   "version": "0.0.1",
   "private": true,
   "engines": {
