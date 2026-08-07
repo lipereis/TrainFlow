@@ -55,7 +55,7 @@ export async function HowSection() {
               <p className="font-mono text-5xl font-semibold tabular-nums tracking-tight text-primary/80 sm:text-6xl">
                 {step.num}
               </p>
-              <h3 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+              <h3 className="mt-3 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
                 {step.title}
               </h3>
               <p className="mt-3 max-w-md text-base leading-relaxed text-muted-foreground">

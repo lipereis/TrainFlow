@@ -11,7 +11,7 @@
   --border-strong: 87 9% 20%;
   --ring: 160 70% 45%;
   --primary: 160 70% 40%;
-  --primary-foreground: 0 0% 100%;
+  --primary-foreground: 150 8% 5%;
   --accent: 12 100% 56%;
   --accent-foreground: 150 8% 5%;
   --card: 140 7% 8%;
@@ -33,7 +33,7 @@
   --border-strong: 87 9% 20%;
   --ring: 160 70% 45%;
   --primary: 160 70% 40%;
-  --primary-foreground: 0 0% 100%;
+  --primary-foreground: 150 8% 5%;
   --accent: 12 100% 56%;
   --accent-foreground: 150 8% 5%;
   --card: 140 7% 8%;
@@ -53,10 +53,10 @@
   --border: 45 19% 84%;
   --border-strong: 46 16% 75%;
   --ring: 160 84% 30%;
-  --primary: 160 84% 30%;
-  --primary-foreground: 0 0% 100%;
-  --accent: 15 89% 48%;
-  --accent-foreground: 0 0% 100%;
+  --primary: 160 84% 32%;
+  --primary-foreground: 210 13% 9%;
+  --accent: 15 89% 50%;
+  --accent-foreground: 210 13% 9%;
   --card: 0 0% 100%;
   --card-foreground: 210 13% 9%;
   --status-active: 74 100% 25%;
