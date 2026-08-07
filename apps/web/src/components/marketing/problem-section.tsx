@@ -8,7 +8,7 @@ export async function ProblemSection() {
   const t = await getTranslations("landing");
 
   return (
-    <MarketingSection tone="light" className="py-20 sm:py-24">
+    <MarketingSection tone="light" className="py-24 sm:py-32">
       <Reveal className="max-w-2xl">
         <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {t("problemTitleLine1")}
