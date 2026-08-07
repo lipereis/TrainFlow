@@ -14,7 +14,7 @@ export async function ProductRevealSection() {
       className="py-20 sm:py-28 lg:py-32"
     >
       <Reveal className="mx-auto max-w-3xl text-center">
-        <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl lg:text-5xl">
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
           {t("revealTitleLine1")}
           <br />
           {t("revealTitleLine2")}

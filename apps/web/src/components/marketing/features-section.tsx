@@ -54,7 +54,7 @@ export async function FeaturesSection() {
             )}
           >
             <Reveal>
-              <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl">
+              <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
                 {f.title}
               </h2>
               <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">

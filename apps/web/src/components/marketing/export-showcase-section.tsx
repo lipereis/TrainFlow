@@ -9,7 +9,7 @@ export async function ExportShowcaseSection() {
   return (
     <MarketingSection tone="light" className="py-20 sm:py-28">
       <Reveal className="mx-auto max-w-2xl text-center">
-        <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl lg:text-5xl">
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
           {t("exportTitleLine1")}
           <br />
           {t("exportTitleLine2")}
