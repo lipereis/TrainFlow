@@ -11,10 +11,10 @@ export async function Hero() {
     <MarketingSection tone="light" wide className="pb-16 pt-10 sm:pb-24 sm:pt-16 lg:pb-28">
       <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
         <Reveal>
-          <p className="mb-4 text-xs font-medium uppercase tracking-[0.18em] text-primary sm:text-sm">
+          <p className="mb-4 font-mono text-xs font-medium uppercase tracking-[0.18em] text-primary sm:text-sm">
             {t("heroEyebrow")}
           </p>
-          <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-[3.5rem] lg:leading-[1.08]">
+          <h1 className="mkt-heading max-w-xl text-4xl text-foreground sm:text-5xl lg:text-[3.8rem]">
             <span className="block">{t("heroTitleLine1")}</span>
             <span className="block">{t("heroTitleLine2")}</span>
           </h1>

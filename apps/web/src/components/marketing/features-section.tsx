@@ -54,13 +54,13 @@ export async function FeaturesSection() {
             )}
           >
             <Reveal>
-              <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl">
                 {f.title}
               </h2>
               <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
                 {f.body}
               </p>
-              <p className="mt-6 text-sm font-medium text-primary">{f.detail}</p>
+              <p className="mt-6 font-mono text-xs font-medium uppercase tracking-[0.14em] text-primary">{f.detail}</p>
             </Reveal>
             <Reveal delayMs={80}>{f.mock}</Reveal>
           </div>

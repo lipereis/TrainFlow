@@ -36,7 +36,7 @@ export async function WorkoutEditorMock({
 
         <div className="overflow-x-auto rounded-xl border border-border">
           <div className="min-w-[22rem]">
-            <div className="grid grid-cols-5 gap-px bg-border text-[10px] font-medium uppercase tracking-wide text-muted-foreground sm:text-xs">
+            <div className="grid grid-cols-5 gap-px bg-border font-mono text-[10px] font-medium uppercase tracking-wide text-muted-foreground sm:text-xs">
               {(
                 [
                   "mockColExercise",
@@ -74,7 +74,7 @@ export async function WorkoutEditorMock({
                 {[sets, reps, rest, load].map((cell) => (
                   <div
                     key={`${exercise}-${cell}`}
-                    className="px-2 py-2.5 text-center tabular-nums text-muted-foreground"
+                    className="px-2 py-2.5 text-center font-mono tabular-nums text-muted-foreground"
                   >
                     {cell}
                   </div>
@@ -175,7 +175,7 @@ export async function ExportDocsMock({ className }: { className?: string }) {
   return (
     <div className={cn("grid gap-4 sm:grid-cols-2 sm:gap-6", className)}>
       <div className="rounded-2xl border border-border bg-card p-5 shadow-card sm:p-6">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
           PDF
         </p>
         <h3 className="mt-3 text-lg font-semibold tracking-tight text-foreground">
@@ -196,7 +196,7 @@ export async function ExportDocsMock({ className }: { className?: string }) {
       </div>
 
       <div className="rounded-2xl border border-border bg-card p-5 shadow-card sm:p-6">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
           Excel
         </p>
         <h3 className="mt-3 text-lg font-semibold tracking-tight text-foreground">
@@ -204,7 +204,7 @@ export async function ExportDocsMock({ className }: { className?: string }) {
         </h3>
         <p className="mt-1 text-sm text-muted-foreground">{t("mockXlsxSubtitle")}</p>
         <div className="mt-5 overflow-hidden rounded-lg border border-border">
-          <div className="grid grid-cols-4 bg-muted text-[10px] font-medium uppercase text-muted-foreground">
+          <div className="grid grid-cols-4 bg-muted font-mono text-[10px] font-medium uppercase text-muted-foreground">
             <div className="px-2 py-1.5">{t("mockColExercise")}</div>
             <div className="px-2 py-1.5 text-center">{t("mockColSets")}</div>
             <div className="px-2 py-1.5 text-center">{t("mockColReps")}</div>
@@ -216,9 +216,9 @@ export async function ExportDocsMock({ className }: { className?: string }) {
               className="grid grid-cols-4 border-t border-border text-[11px] text-foreground"
             >
               <div className="truncate px-2 py-1.5">{ex}</div>
-              <div className="px-2 py-1.5 text-center tabular-nums">{s}</div>
-              <div className="px-2 py-1.5 text-center tabular-nums">{r}</div>
-              <div className="px-2 py-1.5 text-center tabular-nums">{load}</div>
+              <div className="px-2 py-1.5 text-center font-mono tabular-nums">{s}</div>
+              <div className="px-2 py-1.5 text-center font-mono tabular-nums">{r}</div>
+              <div className="px-2 py-1.5 text-center font-mono tabular-nums">{load}</div>
             </div>
           ))}
         </div>

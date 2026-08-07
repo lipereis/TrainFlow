@@ -12,10 +12,10 @@ export async function BuilderShowcaseSection() {
       <Atmosphere />
       <div className="relative grid items-end gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
         <Reveal>
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-primary">
             {t("builderEyebrow")}
           </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl lg:leading-[1.08]">
+          <h2 className="mkt-heading mt-4 text-3xl text-foreground sm:text-4xl lg:text-5xl">
             {t("builderTitle")}
           </h2>
           <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">

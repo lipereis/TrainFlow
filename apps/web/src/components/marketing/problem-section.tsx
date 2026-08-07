@@ -10,7 +10,7 @@ export async function ProblemSection() {
   return (
     <MarketingSection tone="light" className="py-20 sm:py-24">
       <Reveal className="max-w-2xl">
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:leading-[1.15]">
+        <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl">
           {t("problemTitleLine1")}
           <br />
           {t("problemTitleLine2")}

@@ -12,7 +12,7 @@ export async function CompareSection() {
   return (
     <MarketingSection tone="light" className="py-20 sm:py-28">
       <Reveal className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl">
           {t("compareTitle")}
         </h2>
         <p className="mt-4 text-base text-muted-foreground sm:text-lg">
@@ -23,7 +23,7 @@ export async function CompareSection() {
       <div className="mt-12 grid gap-6 lg:grid-cols-2 lg:gap-8">
         <Reveal>
           <div className="h-full rounded-3xl border border-border bg-muted/50 p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               {t("compareBeforeLabel")}
             </p>
             <ul className="mt-6 space-y-4">
@@ -45,7 +45,7 @@ export async function CompareSection() {
 
         <Reveal delayMs={80}>
           <div className="h-full rounded-3xl border border-primary/25 bg-card p-6 shadow-card sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-primary">
               {t("compareAfterLabel")}
             </p>
             <ul className="mt-6 space-y-4">

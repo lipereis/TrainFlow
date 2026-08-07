@@ -9,7 +9,7 @@ export async function FinalCtaSection() {
   return (
     <MarketingSection tone="dark" className="py-20 sm:py-28">
       <Reveal className="relative mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl lg:leading-[1.1]">
+        <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl lg:text-5xl">
           {t("finalTitleLine1")}
           <br />
           {t("finalTitleLine2")}
