@@ -6,9 +6,9 @@ type Tone = "dark" | "light" | "lightMuted";
 
 /** Same palette as dashboard / trainer shell (theme tokens). */
 const toneClass: Record<Tone, string> = {
-  dark: "dark border-y border-border/60 bg-muted text-foreground",
-  light: "light bg-background text-foreground",
-  lightMuted: "light bg-muted/40 text-foreground",
+  dark: "border-y border-border/60 bg-muted text-foreground",
+  light: "bg-background text-foreground",
+  lightMuted: "bg-muted/40 text-foreground",
 };
 
 type MarketingSectionProps = HTMLAttributes<HTMLElement> & {
