@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TrainFlow</string>
+    <string name="title_activity_main">TrainFlow</string>
+    <string name="package_name">com.trainflow.app</string>
+    <string name="custom_url_scheme">com.trainflow.app</string>
+</resources>
