@@ -13,6 +13,7 @@ const config: Config = {
           foreground: "hsl(var(--muted-foreground) / <alpha-value>)",
         },
         border: "hsl(var(--border) / <alpha-value>)",
+        borderStrong: "hsl(var(--border-strong) / <alpha-value>)",
         ring: "hsl(var(--ring) / <alpha-value>)",
         primary: {
           DEFAULT: "hsl(var(--primary) / <alpha-value>)",
@@ -21,6 +22,14 @@ const config: Config = {
         card: {
           DEFAULT: "hsl(var(--card) / <alpha-value>)",
           foreground: "hsl(var(--card-foreground) / <alpha-value>)",
+        },
+        statusActive: {
+          DEFAULT: "hsl(var(--status-active) / <alpha-value>)",
+          foreground: "hsl(var(--status-active-foreground) / <alpha-value>)",
+        },
+        statusPending: {
+          DEFAULT: "hsl(var(--status-pending) / <alpha-value>)",
+          foreground: "hsl(var(--status-pending-foreground) / <alpha-value>)",
         },
       },
       borderRadius: {
@@ -31,6 +40,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Impact", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
     },
   },

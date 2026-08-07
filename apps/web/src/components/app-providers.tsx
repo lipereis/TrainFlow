@@ -24,7 +24,7 @@ export function AppProviders({
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="dark"
       storageKey="trainflow-theme"
     >
       <NextIntlClientProvider

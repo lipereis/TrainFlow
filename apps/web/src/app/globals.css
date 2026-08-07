@@ -3,37 +3,73 @@
 @tailwind utilities;
 
 :root {
-  --background: 210 20% 98%;
-  --foreground: 222 47% 11%;
-  --muted: 210 16% 93%;
-  --muted-foreground: 215 16% 40%;
-  --border: 214 20% 88%;
-  --ring: 160 84% 30%;
-  --primary: 160 84% 30%;
-  --primary-foreground: 0 0% 100%;
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  --background: 150 8% 5%;
+  --foreground: 72 17% 94%;
+  --muted: 135 7% 11%;
+  --muted-foreground: 105 4% 61%;
+  --border: 135 5% 16%;
+  --border-strong: 87 9% 20%;
+  --ring: 12 100% 56%;
+  --primary: 12 100% 56%;
+  --primary-foreground: 150 8% 5%;
+  --card: 140 7% 8%;
+  --card-foreground: 72 17% 94%;
+  --status-active: 78 100% 62%;
+  --status-active-foreground: 150 8% 5%;
+  --status-pending: 39 100% 56%;
+  --status-pending-foreground: 150 8% 5%;
   --radius: 0.75rem;
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.06), 0 8px 24px rgb(15 23 42 / 0.06);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.45), 0 8px 24px rgb(0 0 0 / 0.4);
 }
 
 .dark {
-  --background: 222 47% 7%;
-  --foreground: 210 20% 96%;
-  --muted: 217 25% 14%;
-  --muted-foreground: 215 16% 65%;
-  --border: 217 20% 18%;
-  --ring: 160 70% 45%;
-  --primary: 160 70% 40%;
+  --background: 150 8% 5%;
+  --foreground: 72 17% 94%;
+  --muted: 135 7% 11%;
+  --muted-foreground: 105 4% 61%;
+  --border: 135 5% 16%;
+  --border-strong: 87 9% 20%;
+  --ring: 12 100% 56%;
+  --primary: 12 100% 56%;
+  --primary-foreground: 150 8% 5%;
+  --card: 140 7% 8%;
+  --card-foreground: 72 17% 94%;
+  --status-active: 78 100% 62%;
+  --status-active-foreground: 150 8% 5%;
+  --status-pending: 39 100% 56%;
+  --status-pending-foreground: 150 8% 5%;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.45), 0 8px 24px rgb(0 0 0 / 0.4);
+}
+
+.light {
+  --background: 50 23% 95%;
+  --foreground: 210 13% 9%;
+  --muted: 49 22% 90%;
+  --muted-foreground: 120 3% 35%;
+  --border: 45 19% 84%;
+  --border-strong: 46 16% 75%;
+  --ring: 15 89% 48%;
+  --primary: 15 89% 48%;
   --primary-foreground: 0 0% 100%;
-  --card: 222 47% 9%;
-  --card-foreground: 210 20% 96%;
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+  --card: 0 0% 100%;
+  --card-foreground: 210 13% 9%;
+  --status-active: 74 100% 25%;
+  --status-active-foreground: 0 0% 100%;
+  --status-pending: 36 100% 33%;
+  --status-pending-foreground: 0 0% 100%;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.06), 0 8px 24px rgb(15 23 42 / 0.06);
 }
 
 body {
   @apply bg-background text-foreground antialiased;
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.mkt-heading {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
 }
 
 @keyframes fadeIn {
