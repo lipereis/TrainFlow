@@ -8,9 +8,9 @@ export async function FaqSection() {
   const t = await getTranslations("landing");
 
   return (
-    <MarketingSection id="faq" tone="light" className="py-16 sm:py-20">
+    <MarketingSection id="faq" tone="light" className="py-20 sm:py-28">
       <Reveal className="mx-auto max-w-3xl">
-        <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl">
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {t("faqTitle")}
         </h2>
 

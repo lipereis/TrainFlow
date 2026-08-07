@@ -34,7 +34,7 @@ export async function HowSection() {
   return (
     <MarketingSection id="how" tone="lightMuted" className="py-20 sm:py-28">
       <Reveal className="max-w-2xl">
-        <h2 className="mkt-heading text-3xl text-foreground sm:text-4xl">
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {t("howTitle")}
         </h2>
         <p className="mt-4 text-base text-muted-foreground sm:text-lg">
@@ -55,7 +55,7 @@ export async function HowSection() {
               <p className="font-mono text-5xl font-semibold tabular-nums tracking-tight text-primary/80 sm:text-6xl">
                 {step.num}
               </p>
-              <h3 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+              <h3 className="mt-3 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
                 {step.title}
               </h3>
               <p className="mt-3 max-w-md text-base leading-relaxed text-muted-foreground">

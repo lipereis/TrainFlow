@@ -11,8 +11,8 @@ const sizes = {
 
 /** Maps legacy marketing variants onto shared app button styles. */
 const variantMap = {
-  accent: "primary",
-  accentOnLight: "primary",
+  accent: "accent",
+  accentOnLight: "accent",
   ghostDark: "secondary",
   ghostLight: "secondary",
   linkDark: "ghost",

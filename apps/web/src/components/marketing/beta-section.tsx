@@ -7,12 +7,12 @@ export async function BetaSection() {
   const t = await getTranslations("landing");
 
   return (
-    <MarketingSection tone="lightMuted" className="py-20 sm:py-24">
+    <MarketingSection tone="lightMuted" className="py-24 sm:py-32">
       <Reveal className="mx-auto max-w-2xl text-center">
         <p className="font-mono text-xs font-medium uppercase tracking-[0.16em] text-primary">
           {t("betaEyebrow")}
         </p>
-        <h2 className="mkt-heading mt-4 text-3xl text-foreground sm:text-4xl">
+        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {t("betaTitle")}
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground sm:text-lg">
