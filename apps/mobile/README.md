@@ -1,56 +1,46 @@
-# Welcome to your Expo app 👋
+# TrainFlow mobile (Expo)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+React Native + Expo app. Trainer-first mobile client for TrainFlow, reusing the existing `apps/web` API — no direct database access, no duplicated backend logic.
 
-## Get started
+**Status: Phase 0 (scaffold).** Only a Clerk-authenticated placeholder Home screen exists so far, wired to `GET /api/workouts`. The actual trainer/client feature screens are built out in follow-up phases. Until this app reaches parity with the trainer-priority screens (dashboard, clients, workout builder, exercise library), `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
 
-1. Install dependencies
+Built on Expo SDK 57 (React Native 0.86, React 19). Routes live under `src/app/` (this SDK generation's default, not root `app/`).
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Setup
 
 ```bash
-npm run reset-project
+pnpm install
+pnpm --filter @trainflow/shared-types build
+cp apps/mobile/.env.example apps/mobile/.env
+# fill in EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY from apps/web/.env.local's
+# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY (same Clerk instance)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+`packages/shared-types` must be built before the app can resolve `@trainflow/shared-types` — Turborepo does this automatically when run through `turbo`, but running `expo start` directly bypasses that, so re-run the build manually after changing anything under `packages/shared-types/src`.
 
-### Other setup steps
+## Run
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+cd apps/mobile
+npx expo start
+```
 
-## Learn more
+Scan the QR code with Expo Go (iOS: Camera app; Android: Expo Go app) on a phone on the same network. The app talks to the production API (`https://trainflow-chi.vercel.app`) by default — no local backend needed.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Test
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+pnpm --filter @trainflow/mobile exec jest
+```
 
-## Join the community
+## Native builds
 
-Join our community of developers creating universal apps.
+`npx expo prebuild` generates `ios/` and `android/` (gitignored — this is a managed-workflow Expo project, native projects aren't committed). iOS generation requires a Mac with Xcode/CocoaPods; this hasn't been exercised end-to-end from a Windows environment. Before a real store build, set `expo.ios.bundleIdentifier` and `expo.android.package` in `app.json` (left unset for now — Phase 0 doesn't need them).
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Manual verification checklist (run once after setup, on a physical device)
+
+- [ ] `npx expo start` renders a QR code with no Metro errors
+- [ ] Expo Go opens the app and lands on the sign-in screen
+- [ ] Signing in with a real Clerk account redirects to the Home screen
+- [ ] Home screen shows either real workout rows or "No workouts yet." (not an error)
+- [ ] Sign out returns to the sign-in screen
