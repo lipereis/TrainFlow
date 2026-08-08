@@ -14,3 +14,15 @@ export function useClients() {
     enabled: isLoaded && isSignedIn,
   });
 }
+
+export function useClient(clientId: string) {
+  const { getToken, isLoaded, isSignedIn } = useAuth();
+  return useQuery({
+    queryKey: ["clients", clientId],
+    queryFn: async () => {
+      const token = await getToken();
+      return apiFetch<ClientDto>(`/api/clients/${clientId}`, token);
+    },
+    enabled: isLoaded && isSignedIn && !!clientId,
+  });
+}
