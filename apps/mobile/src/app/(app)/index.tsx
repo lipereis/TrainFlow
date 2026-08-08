@@ -14,7 +14,7 @@ export default function HomeScreen() {
   const recentClients = (clients.data ?? []).slice(0, 8);
   const activeCount = (workouts.data ?? []).filter((w) => w.status === "ACTIVE").length;
 
-  const isLoading = workouts.isLoading || clients.isLoading;
+  const isLoading = workouts.isPending || clients.isPending;
 
   return (
     <View style={styles.screen}>
@@ -28,7 +28,7 @@ export default function HomeScreen() {
         <View style={styles.statBlock}>
           <Text style={styles.statLabel}>Clients</Text>
           <Text style={styles.statValue}>
-            {clients.error || clients.isLoading ? "—" : clients.data?.length ?? 0}
+            {clients.error || clients.isPending ? "—" : clients.data?.length ?? 0}
           </Text>
           {clients.error ? (
             <Text style={styles.errorText}>{(clients.error as Error).message}</Text>
@@ -37,7 +37,7 @@ export default function HomeScreen() {
         <View style={styles.statBlock}>
           <Text style={styles.statLabel}>Programs</Text>
           <Text style={styles.statValue}>
-            {workouts.error || workouts.isLoading ? "—" : workouts.data?.length ?? 0}
+            {workouts.error || workouts.isPending ? "—" : workouts.data?.length ?? 0}
           </Text>
           {workouts.error ? (
             <Text style={styles.errorText}>{(workouts.error as Error).message}</Text>
@@ -46,7 +46,7 @@ export default function HomeScreen() {
         <View style={styles.statBlock}>
           <Text style={styles.statLabel}>Active</Text>
           <Text style={styles.statValue}>
-            {workouts.error || workouts.isLoading ? "—" : activeCount}
+            {workouts.error || workouts.isPending ? "—" : activeCount}
           </Text>
         </View>
       </View>
@@ -61,7 +61,7 @@ export default function HomeScreen() {
           </Text>
         )}
         ListEmptyComponent={
-          !workouts.isLoading && !workouts.error ? <Text>No workouts yet.</Text> : null
+          !workouts.isPending && !workouts.error ? <Text>No workouts yet.</Text> : null
         }
       />
 
@@ -75,7 +75,7 @@ export default function HomeScreen() {
           </Text>
         )}
         ListEmptyComponent={
-          !clients.isLoading && !clients.error ? <Text>No clients yet.</Text> : null
+          !clients.isPending && !clients.error ? <Text>No clients yet.</Text> : null
         }
       />
 
