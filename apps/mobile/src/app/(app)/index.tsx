@@ -1,5 +1,6 @@
-import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, Button, Pressable, StyleSheet } from "react-native";
 import { useAuth, useUser } from "@clerk/expo";
+import { useRouter } from "expo-router";
 import { useWorkouts } from "@/lib/queries/workouts";
 import { useClients } from "@/lib/queries/clients";
 import { queryClient } from "@/lib/queryClient";
@@ -7,6 +8,7 @@ import { queryClient } from "@/lib/queryClient";
 export default function HomeScreen() {
   const { signOut } = useAuth();
   const { user } = useUser();
+  const router = useRouter();
   const workouts = useWorkouts();
   const clients = useClients();
 
@@ -25,7 +27,7 @@ export default function HomeScreen() {
       {isLoading ? <ActivityIndicator /> : null}
 
       <View style={styles.statRow}>
-        <View style={styles.statBlock}>
+        <Pressable style={styles.statBlock} onPress={() => router.push("/clients")}>
           <Text style={styles.statLabel}>Clients</Text>
           <Text style={styles.statValue}>
             {clients.error || clients.isPending ? "—" : clients.data?.length ?? 0}
@@ -33,7 +35,7 @@ export default function HomeScreen() {
           {clients.error ? (
             <Text style={styles.errorText}>{(clients.error as Error).message}</Text>
           ) : null}
-        </View>
+        </Pressable>
         <View style={styles.statBlock}>
           <Text style={styles.statLabel}>Programs</Text>
           <Text style={styles.statValue}>
@@ -70,9 +72,11 @@ export default function HomeScreen() {
         data={recentClients}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Text>
-            {item.name} — {item.status}
-          </Text>
+          <Pressable onPress={() => router.push(`/clients/${item.id}`)}>
+            <Text>
+              {item.name} — {item.status}
+            </Text>
+          </Pressable>
         )}
         ListEmptyComponent={
           !clients.isPending && !clients.error ? <Text>No clients yet.</Text> : null
