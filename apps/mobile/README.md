@@ -2,7 +2,7 @@
 
 React Native + Expo app. Trainer-first mobile client for TrainFlow, reusing the existing `apps/web` API — no direct database access, no duplicated backend logic.
 
-**Status: Phase 0 (scaffold).** Only a Clerk-authenticated placeholder Home screen exists so far, wired to `GET /api/workouts`. The actual trainer/client feature screens are built out in follow-up phases. Until this app reaches parity with the trainer-priority screens (dashboard, clients, workout builder, exercise library), `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
+**Status: Phase 1 in progress.** Sign-in and a read-only trainer dashboard (client/program stats, recent programs, clients) are wired up. The dashboard has no tap-through to workout/client detail and no create actions yet — those, plus the exercise library and workout builder, are follow-up slices. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
 
 Built on Expo SDK 57 (React Native 0.86, React 19). Routes live under `src/app/` (this SDK generation's default, not root `app/`).
 
@@ -44,3 +44,7 @@ pnpm --filter @trainflow/mobile exec jest
 - [ ] Signing in with a real Clerk account redirects to the Home screen
 - [ ] Home screen shows either real workout rows or "No workouts yet." (not an error)
 - [ ] Sign out returns to the sign-in screen
+- [ ] Dashboard shows client count, program count, and active-program count matching what the same trainer sees on web
+- [ ] Recent programs list shows the same programs as web's dashboard (or "No workouts yet." if empty)
+- [ ] Clients list shows the same clients as web's dashboard (or "No clients yet." if empty)
+- [ ] Killing network / forcing a 401 shows the inline error state on the relevant stat, not a crash
