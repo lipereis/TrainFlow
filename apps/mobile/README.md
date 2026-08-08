@@ -54,3 +54,4 @@ pnpm --filter @trainflow/mobile exec jest
 - [ ] Tapping a client row on the dashboard opens that client's detail screen
 - [ ] Detail screen shows "—" for null/empty profile fields rather than blank or "null"
 - [ ] Killing network / forcing a 401 on either screen shows the inline error state, not a crash
+- [ ] Back from the clients list returns to the dashboard, and back from a client detail returns to where it was opened from (list or dashboard)
