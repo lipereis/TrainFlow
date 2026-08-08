@@ -9,12 +9,13 @@ export type WorkoutSummary = {
 };
 
 export function useWorkouts() {
-  const { getToken } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuth();
   return useQuery({
     queryKey: ["workouts"],
     queryFn: async () => {
       const token = await getToken();
       return apiFetch<WorkoutSummary[]>("/api/workouts", token);
     },
+    enabled: isLoaded && isSignedIn,
   });
 }

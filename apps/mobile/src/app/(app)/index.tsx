@@ -2,6 +2,7 @@ import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet } from "rea
 import { useAuth, useUser } from "@clerk/expo";
 import { useWorkouts } from "@/lib/queries/workouts";
 import { useClients } from "@/lib/queries/clients";
+import { queryClient } from "@/lib/queryClient";
 
 export default function HomeScreen() {
   const { signOut } = useAuth();
@@ -27,7 +28,7 @@ export default function HomeScreen() {
         <View style={styles.statBlock}>
           <Text style={styles.statLabel}>Clients</Text>
           <Text style={styles.statValue}>
-            {clients.error ? "—" : clients.data?.length ?? 0}
+            {clients.error || clients.isLoading ? "—" : clients.data?.length ?? 0}
           </Text>
           {clients.error ? (
             <Text style={styles.errorText}>{(clients.error as Error).message}</Text>
@@ -36,7 +37,7 @@ export default function HomeScreen() {
         <View style={styles.statBlock}>
           <Text style={styles.statLabel}>Programs</Text>
           <Text style={styles.statValue}>
-            {workouts.error ? "—" : workouts.data?.length ?? 0}
+            {workouts.error || workouts.isLoading ? "—" : workouts.data?.length ?? 0}
           </Text>
           {workouts.error ? (
             <Text style={styles.errorText}>{(workouts.error as Error).message}</Text>
@@ -44,7 +45,9 @@ export default function HomeScreen() {
         </View>
         <View style={styles.statBlock}>
           <Text style={styles.statLabel}>Active</Text>
-          <Text style={styles.statValue}>{workouts.error ? "—" : activeCount}</Text>
+          <Text style={styles.statValue}>
+            {workouts.error || workouts.isLoading ? "—" : activeCount}
+          </Text>
         </View>
       </View>
 
@@ -57,7 +60,9 @@ export default function HomeScreen() {
             {item.name} — {item.status}
           </Text>
         )}
-        ListEmptyComponent={!workouts.isLoading ? <Text>No workouts yet.</Text> : null}
+        ListEmptyComponent={
+          !workouts.isLoading && !workouts.error ? <Text>No workouts yet.</Text> : null
+        }
       />
 
       <Text style={styles.sectionTitle}>Clients</Text>
@@ -69,10 +74,18 @@ export default function HomeScreen() {
             {item.name} — {item.status}
           </Text>
         )}
-        ListEmptyComponent={!clients.isLoading ? <Text>No clients yet.</Text> : null}
+        ListEmptyComponent={
+          !clients.isLoading && !clients.error ? <Text>No clients yet.</Text> : null
+        }
       />
 
-      <Button title="Sign out" onPress={() => signOut()} />
+      <Button
+        title="Sign out"
+        onPress={async () => {
+          await signOut();
+          queryClient.clear();
+        }}
+      />
     </View>
   );
 }
