@@ -56,6 +56,9 @@ export default function ClientDetailScreen() {
       <Field label="Equipment" value={c.equipment} />
       <Field label="Observations" value={c.observations} />
       <Text style={styles.sectionTitle}>Programs</Text>
+      <Pressable onPress={() => router.push(`/workouts/new?clientId=${id}`)}>
+        <Text style={styles.link}>New program</Text>
+      </Pressable>
       {/* Guard on `id`: useWorkouts falls back to the unscoped global list when
           clientId is falsy, so without this guard a transient falsy `id` would
           render every trainer's program here instead of this client's. */}
@@ -92,4 +95,5 @@ const styles = StyleSheet.create({
   errorText: { fontSize: 13, color: "red" },
   sectionTitle: { fontSize: 16, fontWeight: "600", marginTop: 12 },
   programRow: { fontSize: 14, paddingVertical: 6 },
+  link: { fontSize: 15, color: "#0066cc", marginBottom: 4 },
 });
