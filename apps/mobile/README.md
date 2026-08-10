@@ -2,7 +2,7 @@
 
 React Native + Expo app. Trainer-first mobile client for TrainFlow, reusing the existing `apps/web` API — no direct database access, no duplicated backend logic.
 
-**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, and read-only clients screens (list + detail) are wired up, with tap-through from the dashboard into both. No invite/create/edit/delete actions, search, or filtering yet — those, plus the exercise library and workout builder, are follow-up slices. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
+**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), and a read-only exercise library list are wired up. No invite/create/edit/delete actions, search, or filtering yet — those, plus the workout builder, are follow-up slices. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
 
 Built on Expo SDK 57 (React Native 0.86, React 19). Routes live under `src/app/` (this SDK generation's default, not root `app/`).
 
@@ -55,3 +55,9 @@ pnpm --filter @trainflow/mobile exec jest
 - [ ] Detail screen shows "—" for null/empty profile fields rather than blank or "null"
 - [ ] Killing network / forcing a 401 on either screen shows the inline error state, not a crash
 - [ ] Back from the clients list returns to the dashboard, and back from a client detail returns to where it was opened from (list or dashboard)
+- [ ] Exercise library link on the dashboard opens the exercises list
+- [ ] Exercises list shows both global library and trainer-custom exercises, matching web's unfiltered `/exercises`
+- [ ] Library vs Custom badge matches web's badge for the same exercise
+- [ ] Tapping a video link opens the URL
+- [ ] Exercises with no video link / no instructions render cleanly with those elements omitted, not blank space or "null"
+- [ ] Killing network / forcing a 401 shows the inline error state, not a crash
