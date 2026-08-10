@@ -83,6 +83,10 @@ export default function HomeScreen() {
         }
       />
 
+      <Pressable style={styles.link} onPress={() => router.push("/exercises")}>
+        <Text style={styles.linkText}>Exercise library</Text>
+      </Pressable>
+
       <Button
         title="Sign out"
         onPress={async () => {
@@ -103,4 +107,6 @@ const styles = StyleSheet.create({
   statValue: { fontSize: 24, fontWeight: "700" },
   errorText: { fontSize: 11, color: "red" },
   sectionTitle: { fontSize: 16, fontWeight: "600", marginTop: 8 },
+  link: { marginTop: 8 },
+  linkText: { fontSize: 15, color: "#0066cc" },
 });
