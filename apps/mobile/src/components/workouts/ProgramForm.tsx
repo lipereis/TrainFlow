@@ -70,6 +70,19 @@ const STATUS_OPTIONS: { value: "DRAFT" | "ACTIVE" | "ARCHIVED"; label: string }[
   { value: "ARCHIVED", label: "Archived" },
 ];
 
+const RENDERED_FIELD_KEYS = [
+  "name",
+  "goal",
+  "startDate",
+  "endDate",
+  "daysPerWeek",
+  "level",
+  "location",
+  "equipment",
+  "observations",
+  "status",
+];
+
 function ToggleRow<T extends string>({
   options,
   value,
@@ -216,6 +229,14 @@ export function ProgramForm({
           {fieldErrors.status ? <Text style={styles.fieldError}>{fieldErrors.status}</Text> : null}
         </>
       ) : null}
+
+      {Object.entries(fieldErrors)
+        .filter(([key]) => !RENDERED_FIELD_KEYS.includes(key))
+        .map(([key, message]) => (
+          <Text key={key} style={styles.fieldError}>
+            {message}
+          </Text>
+        ))}
 
       <Pressable
         style={[styles.submitButton, submitting ? styles.submitButtonDisabled : null]}

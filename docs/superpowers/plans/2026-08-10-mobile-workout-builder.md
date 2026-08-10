@@ -135,7 +135,7 @@ Expected: PASS, all tests in the file green (5 pre-existing + 2 new = 7).
 - [ ] **Step 5: Run the full suite and typecheck**
 
 Run: `pnpm --filter @trainflow/mobile exec jest`
-Expected: 3 suites, 7 tests, all passing.
+Expected: 2 suites, 7 tests, all passing.
 
 Run: `pnpm --filter @trainflow/mobile exec tsc --noEmit`
 Expected: no errors.
