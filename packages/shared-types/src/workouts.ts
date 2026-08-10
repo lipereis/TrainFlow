@@ -146,3 +146,88 @@ export const reorderSchema = z.object({
 });
 
 export type ReorderInput = z.infer<typeof reorderSchema>;
+
+export const workoutExerciseDtoSchema = z.object({
+  id: z.string().uuid(),
+  dayId: z.string().uuid(),
+  exerciseId: z.string().uuid().nullable(),
+  customName: z.string().nullable(),
+  muscleGroup: z.string(),
+  category: z.string(),
+  sets: z.number(),
+  repsMin: z.number(),
+  repsMax: z.number(),
+  weight: z.number().nullable(),
+  weightUnit: weightUnitSchema,
+  restSec: z.number().nullable(),
+  tempo: z.string().nullable(),
+  rpe: z.number().nullable(),
+  rir: z.number().nullable(),
+  method: executionMethodEnum,
+  sortOrder: z.number(),
+  observation: z.string().nullable(),
+  videoUrl: z.string().nullable(),
+  alternativeText: z.string().nullable(),
+});
+
+export type WorkoutExerciseDto = z.infer<typeof workoutExerciseDtoSchema>;
+
+const dayTotalsDtoSchema = z.object({
+  exerciseCount: z.number(),
+  totalSets: z.number(),
+  minReps: z.number(),
+  maxReps: z.number(),
+  minVolume: z.number().nullable(),
+  maxVolume: z.number().nullable(),
+  estimatedDurationMin: z.number(),
+});
+
+export const workoutDayDtoSchema = z.object({
+  id: z.string().uuid(),
+  programId: z.string().uuid(),
+  name: z.string(),
+  focus: z.string().nullable(),
+  estimatedDurationMin: z.number().nullable(),
+  warmup: z.string().nullable(),
+  cooldown: z.string().nullable(),
+  observations: z.string().nullable(),
+  sortOrder: z.number(),
+  exercises: z.array(workoutExerciseDtoSchema),
+  totals: dayTotalsDtoSchema,
+});
+
+export type WorkoutDayDto = z.infer<typeof workoutDayDtoSchema>;
+
+export const workoutProgramListDtoSchema = z.object({
+  id: z.string().uuid(),
+  trainerId: z.string().uuid(),
+  clientId: z.string().uuid(),
+  name: z.string(),
+  goal: z.string().nullable(),
+  startDate: z.string(),
+  endDate: z.string().nullable(),
+  daysPerWeek: z.number(),
+  level: experienceLevelSchema.nullable(),
+  location: z.string().nullable(),
+  equipment: z.string().nullable(),
+  observations: z.string().nullable(),
+  status: programStatusSchema,
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export type WorkoutProgramListDto = z.infer<typeof workoutProgramListDtoSchema>;
+
+export const workoutProgramDtoSchema = workoutProgramListDtoSchema.extend({
+  days: z.array(workoutDayDtoSchema),
+  summary: z.object({
+    sessions: z.number(),
+    totalSets: z.number(),
+    minVolume: z.number().nullable(),
+    maxVolume: z.number().nullable(),
+    estimatedDurationMin: z.number(),
+    setsByMuscle: z.record(z.string(), z.number()),
+  }),
+});
+
+export type WorkoutProgramDto = z.infer<typeof workoutProgramDtoSchema>;
