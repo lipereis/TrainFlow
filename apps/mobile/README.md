@@ -2,7 +2,7 @@
 
 React Native + Expo app. Trainer-first mobile client for TrainFlow, reusing the existing `apps/web` API — no direct database access, no duplicated backend logic.
 
-**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), and a read-only exercise library list are wired up. No invite/create/edit/delete actions, search, or filtering yet — those, plus the workout builder, are follow-up slices. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
+**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), a read-only exercise library list, and a read-only workout program detail screen (with tap-through from the dashboard and from client detail) are wired up. No invite/create/edit/delete actions, search, or filtering yet. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
 
 Built on Expo SDK 57 (React Native 0.86, React 19). Routes live under `src/app/` (this SDK generation's default, not root `app/`).
 
@@ -62,3 +62,13 @@ pnpm --filter @trainflow/mobile exec jest
 - [ ] With a custom exercise that has a video URL (create one on web first), tapping "Video" opens it
 - [ ] Exercises with no video link / no instructions render cleanly with those elements omitted, not blank space or "null"
 - [ ] Killing network / forcing a 401 shows the inline error state, not a crash
+- [ ] Tapping a recent-program row on the dashboard opens that program's detail screen
+- [ ] Program detail shows the same name, status, goal, dates, level, and days/week as web's workout detail
+- [ ] Program detail's weekly summary (sessions, sets, volume, duration) matches web's computed values for the same program
+- [ ] Each day's exercises show sets, rep range, weight, rest, and method matching web
+- [ ] A program with no days renders "No days yet." instead of a blank section
+- [ ] Client detail's Programs section lists that client's programs and matches web's client-scoped workout list
+- [ ] Tapping a program row in client detail opens that program's detail screen
+- [ ] A client with no programs shows "No programs yet." instead of blank space
+- [ ] Back from program detail returns to wherever it was opened from (dashboard or client detail)
+- [ ] Killing network / forcing a 401 on program detail or the client's Programs section shows the inline error state, not a crash
