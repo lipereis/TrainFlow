@@ -58,9 +58,11 @@ export default function HomeScreen() {
         data={recentWorkouts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Text>
-            {item.name} — {item.status}
-          </Text>
+          <Pressable onPress={() => router.push(`/workouts/${item.id}`)}>
+            <Text>
+              {item.name} — {item.status}
+            </Text>
+          </Pressable>
         )}
         ListEmptyComponent={
           !workouts.isPending && !workouts.error ? <Text>No workouts yet.</Text> : null
