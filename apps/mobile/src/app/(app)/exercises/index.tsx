@@ -3,6 +3,8 @@ import { useExercises } from "@/lib/queries/exercises";
 import type { ExerciseDto } from "@trainflow/shared-types";
 
 function ExerciseRow({ exercise }: { exercise: ExerciseDto }) {
+  const { videoUrl } = exercise;
+
   return (
     <View style={styles.row}>
       <View style={styles.rowHeader}>
@@ -17,8 +19,12 @@ function ExerciseRow({ exercise }: { exercise: ExerciseDto }) {
           {exercise.defaultInstructions}
         </Text>
       ) : null}
-      {exercise.videoUrl ? (
-        <Pressable onPress={() => Linking.openURL(exercise.videoUrl as string)}>
+      {videoUrl && /^https?:\/\//i.test(videoUrl) ? (
+        <Pressable
+          onPress={() => {
+            Linking.openURL(videoUrl).catch(() => {});
+          }}
+        >
           <Text style={styles.videoLink}>Video</Text>
         </Pressable>
       ) : null}

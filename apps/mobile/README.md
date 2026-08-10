@@ -56,8 +56,9 @@ pnpm --filter @trainflow/mobile exec jest
 - [ ] Killing network / forcing a 401 on either screen shows the inline error state, not a crash
 - [ ] Back from the clients list returns to the dashboard, and back from a client detail returns to where it was opened from (list or dashboard)
 - [ ] Exercise library link on the dashboard opens the exercises list
+- [ ] Back from the exercises list returns to the dashboard
 - [ ] Exercises list shows both global library and trainer-custom exercises, matching web's unfiltered `/exercises`
 - [ ] Library vs Custom badge matches web's badge for the same exercise
-- [ ] Tapping a video link opens the URL
+- [ ] With a custom exercise that has a video URL (create one on web first), tapping "Video" opens it
 - [ ] Exercises with no video link / no instructions render cleanly with those elements omitted, not blank space or "null"
 - [ ] Killing network / forcing a 401 shows the inline error state, not a crash
