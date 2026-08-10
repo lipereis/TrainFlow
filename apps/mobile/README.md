@@ -2,7 +2,7 @@
 
 React Native + Expo app. Trainer-first mobile client for TrainFlow, reusing the existing `apps/web` API — no direct database access, no duplicated backend logic.
 
-**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), a read-only exercise library list, and a read-only workout program detail screen (with tap-through from the dashboard and from client detail) are wired up. No invite/create/edit/delete actions, search, or filtering yet. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
+**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), a read-only exercise library list, a workout program detail screen, and workout program create/edit/delete (metadata only — no day/exercise editing yet) are wired up. No invite/edit/delete for clients, no search or filtering anywhere yet. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
 
 Built on Expo SDK 57 (React Native 0.86, React 19). Routes live under `src/app/` (this SDK generation's default, not root `app/`).
 
@@ -73,3 +73,13 @@ pnpm --filter @trainflow/mobile exec jest
 - [ ] A client with no programs shows "No programs yet." instead of blank space
 - [ ] Back from program detail returns to wherever it was opened from (dashboard or client detail)
 - [ ] Killing network / forcing a 401 on program detail or the client's Programs section shows the inline error state, not a crash
+- [ ] "New program" link on a client's detail screen opens the create form with that client implied (not shown/selectable in the form)
+- [ ] Submitting the create form with a blank name shows an inline "required" error under the Name field and does not submit
+- [ ] Submitting the create form with endDate before startDate shows an inline error and does not submit
+- [ ] A successfully created program lands on that program's detail screen, status "DRAFT", and appears in the client's Programs list and the dashboard's Recent programs list
+- [ ] "Edit" on a program's detail screen opens the edit form pre-filled with that program's current values, including status
+- [ ] Changing a program's status to ACTIVE or ARCHIVED in the edit form and saving reflects the new status on the detail screen and everywhere else it's shown (client Programs list, dashboard)
+- [ ] Saving the edit form returns to the detail screen showing the updated values, not stale data
+- [ ] "Delete" on a program's detail screen shows a native confirm dialog; canceling leaves the program untouched
+- [ ] Confirming delete removes the program and returns to that client's detail screen, where it no longer appears in the Programs list
+- [ ] Killing network / forcing a failure on create, edit, or delete shows the inline error state, not a crash or a silently-lost action
