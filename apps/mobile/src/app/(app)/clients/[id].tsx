@@ -56,20 +56,27 @@ export default function ClientDetailScreen() {
       <Field label="Equipment" value={c.equipment} />
       <Field label="Observations" value={c.observations} />
       <Text style={styles.sectionTitle}>Programs</Text>
-      {workouts.isPending ? <ActivityIndicator /> : null}
-      {workouts.error ? (
-        <Text style={styles.errorText}>{(workouts.error as Error).message}</Text>
-      ) : null}
-      {!workouts.isPending && !workouts.error && (workouts.data ?? []).length === 0 ? (
-        <Text>No programs yet.</Text>
-      ) : null}
-      {(workouts.data ?? []).map((program) => (
-        <Pressable key={program.id} onPress={() => router.push(`/workouts/${program.id}`)}>
-          <Text style={styles.programRow}>
-            {program.name} — {program.status}
-          </Text>
-        </Pressable>
-      ))}
+      {/* Guard on `id`: useWorkouts falls back to the unscoped global list when
+          clientId is falsy, so without this guard a transient falsy `id` would
+          render every trainer's program here instead of this client's. */}
+      {!id ? null : (
+        <>
+          {workouts.isPending ? <ActivityIndicator /> : null}
+          {workouts.error ? (
+            <Text style={styles.errorText}>{(workouts.error as Error).message}</Text>
+          ) : null}
+          {!workouts.isPending && !workouts.error && (workouts.data ?? []).length === 0 ? (
+            <Text>No programs yet.</Text>
+          ) : null}
+          {(workouts.data ?? []).map((program) => (
+            <Pressable key={program.id} onPress={() => router.push(`/workouts/${program.id}`)}>
+              <Text style={styles.programRow}>
+                {program.name} — {program.status}
+              </Text>
+            </Pressable>
+          ))}
+        </>
+      )}
     </ScrollView>
   );
 }

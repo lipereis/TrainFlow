@@ -8,7 +8,7 @@ function Field({ label, value }: { label: string; value: string | number | null 
   return (
     <View style={styles.field}>
       <Text style={styles.fieldLabel}>{label}</Text>
-      <Text style={styles.fieldValue}>{emptyDisplay(value)}</Text>
+      <Text style={styles.fieldValue}>{value === "" ? "—" : emptyDisplay(value)}</Text>
     </View>
   );
 }
@@ -16,7 +16,7 @@ function Field({ label, value }: { label: string; value: string | number | null 
 function ExerciseRow({ exercise }: { exercise: WorkoutExerciseDto }) {
   return (
     <View style={styles.exerciseRow}>
-      <Text style={styles.exerciseName}>{exercise.customName ?? "Exercise"}</Text>
+      <Text style={styles.exerciseName}>{exercise.customName?.trim() || "Exercise"}</Text>
       <Text style={styles.exerciseMeta}>
         {exercise.sets} × {formatRepRange(exercise.repsMin, exercise.repsMax)}
         {" · "}

@@ -11,12 +11,13 @@ Built on Expo SDK 57 (React Native 0.86, React 19). Routes live under `src/app/`
 ```bash
 pnpm install
 pnpm --filter @trainflow/shared-types build
+pnpm --filter @trainflow/workout-math build
 cp apps/mobile/.env.example apps/mobile/.env
 # fill in EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY from apps/web/.env.local's
 # NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY (same Clerk instance)
 ```
 
-`packages/shared-types` must be built before the app can resolve `@trainflow/shared-types` — Turborepo does this automatically when run through `turbo`, but running `expo start` directly bypasses that, so re-run the build manually after changing anything under `packages/shared-types/src`.
+`packages/shared-types` and `packages/workout-math` must be built before the app can resolve `@trainflow/shared-types` and `@trainflow/workout-math` — Turborepo does this automatically when run through `turbo`, but running `expo start` directly bypasses that, so re-run the build manually after changing anything under `packages/shared-types/src` or `packages/workout-math/src`.
 
 ## Run
 
