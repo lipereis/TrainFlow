@@ -1,6 +1,8 @@
-import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useState } from "react";
+import { View, Text, ScrollView, ActivityIndicator, Pressable, Alert, StyleSheet } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useWorkout } from "@/lib/queries/workouts";
+import { useDeleteWorkout } from "@/lib/queries/workoutMutations";
 import { formatRepRange, formatRest, formatWeight, emptyDisplay } from "@trainflow/workout-math";
 import type { WorkoutDayDto, WorkoutExerciseDto } from "@trainflow/shared-types";
 
@@ -49,6 +51,9 @@ function DaySection({ day }: { day: WorkoutDayDto }) {
 export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const workout = useWorkout(id);
+  const router = useRouter();
+  const deleteWorkout = useDeleteWorkout(id);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   if (workout.isPending) {
     return (
@@ -74,6 +79,35 @@ export default function WorkoutDetailScreen() {
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.name}>{w.name}</Text>
       <Text style={styles.status}>{w.status}</Text>
+
+      <View style={styles.actionRow}>
+        <Pressable onPress={() => router.push(`/workouts/${id}/edit`)}>
+          <Text style={styles.actionLink}>Edit</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            Alert.alert("Delete program?", "This cannot be undone.", [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Delete",
+                style: "destructive",
+                onPress: async () => {
+                  setDeleteError(null);
+                  try {
+                    await deleteWorkout.mutateAsync();
+                    router.replace(`/clients/${w.clientId}`);
+                  } catch (err) {
+                    setDeleteError((err as Error).message);
+                  }
+                },
+              },
+            ]);
+          }}
+        >
+          <Text style={styles.deleteLink}>Delete</Text>
+        </Pressable>
+      </View>
+      {deleteError ? <Text style={styles.errorText}>{deleteError}</Text> : null}
 
       <Field label="Goal" value={w.goal} />
       <Field label="Start date" value={w.startDate.slice(0, 10)} />
@@ -107,6 +141,9 @@ const styles = StyleSheet.create({
   content: { gap: 12, paddingBottom: 24 },
   name: { fontSize: 22, fontWeight: "700" },
   status: { fontSize: 13, color: "#666", marginBottom: 8 },
+  actionRow: { flexDirection: "row", gap: 16, marginBottom: 8 },
+  actionLink: { fontSize: 14, color: "#0066cc" },
+  deleteLink: { fontSize: 14, color: "red" },
   field: { gap: 2 },
   fieldLabel: { fontSize: 12, textTransform: "uppercase", color: "#888" },
   fieldValue: { fontSize: 15, color: "#111" },
