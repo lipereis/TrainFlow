@@ -190,12 +190,15 @@ export function ProgramForm({
 
       <Text style={styles.label}>Level</Text>
       <ToggleRow options={LEVEL_OPTIONS} value={state.level} onChange={(v) => update("level", v)} />
+      {fieldErrors.level ? <Text style={styles.fieldError}>{fieldErrors.level}</Text> : null}
 
       <Text style={styles.label}>Location</Text>
       <TextInput style={styles.input} value={state.location} onChangeText={(v) => update("location", v)} />
+      {fieldErrors.location ? <Text style={styles.fieldError}>{fieldErrors.location}</Text> : null}
 
       <Text style={styles.label}>Equipment</Text>
       <TextInput style={styles.input} value={state.equipment} onChangeText={(v) => update("equipment", v)} />
+      {fieldErrors.equipment ? <Text style={styles.fieldError}>{fieldErrors.equipment}</Text> : null}
 
       <Text style={styles.label}>Observations</Text>
       <TextInput
@@ -204,11 +207,13 @@ export function ProgramForm({
         onChangeText={(v) => update("observations", v)}
         multiline
       />
+      {fieldErrors.observations ? <Text style={styles.fieldError}>{fieldErrors.observations}</Text> : null}
 
       {mode === "edit" ? (
         <>
           <Text style={styles.label}>Status</Text>
           <ToggleRow options={STATUS_OPTIONS} value={state.status} onChange={(v) => update("status", v)} />
+          {fieldErrors.status ? <Text style={styles.fieldError}>{fieldErrors.status}</Text> : null}
         </>
       ) : null}
 
