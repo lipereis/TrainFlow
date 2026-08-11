@@ -10,6 +10,7 @@ export default function AppLayout() {
       <Stack.Screen name="workouts/new" options={{ headerShown: true, title: "New Program" }} />
       <Stack.Screen name="workouts/[id]/edit" options={{ headerShown: true, title: "Edit Program" }} />
       <Stack.Screen name="workouts/[id]/days/new" options={{ headerShown: true, title: "New Day" }} />
+      <Stack.Screen name="workouts/[id]/days/[dayId]/edit" options={{ headerShown: true, title: "Edit Day" }} />
     </Stack>
   );
 }
