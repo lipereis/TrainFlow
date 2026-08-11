@@ -2,7 +2,7 @@
 
 React Native + Expo app. Trainer-first mobile client for TrainFlow, reusing the existing `apps/web` API — no direct database access, no duplicated backend logic.
 
-**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), a read-only exercise library list, workout program create/edit/delete (metadata), and day-level create/edit/delete/reorder within a program are wired up. Exercises within a day are still read-only — no exercise editing yet. No invite/edit/delete for clients, no search or filtering anywhere yet. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
+**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), a read-only exercise library list, workout program create/edit/delete (metadata), day-level create/edit/delete/reorder, and exercise-level create/edit/delete/reorder within a day are wired up. Adding an exercise picks from the existing library only (no inline custom-exercise creation, no moving an exercise between days). No invite/edit/delete for clients, no search or filtering outside the exercise picker. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
 
 Built on Expo SDK 57 (React Native 0.86, React 19). Routes live under `src/app/` (this SDK generation's default, not root `app/`).
 
@@ -91,4 +91,13 @@ pnpm --filter @trainflow/mobile exec jest
 - [ ] "Delete" on a day shows a native confirm dialog; canceling leaves the day untouched; confirming removes it from the list
 - [ ] The Up button is absent/disabled on the first day and the Down button is absent/disabled on the last day
 - [ ] Pressing Up or Down on a day changes its position in the list and the new order persists across a screen refresh
+- [ ] Killing network on add/edit/delete/reorder shows the inline error state, not a crash or a silently-lost action
+- [ ] "Add exercise" on a day opens the library picker; typing in the search field filters the list by name
+- [ ] Tapping a library exercise adds it to the day with default values (3 sets, 8–12 reps, 90s rest, Standard sets) and returns to the program detail screen
+- [ ] "Edit" on an exercise opens the form pre-filled with its current core-field values (sets, rep range, weight, weight unit, rest, method)
+- [ ] Submitting the edit form with rep max less than rep min shows an inline error and does not submit
+- [ ] Saving an edited exercise reflects the new values on the detail screen, not stale data
+- [ ] "Delete" on an exercise shows a native confirm dialog; canceling leaves it untouched; confirming removes it from the day
+- [ ] Up/Down reorder buttons change an exercise's position within its day and persist across a screen refresh; the first exercise's Up button and the last exercise's Down button are disabled/absent
+- [ ] Rapidly tapping Up or Down multiple times on an exercise moves it the expected number of positions, not fewer
 - [ ] Killing network on add/edit/delete/reorder shows the inline error state, not a crash or a silently-lost action
