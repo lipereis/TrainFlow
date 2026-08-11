@@ -3,6 +3,7 @@ import { View, Text, ScrollView, ActivityIndicator, Pressable, Alert, StyleSheet
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useWorkout } from "@/lib/queries/workouts";
 import { useDeleteWorkout } from "@/lib/queries/workoutMutations";
+import { useDeleteDay } from "@/lib/queries/dayMutations";
 import { formatRepRange, formatRest, formatWeight, emptyDisplay } from "@trainflow/workout-math";
 import type { WorkoutDayDto, WorkoutExerciseDto } from "@trainflow/shared-types";
 
@@ -32,10 +33,43 @@ function ExerciseRow({ exercise }: { exercise: WorkoutExerciseDto }) {
   );
 }
 
-function DaySection({ day }: { day: WorkoutDayDto }) {
+function DaySection({ day, workoutId }: { day: WorkoutDayDto; workoutId: string }) {
+  const router = useRouter();
+  const deleteDay = useDeleteDay(workoutId, day.id);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  function handleDelete() {
+    Alert.alert("Delete day?", "This cannot be undone.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          setActionError(null);
+          try {
+            await deleteDay.mutateAsync();
+          } catch (err) {
+            setActionError((err as Error).message);
+          }
+        },
+      },
+    ]);
+  }
+
   return (
     <View style={styles.daySection}>
-      <Text style={styles.dayName}>{day.name}</Text>
+      <View style={styles.dayHeaderRow}>
+        <Text style={styles.dayName}>{day.name}</Text>
+        <View style={styles.dayActionRow}>
+          <Pressable onPress={() => router.push(`/workouts/${workoutId}/days/${day.id}/edit`)}>
+            <Text style={styles.dayActionLink}>Edit</Text>
+          </Pressable>
+          <Pressable onPress={handleDelete}>
+            <Text style={styles.dayDeleteLink}>Delete</Text>
+          </Pressable>
+        </View>
+      </View>
+      {actionError ? <Text style={styles.errorText}>{actionError}</Text> : null}
       {day.focus ? <Text style={styles.dayFocus}>{day.focus}</Text> : null}
       <Text style={styles.dayTotals}>
         {day.totals.totalSets} sets · {formatRepRange(day.totals.minReps, day.totals.maxReps)} reps ·{" "}
@@ -127,10 +161,15 @@ export default function WorkoutDetailScreen() {
         volume · {w.summary.estimatedDurationMin} min/week
       </Text>
 
-      <Text style={styles.sectionTitle}>Days</Text>
+      <View style={styles.dayListHeader}>
+        <Text style={styles.sectionTitleFlat}>Days</Text>
+        <Pressable onPress={() => router.push(`/workouts/${id}/days/new`)}>
+          <Text style={styles.actionLink}>Add day</Text>
+        </Pressable>
+      </View>
       {w.days.length === 0 ? <Text>No days yet.</Text> : null}
       {w.days.map((day) => (
-        <DaySection key={day.id} day={day} />
+        <DaySection key={day.id} day={day} workoutId={id} />
       ))}
     </ScrollView>
   );
@@ -148,6 +187,13 @@ const styles = StyleSheet.create({
   fieldLabel: { fontSize: 12, textTransform: "uppercase", color: "#888" },
   fieldValue: { fontSize: 15, color: "#111" },
   sectionTitle: { fontSize: 16, fontWeight: "600", marginTop: 12 },
+  sectionTitleFlat: { fontSize: 16, fontWeight: "600" },
+  dayListHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 12,
+  },
   summary: { fontSize: 13, color: "#444" },
   daySection: {
     paddingVertical: 12,
@@ -155,6 +201,10 @@ const styles = StyleSheet.create({
     borderTopColor: "#ccc",
     gap: 4,
   },
+  dayHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  dayActionRow: { flexDirection: "row", gap: 12 },
+  dayActionLink: { fontSize: 13, color: "#0066cc" },
+  dayDeleteLink: { fontSize: 13, color: "red" },
   dayName: { fontSize: 16, fontWeight: "600" },
   dayFocus: { fontSize: 13, color: "#666" },
   dayTotals: { fontSize: 12, color: "#888" },
