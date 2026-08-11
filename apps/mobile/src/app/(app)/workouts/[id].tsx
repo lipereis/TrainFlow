@@ -3,7 +3,7 @@ import { View, Text, ScrollView, ActivityIndicator, Pressable, Alert, StyleSheet
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useWorkout } from "@/lib/queries/workouts";
 import { useDeleteWorkout } from "@/lib/queries/workoutMutations";
-import { useDeleteDay } from "@/lib/queries/dayMutations";
+import { useDeleteDay, useReorderDays } from "@/lib/queries/dayMutations";
 import { formatRepRange, formatRest, formatWeight, emptyDisplay } from "@trainflow/workout-math";
 import type { WorkoutDayDto, WorkoutExerciseDto } from "@trainflow/shared-types";
 
@@ -33,10 +33,23 @@ function ExerciseRow({ exercise }: { exercise: WorkoutExerciseDto }) {
   );
 }
 
-function DaySection({ day, workoutId }: { day: WorkoutDayDto; workoutId: string }) {
+function DaySection({
+  day,
+  workoutId,
+  isFirst,
+  isLast,
+  onMove,
+}: {
+  day: WorkoutDayDto;
+  workoutId: string;
+  isFirst: boolean;
+  isLast: boolean;
+  onMove: (dayId: string, direction: "up" | "down") => Promise<void>;
+}) {
   const router = useRouter();
   const deleteDay = useDeleteDay(workoutId, day.id);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [moving, setMoving] = useState(false);
 
   function handleDelete() {
     Alert.alert("Delete day?", "This cannot be undone.", [
@@ -56,11 +69,29 @@ function DaySection({ day, workoutId }: { day: WorkoutDayDto; workoutId: string 
     ]);
   }
 
+  async function handleMove(direction: "up" | "down") {
+    setActionError(null);
+    setMoving(true);
+    try {
+      await onMove(day.id, direction);
+    } catch (err) {
+      setActionError((err as Error).message);
+    } finally {
+      setMoving(false);
+    }
+  }
+
   return (
     <View style={styles.daySection}>
       <View style={styles.dayHeaderRow}>
         <Text style={styles.dayName}>{day.name}</Text>
         <View style={styles.dayActionRow}>
+          <Pressable onPress={() => handleMove("up")} disabled={isFirst || moving}>
+            <Text style={[styles.dayActionLink, isFirst ? styles.dayActionDisabled : null]}>Up</Text>
+          </Pressable>
+          <Pressable onPress={() => handleMove("down")} disabled={isLast || moving}>
+            <Text style={[styles.dayActionLink, isLast ? styles.dayActionDisabled : null]}>Down</Text>
+          </Pressable>
           <Pressable onPress={() => router.push(`/workouts/${workoutId}/days/${day.id}/edit`)}>
             <Text style={styles.dayActionLink}>Edit</Text>
           </Pressable>
@@ -87,6 +118,7 @@ export default function WorkoutDetailScreen() {
   const workout = useWorkout(id);
   const router = useRouter();
   const deleteWorkout = useDeleteWorkout(id);
+  const reorderDays = useReorderDays(id);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   if (workout.isPending) {
@@ -108,6 +140,18 @@ export default function WorkoutDetailScreen() {
   }
 
   const w = workout.data;
+
+  async function moveDay(dayId: string, direction: "up" | "down") {
+    const days = w.days;
+    const index = days.findIndex((d) => d.id === dayId);
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= days.length) {
+      return;
+    }
+    const reordered = [...days];
+    [reordered[index], reordered[targetIndex]] = [reordered[targetIndex], reordered[index]];
+    await reorderDays.mutateAsync({ ids: reordered.map((d) => d.id) });
+  }
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -168,8 +212,15 @@ export default function WorkoutDetailScreen() {
         </Pressable>
       </View>
       {w.days.length === 0 ? <Text>No days yet.</Text> : null}
-      {w.days.map((day) => (
-        <DaySection key={day.id} day={day} workoutId={id} />
+      {w.days.map((day, index) => (
+        <DaySection
+          key={day.id}
+          day={day}
+          workoutId={id}
+          isFirst={index === 0}
+          isLast={index === w.days.length - 1}
+          onMove={moveDay}
+        />
       ))}
     </ScrollView>
   );
@@ -205,6 +256,7 @@ const styles = StyleSheet.create({
   dayActionRow: { flexDirection: "row", gap: 12 },
   dayActionLink: { fontSize: 13, color: "#0066cc" },
   dayDeleteLink: { fontSize: 13, color: "red" },
+  dayActionDisabled: { color: "#ccc" },
   dayName: { fontSize: 16, fontWeight: "600" },
   dayFocus: { fontSize: 13, color: "#666" },
   dayTotals: { fontSize: 12, color: "#888" },
