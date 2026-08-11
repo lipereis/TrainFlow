@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useWorkout } from "@/lib/queries/workouts";
 import { useDeleteWorkout } from "@/lib/queries/workoutMutations";
 import { useDeleteDay, useReorderDays } from "@/lib/queries/dayMutations";
+import { useDeleteExercise } from "@/lib/queries/exerciseMutations";
 import { formatRepRange, formatRest, formatWeight, emptyDisplay } from "@trainflow/workout-math";
 import type { WorkoutDayDto, WorkoutExerciseDto } from "@trainflow/shared-types";
 
@@ -16,10 +17,57 @@ function Field({ label, value }: { label: string; value: string | number | null 
   );
 }
 
-function ExerciseRow({ exercise }: { exercise: WorkoutExerciseDto }) {
+function ExerciseRow({
+  exercise,
+  workoutId,
+  dayId,
+}: {
+  exercise: WorkoutExerciseDto;
+  workoutId: string;
+  dayId: string;
+}) {
+  const router = useRouter();
+  const deleteExercise = useDeleteExercise(workoutId, dayId, exercise.id);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  function handleDelete() {
+    Alert.alert("Delete exercise?", "This cannot be undone.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          setActionError(null);
+          try {
+            await deleteExercise.mutateAsync();
+          } catch (err) {
+            setActionError((err as Error).message);
+          }
+        },
+      },
+    ]);
+  }
+
   return (
     <View style={styles.exerciseRow}>
-      <Text style={styles.exerciseName}>{exercise.customName?.trim() || "Exercise"}</Text>
+      <View style={styles.exerciseHeaderRow}>
+        <Text style={styles.exerciseName} numberOfLines={1}>
+          {exercise.customName?.trim() || "Exercise"}
+        </Text>
+        <View style={styles.exerciseActionRow}>
+          <Pressable
+            onPress={() =>
+              router.push(`/workouts/${workoutId}/days/${dayId}/exercises/${exercise.id}/edit`)
+            }
+          >
+            <Text style={styles.exerciseActionLink}>Edit</Text>
+          </Pressable>
+          <Pressable onPress={handleDelete}>
+            <Text style={styles.exerciseDeleteLink}>Delete</Text>
+          </Pressable>
+        </View>
+      </View>
+      {actionError ? <Text style={styles.errorText}>{actionError}</Text> : null}
       <Text style={styles.exerciseMeta}>
         {exercise.sets} × {formatRepRange(exercise.repsMin, exercise.repsMax)}
         {" · "}
@@ -106,8 +154,15 @@ function DaySection({
         {day.totals.totalSets} sets · {formatRepRange(day.totals.minReps, day.totals.maxReps)} reps ·{" "}
         {day.totals.estimatedDurationMin} min
       </Text>
+      <View style={styles.exerciseListHeader}>
+        <Text style={styles.exerciseListTitle}>Exercises</Text>
+        <Pressable onPress={() => router.push(`/workouts/${workoutId}/days/${day.id}/exercises/add`)}>
+          <Text style={styles.dayActionLink}>Add exercise</Text>
+        </Pressable>
+      </View>
+      {day.exercises.length === 0 ? <Text style={styles.emptyExercises}>No exercises yet.</Text> : null}
       {day.exercises.map((exercise) => (
-        <ExerciseRow key={exercise.id} exercise={exercise} />
+        <ExerciseRow key={exercise.id} exercise={exercise} workoutId={workoutId} dayId={day.id} />
       ))}
     </View>
   );
@@ -260,12 +315,24 @@ const styles = StyleSheet.create({
   dayName: { fontSize: 16, fontWeight: "600", flexShrink: 1 },
   dayFocus: { fontSize: 13, color: "#666" },
   dayTotals: { fontSize: 12, color: "#888" },
+  exerciseListHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  exerciseListTitle: { fontSize: 13, fontWeight: "600", color: "#444" },
+  emptyExercises: { fontSize: 13, color: "#888" },
   exerciseRow: {
     paddingVertical: 6,
     paddingLeft: 8,
     gap: 2,
   },
-  exerciseName: { fontSize: 14, fontWeight: "500" },
+  exerciseHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  exerciseActionRow: { flexDirection: "row", gap: 12, flexShrink: 0 },
+  exerciseActionLink: { fontSize: 12, color: "#0066cc" },
+  exerciseDeleteLink: { fontSize: 12, color: "red" },
+  exerciseName: { fontSize: 14, fontWeight: "500", flexShrink: 1 },
   exerciseMeta: { fontSize: 12, color: "#666" },
   errorText: { fontSize: 13, color: "red" },
 });
