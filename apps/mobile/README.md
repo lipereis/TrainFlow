@@ -2,7 +2,7 @@
 
 React Native + Expo app. Trainer-first mobile client for TrainFlow, reusing the existing `apps/web` API — no direct database access, no duplicated backend logic.
 
-**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), a read-only exercise library list, a workout program detail screen, and workout program create/edit/delete (metadata only — no day/exercise editing yet) are wired up. No invite/edit/delete for clients, no search or filtering anywhere yet. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
+**Status: Phase 1 in progress.** Sign-in, a read-only trainer dashboard, read-only clients screens (list + detail), a read-only exercise library list, workout program create/edit/delete (metadata), and day-level create/edit/delete/reorder within a program are wired up. Exercises within a day are still read-only — no exercise editing yet. No invite/edit/delete for clients, no search or filtering anywhere yet. Until this app reaches parity with the trainer-priority screens, `apps/mobile-capacitor` (the Capacitor WebView shell) remains the App Store / Play Store submission path — do not delete it.
 
 Built on Expo SDK 57 (React Native 0.86, React 19). Routes live under `src/app/` (this SDK generation's default, not root `app/`).
 
@@ -83,3 +83,12 @@ pnpm --filter @trainflow/mobile exec jest
 - [ ] "Delete" on a program's detail screen shows a native confirm dialog; canceling leaves the program untouched
 - [ ] Confirming delete removes the program and returns to that client's detail screen, where it no longer appears in the Programs list
 - [ ] Killing network / forcing a failure on create, edit, or delete shows the inline error state, not a crash or a silently-lost action
+- [ ] "Add day" on a program's detail screen opens the create form
+- [ ] Submitting the day form with a blank name shows an inline "required" error and does not submit
+- [ ] A successfully created day appears in the program's Days list
+- [ ] "Edit" on a day opens the form pre-filled with that day's current values
+- [ ] Saving an edited day reflects the new values on the detail screen, not stale data
+- [ ] "Delete" on a day shows a native confirm dialog; canceling leaves the day untouched; confirming removes it from the list
+- [ ] The Up button is absent/disabled on the first day and the Down button is absent/disabled on the last day
+- [ ] Pressing Up or Down on a day changes its position in the list and the new order persists across a screen refresh
+- [ ] Killing network on add/edit/delete/reorder shows the inline error state, not a crash or a silently-lost action
