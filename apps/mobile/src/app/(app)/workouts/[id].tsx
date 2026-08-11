@@ -84,7 +84,7 @@ function DaySection({
   return (
     <View style={styles.daySection}>
       <View style={styles.dayHeaderRow}>
-        <Text style={styles.dayName}>{day.name}</Text>
+        <Text style={styles.dayName} numberOfLines={1}>{day.name}</Text>
         <View style={styles.dayActionRow}>
           <Pressable onPress={() => handleMove("up")} disabled={isFirst || moving}>
             <Text style={[styles.dayActionLink, isFirst ? styles.dayActionDisabled : null]}>Up</Text>
@@ -253,11 +253,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   dayHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  dayActionRow: { flexDirection: "row", gap: 12 },
+  dayActionRow: { flexDirection: "row", gap: 12, flexShrink: 0 },
   dayActionLink: { fontSize: 13, color: "#0066cc" },
   dayDeleteLink: { fontSize: 13, color: "red" },
   dayActionDisabled: { color: "#ccc" },
-  dayName: { fontSize: 16, fontWeight: "600" },
+  dayName: { fontSize: 16, fontWeight: "600", flexShrink: 1 },
   dayFocus: { fontSize: 13, color: "#666" },
   dayTotals: { fontSize: 12, color: "#888" },
   exerciseRow: {

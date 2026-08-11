@@ -64,8 +64,6 @@ export function useReorderDays(workoutId: string) {
         body: JSON.stringify(input),
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["workouts"] }),
   });
 }
