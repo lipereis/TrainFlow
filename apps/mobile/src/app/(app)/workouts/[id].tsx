@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useWorkout } from "@/lib/queries/workouts";
 import { useDeleteWorkout } from "@/lib/queries/workoutMutations";
 import { useDeleteDay, useReorderDays } from "@/lib/queries/dayMutations";
-import { useDeleteExercise } from "@/lib/queries/exerciseMutations";
+import { useDeleteExercise, useReorderExercises } from "@/lib/queries/exerciseMutations";
 import { formatRepRange, formatRest, formatWeight, emptyDisplay } from "@trainflow/workout-math";
 import type { WorkoutDayDto, WorkoutExerciseDto } from "@trainflow/shared-types";
 
@@ -21,14 +21,21 @@ function ExerciseRow({
   exercise,
   workoutId,
   dayId,
+  isFirst,
+  isLast,
+  onMove,
 }: {
   exercise: WorkoutExerciseDto;
   workoutId: string;
   dayId: string;
+  isFirst: boolean;
+  isLast: boolean;
+  onMove: (exerciseId: string, direction: "up" | "down") => Promise<void>;
 }) {
   const router = useRouter();
   const deleteExercise = useDeleteExercise(workoutId, dayId, exercise.id);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [moving, setMoving] = useState(false);
 
   function handleDelete() {
     Alert.alert("Delete exercise?", "This cannot be undone.", [
@@ -48,6 +55,18 @@ function ExerciseRow({
     ]);
   }
 
+  async function handleMove(direction: "up" | "down") {
+    setActionError(null);
+    setMoving(true);
+    try {
+      await onMove(exercise.id, direction);
+    } catch (err) {
+      setActionError((err as Error).message);
+    } finally {
+      setMoving(false);
+    }
+  }
+
   return (
     <View style={styles.exerciseRow}>
       <View style={styles.exerciseHeaderRow}>
@@ -55,6 +74,16 @@ function ExerciseRow({
           {exercise.customName?.trim() || "Exercise"}
         </Text>
         <View style={styles.exerciseActionRow}>
+          <Pressable onPress={() => handleMove("up")} disabled={isFirst || moving}>
+            <Text style={[styles.exerciseActionLink, isFirst ? styles.exerciseActionDisabled : null]}>
+              Up
+            </Text>
+          </Pressable>
+          <Pressable onPress={() => handleMove("down")} disabled={isLast || moving}>
+            <Text style={[styles.exerciseActionLink, isLast ? styles.exerciseActionDisabled : null]}>
+              Down
+            </Text>
+          </Pressable>
           <Pressable
             onPress={() =>
               router.push(`/workouts/${workoutId}/days/${dayId}/exercises/${exercise.id}/edit`)
@@ -96,6 +125,7 @@ function DaySection({
 }) {
   const router = useRouter();
   const deleteDay = useDeleteDay(workoutId, day.id);
+  const reorderExercises = useReorderExercises(workoutId, day.id);
   const [actionError, setActionError] = useState<string | null>(null);
   const [moving, setMoving] = useState(false);
 
@@ -127,6 +157,18 @@ function DaySection({
     } finally {
       setMoving(false);
     }
+  }
+
+  async function moveExercise(exerciseId: string, direction: "up" | "down") {
+    const exercises = day.exercises;
+    const index = exercises.findIndex((e) => e.id === exerciseId);
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= exercises.length) {
+      return;
+    }
+    const reordered = [...exercises];
+    [reordered[index], reordered[targetIndex]] = [reordered[targetIndex], reordered[index]];
+    await reorderExercises.mutateAsync({ ids: reordered.map((e) => e.id) });
   }
 
   return (
@@ -161,8 +203,16 @@ function DaySection({
         </Pressable>
       </View>
       {day.exercises.length === 0 ? <Text style={styles.emptyExercises}>No exercises yet.</Text> : null}
-      {day.exercises.map((exercise) => (
-        <ExerciseRow key={exercise.id} exercise={exercise} workoutId={workoutId} dayId={day.id} />
+      {day.exercises.map((exercise, index) => (
+        <ExerciseRow
+          key={exercise.id}
+          exercise={exercise}
+          workoutId={workoutId}
+          dayId={day.id}
+          isFirst={index === 0}
+          isLast={index === day.exercises.length - 1}
+          onMove={moveExercise}
+        />
       ))}
     </View>
   );
@@ -332,6 +382,7 @@ const styles = StyleSheet.create({
   exerciseActionRow: { flexDirection: "row", gap: 12, flexShrink: 0 },
   exerciseActionLink: { fontSize: 12, color: "#0066cc" },
   exerciseDeleteLink: { fontSize: 12, color: "red" },
+  exerciseActionDisabled: { color: "#ccc" },
   exerciseName: { fontSize: 14, fontWeight: "500", flexShrink: 1 },
   exerciseMeta: { fontSize: 12, color: "#666" },
   errorText: { fontSize: 13, color: "red" },
