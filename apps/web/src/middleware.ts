@@ -9,9 +9,11 @@ import {
   LOCALE_COOKIE,
 } from "@/i18n/config";
 import {
+  applyCorsHeaders,
   applySecurityHeaders,
   CSP_DIRECTIVE_EXTRAS,
   forwardCspToRequest,
+  isAllowedCorsOrigin,
 } from "@/lib/security-headers";
 
 /**
@@ -141,6 +143,14 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
   const next = ensureLocaleCookie(req, asNextResponse(res));
   forwardCspToRequest(req, next);
   applySecurityHeaders(next.headers);
+
+  if (isApi(req)) {
+    const origin = req.headers.get("origin");
+    if (isAllowedCorsOrigin(origin)) {
+      applyCorsHeaders(origin, next.headers);
+    }
+  }
+
   return next;
 }
 

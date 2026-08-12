@@ -118,6 +118,39 @@ export function applySecurityHeaders(headers: Headers): void {
   }
 }
 
+/**
+ * Origins allowed to call `/api/*` cross-origin: the native app ships no
+ * origin (not subject to CORS), but Expo web (`expo start --web`, port
+ * varies) and Capacitor's WebView run the same JS in a browser context and
+ * are blocked without an explicit `Access-Control-Allow-Origin`.
+ */
+const CORS_ALLOWED_ORIGIN_PATTERNS = [
+  /^https?:\/\/localhost(:\d+)?$/,
+  /^https?:\/\/127\.0\.0\.1(:\d+)?$/,
+  /^capacitor:\/\/localhost$/,
+  /^ionic:\/\/localhost$/,
+];
+
+export function isAllowedCorsOrigin(origin: string | null): origin is string {
+  return origin !== null && CORS_ALLOWED_ORIGIN_PATTERNS.some((p) => p.test(origin));
+}
+
+/** Auth is Bearer-token based (not cookies), so reflecting the origin carries no CSRF risk. */
+export function applyCorsHeaders(origin: string, headers: Headers): void {
+  headers.set("Access-Control-Allow-Origin", origin);
+  headers.set("Vary", appendVary(headers.get("Vary"), "Origin"));
+  headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  headers.set("Access-Control-Allow-Headers", "Authorization, Content-Type");
+  headers.set("Access-Control-Max-Age", "86400");
+}
+
+function appendVary(existing: string | null, value: string): string {
+  if (!existing) return value;
+  return existing.split(",").map((v) => v.trim()).includes(value)
+    ? existing
+    : `${existing}, ${value}`;
+}
+
 const OVERRIDE_HEADERS = "x-middleware-override-headers";
 const MIDDLEWARE_REQUEST_PREFIX = "x-middleware-request-";
 
