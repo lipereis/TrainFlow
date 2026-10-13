@@ -9,7 +9,7 @@
     "sync": "cap sync"
   },
   "dependencies": {
-    "@capacitor/android": "^8.0.0",
+    "@capacitor/android": "^8.5.1",
     "@capacitor/core": "^8.0.0",
     "@capacitor/ios": "^8.0.0"
   },
